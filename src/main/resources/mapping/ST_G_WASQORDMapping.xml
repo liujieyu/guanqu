@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_G_WASQORDMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_G_WASQORD">
+        <result column="ID" jdbcType="INTEGER" property="ID" />
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="YR" jdbcType="INTEGER" property="YR" />
+        <result column="TMMXQ" jdbcType="TIMESTAMP" property="TMMXQ" />
+        <result column="YMXUPQZ" jdbcType="NUMERIC" property="YMXUPQZ" />
+        <result column="YMXDNQZ" jdbcType="NUMERIC" property="YMXDNQZ" />
+    </resultMap>
+    <select id="findBySTCDAndYR" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from ST_G_WASQORD
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                STCD = #{STCD}
+            </if>
+            <if test="YR_min!= null and YR_min!= ''and YR_max!= null and YR_max!= ''">
+                and YR &gt;= '${YR_min}' and YR &lt;='${YR_max}'
+            </if>
+        </where>
+    </select>
+</mapper>

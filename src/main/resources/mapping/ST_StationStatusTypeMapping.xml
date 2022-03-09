@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_StationStatusTypeMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_StationStatusType">
+        <result column="ID" jdbcType="INTEGER" property="ID" />
+        <result column="VOLTYPE" jdbcType="INTEGER" property="VOLTYPE" />
+        <result column="VOLNM" jdbcType="VARCHAR" property="VOLNM" />
+        <result column="VOLMIN" jdbcType="NUMERIC" property="VOLMIN" />
+        <result column="VOLMAX" jdbcType="NUMERIC" property="VOLMAX" />
+    </resultMap>
+    <select id="findAll" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from ST_StationStatusType
+    </select>
+</mapper>

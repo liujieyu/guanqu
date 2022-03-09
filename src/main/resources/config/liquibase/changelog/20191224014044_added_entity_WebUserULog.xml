@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    
+    <!--
+        Added the entity WebUserULog.
+    -->
+    <changeSet id="20191224014044-1" author="jhipster">
+        <createTable tableName="web_user_u_log" remarks="Web账号操作日志">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="type" type="varchar(255)" remarks="操作类型">
+                <constraints nullable="true" />
+            </column>
+            <column name="content" type="${clobType}" remarks="操作内容">
+                <constraints nullable="true" />
+            </column>
+            <column name="time" type="datetime" remarks="操作时间">
+                <constraints nullable="true" />
+            </column>
+            <column name="login_ip" type="varchar(255)" remarks="登录IP">
+                <constraints nullable="true" />
+            </column>
+            <column name="browser" type="varchar(255)" remarks="浏览器">
+                <constraints nullable="true" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
+        </createTable>
+        <dropDefaultValue tableName="web_user_u_log" columnName="time" columnDataType="datetime"/>
+    </changeSet>
+
+    <changeSet id="20191224014044-1-relations" author="jhipster">
+
+    </changeSet>
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
+
+</databaseChangeLog>

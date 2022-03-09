@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ShuiKuShuiQingXiaoShiBiaoMapper">
+    <select id="findByZhanDian" parameterType="java.lang.String" resultType="java.util.HashMap">
+        select b.STCD,b.STNM,a.FWL,a.FWL79,a.ZCWL from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=2 and b.stcd=f.stcd
+        left join ST_RSVR_R1 r on r.stcd=b.stcd
+        left join ST_RSV_Alarm a on b.STCD=a.STCD
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from
+                dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR != ''">
+                and b.STGR in (${STGR})
+            </if>
+            <if test="LEVEL!= null and LEVEL != ''">
+                and r.level in (${LEVEL})
+            </if>
+        </where>
+    </select>
+
+    <select id="findByXiaoShi" parameterType="java.util.List" resultType="java.util.HashMap">
+        select * from (SELECT
+        CONVERT(VARCHAR(13),a.dt,120) AS dt,
+        b.*,
+        ROW_NUMBER() OVER(Order by a.dt desc) AS RowId
+        FROM
+        (
+        SELECT
+        dateadd(HH, number,'${Time_min}') dt
+        FROM
+        master..spt_values
+        WHERE
+        type = 'p'
+        AND dateadd(HH, number, '${Time_min}') &lt;='${Time_max}'
+        ) a
+        LEFT JOIN (SELECT
+        <foreach collection="list" item="item" index="index">
+                max(CASE b.stnm WHEN '${item}' THEN isnull(RZ,0) ELSE 0 end)${item}平均水位,
+                max(CASE b.stnm WHEN '${item}' THEN isnull(CV,0) ELSE 0 end)${item}水势,
+                max(CASE b.stnm WHEN '${item}' THEN isnull(INQ,0) ELSE 0 end)${item}平均入口流量,
+                max(CASE b.stnm WHEN '${item}' THEN isnull(OTQ,0) ELSE 0 end)${item}平均出口流量,
+                max(CASE b.stnm WHEN '${item}' THEN isnull(HW,0) ELSE 0 end)${item}小时蓄水量,
+        </foreach>
+        DATEADD(hh,TM,CONVERT(varchar(100), DT, 111)) as temp
+        FROM ST_RSVR_H h inner join ST_STBPRP_B b on h.STCD=b.STCD
+        where DATEADD(hh,TM,CONVERT(varchar(100), DT, 111))&gt;= '${Time_min}' and DATEADD(hh,TM,CONVERT(varchar(100), DT, 111))&lt;='${Time_max}'
+        GROUP BY dt,tm
+        ) b ON a.dt = b.temp
+        ) as b where RowId between 1 and 999999999;
+    </select>
+</mapper>

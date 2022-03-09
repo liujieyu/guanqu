@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.LsYxgkMapper">
+    <resultMap id="LiShiGongKuangResultMap" type="vip.yingmen.pojo.LiShiYunXingGongKuang">
+        <result column="CS" jdbcType="VARCHAR" property="CS" />
+        <result column="VOL" jdbcType="VARCHAR" property="VOL" />
+        <result column="TM" jdbcType="VARCHAR" property="TM" />
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+    </resultMap>
+    <select id="findByYunXingGongKuang" resultMap="LiShiGongKuangResultMap" parameterType="java.lang.String">
+        select * from(select CONVERT(varchar(16),TM,120) as TM,VOL,STNM,case CS when 1 then '正常' else '异常' end as CS,ROW_NUMBER() OVER (ORDER BY TM desc) as RowId
+        from ST_StationStatus_H
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                STCD = #{STCD}
+            </if>
+            <if test="Time_min!= null and Time_min!= ''and Time_max!= null and Time_max!= ''">
+                and TM &gt;='${Time_min}' and TM &lt;='${Time_max}'
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

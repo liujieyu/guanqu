@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.YuQingTongJiGISMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.YuQingTongJiGIS">
+        <result column="LeiJiYuLiang" jdbcType="VARCHAR" property="LeiJiYuLiang" />
+        <result column="PingJunJiangYu" jdbcType="VARCHAR" property="PingJunJiangYu" />
+        <result column="ZuiDaJiangYu" jdbcType="VARCHAR" property="ZuiDaJiangYu" />
+    </resultMap>
+    <select id="findByXiaoShi" resultMap="BaseResultMap" parameterType="java.util.Map">
+            SELECT
+            SUM(ISNULL(b.P, '0')) as LeiJiYuLiang,Convert(decimal(18,1),AVG(ISNULL(b.P, '0'))) as PingJunJiangYu,max(ISNULL(b.P, '0')) as ZuiDaJiangYu
+            FROM
+            (
+            SELECT
+            dateadd(HH, number, '${Time_min}') dt
+            FROM
+            master..spt_values
+            WHERE
+            type = 'p'
+            AND dateadd(HH, number, '${Time_min}') &lt;='${Time_max}'
+            ) a
+            LEFT JOIN (select * from ST_HP_C where STCD=#{STCD}
+            and DATEADD(hh,TM,CONVERT(varchar(100), DT, 111))&gt;='${Time_min}' and DATEADD(hh,TM,CONVERT(varchar(100), DT, 111))&lt;='${Time_max}'
+            ) b ON a.dt = DATEADD(hh,b.TM,CONVERT(varchar(100), b.DT, 111))
+    </select>
+    <select id="findByRi" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        SUM(ISNULL(b.P, '0')) as LeiJiYuLiang,Convert(decimal(18,1),AVG(ISNULL(b.P, '0'))) as PingJunJiangYu,max(ISNULL(b.P, '0')) as ZuiDaJiangYu
+        FROM
+        (
+        SELECT
+        dateadd(DD, number, '${Time_min}') dt
+        FROM
+        master..spt_values
+        WHERE
+        type = 'p'
+        AND dateadd(DD, number, '${Time_min}') &lt;='${Time_max}'
+        ) a
+        LEFT JOIN (select * from ST_DP_C where STCD=#{STCD} and TM&gt;='${Time_min}' and TM&lt;='${Time_max}'
+        ) b ON a.dt = b.TM
+    </select>
+    <select id="findByXun" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        SUM(ISNULL(b.P, '0')) as LeiJiYuLiang,Convert(decimal(18,1),AVG(ISNULL(b.P, '0'))) as PingJunJiangYu,max(ISNULL(b.P, '0')) as ZuiDaJiangYu
+        FROM
+        (SELECT convert(varchar(7),dateadd(m,a.number,'${Time_min}'),120)+(case b.number when 0 then '上旬' when 1 then '中旬' else '下旬' end)dt,
+        dateadd(d,b.number*10,dateadd(m,a.number,'${Time_min}')) dt1
+        FROM master..spt_values a,master..spt_values b
+        where a.type='p' and b.type='p' and
+        dateadd(m,a.number,'${Time_min}')&lt;='${Time_max}' and b.number&lt;3
+        ) a
+        LEFT JOIN (select case when datepart(dd,PTBGDT)&lt;=10 then convert(varchar(7),PTBGDT,120)+'上旬' when datepart(dd,PTBGDT)>=21 then convert(varchar(7),PTBGDT,120)+'下旬' else convert(varchar(7),PTBGDT,120)+'中旬' end as dt,P
+        from ST_DCP_D where STCD=#{STCD} and convert(varchar(7),PTBGDT,120)&gt;='${Time_min}' and convert(varchar(7),PTBGDT,120)&lt;='${Time_max}'
+        ) b ON a.dt = b.dt;
+    </select>
+    <select id="findByYue" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        SUM(ISNULL(b.P, '0')) as LeiJiYuLiang,Convert(decimal(18,1),AVG(ISNULL(b.P, '0'))) as PingJunJiangYu,max(ISNULL(b.P, '0')) as ZuiDaJiangYu
+        FROM
+        (
+        SELECT
+        dateadd(MM, number, '${Time_min}') dt
+        FROM
+        master..spt_values
+        WHERE
+        type = 'p'
+        AND dateadd(MM, number, '${Time_min}') &lt;='${Time_max}'
+        ) a
+        LEFT JOIN (select convert(datetime ,(convert(varchar,yr)+'-'+convert(varchar,mon)+'-01')) as dt,P from ST_MTP_E where STCD=#{STCD} and convert(datetime ,(convert(varchar,yr)+'-'+convert(varchar,mon)+'-01'))&gt;='${Time_min}' and convert(datetime ,(convert(varchar,yr)+'-'+convert(varchar,mon)+'-01'))&lt;='${Time_max}'
+        ) b ON a.dt = b.dt;
+    </select>
+    <select id="findByNian" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        SUM(ISNULL(b.P, '0')) as LeiJiYuLiang,Convert(decimal(18,1),AVG(ISNULL(b.P, '0'))) as PingJunJiangYu,max(ISNULL(b.P, '0')) as ZuiDaJiangYu
+        FROM
+        (
+        SELECT
+        '${Time_min}'+number yr
+        FROM
+        master..spt_values
+        WHERE
+        type = 'p'
+        AND '${Time_min}'+number&lt;='${Time_max}'
+        ) a
+        LEFT JOIN (select * from ST_YRP_F where STCD=#{STCD} and yr &gt;='${Time_min}' and yr&lt;='${Time_max}'
+        ) b ON a.yr = b.YR;
+    </select>
+</mapper>

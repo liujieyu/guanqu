@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ZhaFaLiShiMapper">
+    <resultMap id="LiShiKaiDuResultMap" type="vip.yingmen.pojo.ZhaFaKaiDuLiShi">
+        <result column="tm" jdbcType="VARCHAR" property="TM" />
+        <result column="OD" jdbcType="VARCHAR" property="OD" />
+        <result column="Q" jdbcType="VARCHAR" property="Q" />
+        <result column="UPZ" jdbcType="VARCHAR" property="UPZ" />
+        <result column="DWZ" jdbcType="VARCHAR" property="DWZ" />
+    </resultMap>
+    <resultMap id="ZhaMenResultMap" type="vip.yingmen.pojo.ZhaFaLiShiZhaMen">
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="B_TM" jdbcType="VARCHAR" property="B_TM" />
+        <result column="E_TM" jdbcType="VARCHAR" property="E_TM" />
+        <result column="E_KD" jdbcType="VARCHAR" property="E_KD" />
+        <result column="WQ" jdbcType="VARCHAR" property="WQ" />
+        <result column="T_L" jdbcType="VARCHAR" property="T_L" />
+        <result column="GB_TM" jdbcType="VARCHAR" property="GB_TM" />
+        <result column="S_KD" jdbcType="VARCHAR" property="S_KD" />
+        <result column="Op_Man" jdbcType="VARCHAR" property="Op_Man" />
+        <result column="OP_Result" jdbcType="VARCHAR" property="OP_Result" />
+        <result column="OP_R" jdbcType="VARCHAR" property="OP_R" />
+    </resultMap>
+    <select id="findByKaiDu" resultMap="LiShiKaiDuResultMap" parameterType="java.lang.String">
+        select * from (select CONVERT(varchar(16),TM,120) as tm,OD,Q,UPZ,DWZ,ROW_NUMBER() OVER(order by tm desc) as RowId from ST_Gatage_H
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                STCD = #{STCD}
+            </if>
+            <if test="Time_min!= null and Time_min!= ''and Time_max!= null and Time_max!= ''">
+                and TM &gt;='${Time_min}' and TM &lt;='${Time_max}'
+            </if>
+        </where>
+        ) as b
+    </select>
+
+    <select id="findByZhaMen" resultMap="ZhaMenResultMap" parameterType="java.lang.String">
+        select  b.STCD,b.STNM,c.B_TM,c.E_TM,c.E_KD,c.WQ,c.T_L,g.B_TM as GB_TM,g.E_TM as GE_TM,S_KD,Op_Man,OP_Result,OP_R
+        from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=6 and b.STCD=f.STCD
+        left join ST_Gatage_C c on b.STCD=c.STCD
+        left join ST_Gate_Log g on b.STCD=g.STCD
+        left join ST_Gatage_R r on b.STCD=r.STCD
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                b.STCD = #{STCD}
+            </if>
+            <if test="Time_min!= null and Time_min!= ''and Time_max!= null and Time_max!= ''">
+                and c.B_TM &gt;='${Time_min}' and c.B_TM &lt;='${Time_max}'
+            </if>
+        </where>
+    </select>
+</mapper>

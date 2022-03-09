@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.JcGqMapper">
+    <resultMap id="JiBenXinXiResultMap" type="vip.yingmen.pojo.JiChuGuanQuJiBenXinXi">
+        <result column="IRACD" jdbcType="VARCHAR" property="IRACD" />
+        <result column="IRANM" jdbcType="VARCHAR" property="IRANM" />
+        <result column="WTPLNM" jdbcType="VARCHAR" property="WTPLNM" />
+        <result column="IARHWPRTP" jdbcType="VARCHAR" property="IARHWPRTP" />
+        <result column="IRASC" jdbcType="VARCHAR" property="IRASC" />
+        <result column="DTST" jdbcType="VARCHAR" property="DTST" />
+        <result column="IRRN" jdbcType="VARCHAR" property="IRRN" />
+        <result column="DSYFL" jdbcType="VARCHAR" property="DSYFL" />
+        <result column="INGYFL" jdbcType="VARCHAR" property="INGYFL" />
+        <result column="DSIRAR" jdbcType="VARCHAR" property="DSIRAR" />
+        <result column="ACIRAR" jdbcType="VARCHAR" property="ACIRAR" />
+        <result column="CNHDDVFL" jdbcType="VARCHAR" property="CNHDDVFL" />
+        <result column="ANPP" jdbcType="VARCHAR" property="ANPP" />
+        <result column="CNINGYFL" jdbcType="VARCHAR" property="CNINGYFL" />
+        <result column="MNCHLEN" jdbcType="VARCHAR" property="MNCHLEN" />
+    </resultMap>
+    <select id="findJiBenXinXi" resultMap="JiBenXinXiResultMap" parameterType="java.util.Map">
+        select * from(select IRACD,IRANM,WTPLNM,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IRA_BSIN' and FieldID='IARHWPRTP' and Field=IARHWPRTP) as IARHWPRTP,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IRA_BSIN' and FieldID='IRASC' and Field=IRASC) as IRASC,
+        DTST,IRRN,DSYFL,INGYFL,DSIRAR,ACIRAR,CNHDDVFL,CNINGYFL,MNCHLEN,ANPP,ROW_NUMBER() OVER (ORDER by ID) as RowId
+        from WRP_IRA_BSIN
+        <where>
+            <if test="IARHWPRTP!= null and IARHWPRTP!= ''">
+                IARHWPRTP = #{IARHWPRTP}
+            </if>
+            <if test="IRASC!= null and IRASC!= ''">
+                and IRASC=#{IRASC}
+            </if>
+            <if test="IRANM!= null and IRANM!= ''">
+                and IRANM like '%'+#{IRANM}+'%'
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

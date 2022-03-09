@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.JcTxlMapper">
+    <resultMap id="TongXunLuResultMap" type="vip.yingmen.pojo.JcTongXunLu">
+        <result column="NM" jdbcType="VARCHAR" property="nm" />
+        <result column="TYPES" jdbcType="VARCHAR" property="types" />
+        <result column="MOBILE" jdbcType="VARCHAR" property="mobile" />
+        <result column="UNIT" jdbcType="VARCHAR" property="unit" />
+        <result column="ZW" jdbcType="VARCHAR" property="zw" />
+        <result column="AD_NM" jdbcType="VARCHAR" property="adnm" />
+        <result column="GS" jdbcType="VARCHAR" property="gs" />
+    </resultMap>
+    <select id="findByTongXunLu" resultMap="TongXunLuResultMap" parameterType="java.lang.String">
+        select * from (select NM,(select FieldName from WRP_FieldInfo where FormID='WRP_MAN' and FieldID='TYPES' and Field=TYPES) as TYPES,MOBILE,UNIT,ZW,
+        (select case AD_LV when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.AD_CD=b.UP_ADCD)+AD_NM end from WRP_AD_B b where b.AD_CD=m.AD_CD) as AD_NM,
+        (select IRANM from WRP_IRA_BSIN where IRACD=m.GS) as GS,
+        ROW_NUMBER() OVER(ORDER BY TYPES,WZPX) as RowId
+        from WRP_MAN m
+        <where>
+            <if test="GS!= null and GS!= ''">
+                GS = #{GS}
+            </if>
+            <if test="TYPES!= null and TYPES!= ''">
+                and TYPES = #{TYPES}
+            </if>
+            <if test="AD_CD!= null and AD_CD!= ''">
+                and m.AD_CD = #{AD_CD}
+            </if>
+            <if test="NM!= null and NM!= ''">
+                and a.NM like '%'+#{NM}+'%'
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

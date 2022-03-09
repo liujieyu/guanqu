@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ShiPinGISMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ShiPinGIS">
+        <result column="ID" jdbcType="VARCHAR" property="ID" />
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="STTP" jdbcType="VARCHAR" property="STTP" />
+        <result column="LGTD" jdbcType="VARCHAR" property="LGTD" />
+        <result column="LTTD" jdbcType="VARCHAR" property="LTTD" />
+        <result column="_status" jdbcType="VARCHAR" property="_status" />
+        <result column="STLC" jdbcType="VARCHAR" property="STLC" />
+        <result column="CSTYPE" jdbcType="VARCHAR" property="CSTYPE" />
+        <result column="IPPort" jdbcType="VARCHAR" property="IPPort" />
+        <result column="PUID" jdbcType="VARCHAR" property="PUID" />
+        <result column="IDX" jdbcType="VARCHAR" property="IDX" />
+        <result column="WWWPath" jdbcType="VARCHAR" property="WWWPath" />
+        <result column="picPath" jdbcType="VARCHAR" property="picPath" />
+    </resultMap>
+    <select id="findByShiPinGIS" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select  1 as _status,b.ID,b.STCD,b.STTP,b.LTTD,b.LGTD,b.STNM,b.STLC,r.IDX,r.IPPort,r.picPath,r.PUID,r.WWWPath,r.CSTYPE
+        from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=8 and b.STCD=f.STCD
+        left join ST_MOVIE_R r on b.STCD=r.STCD
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+        </where>
+    </select>
+
+
+    <resultMap id="BaseShiPinResultMap" type="vip.yingmen.pojo.ShiPinFuZhu">
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="STTP" jdbcType="VARCHAR" property="STTP" />
+        <result column="LGTD" jdbcType="VARCHAR" property="LGTD" />
+        <result column="LTTD" jdbcType="VARCHAR" property="LTTD" />
+        <result column="STLC" jdbcType="VARCHAR" property="STLC" />
+        <result column="CSTYPE" jdbcType="VARCHAR" property="CSTYPE" />
+        <result column="IPPort" jdbcType="VARCHAR" property="IPPort" />
+        <result column="PUID" jdbcType="VARCHAR" property="PUID" />
+        <result column="IDX" jdbcType="VARCHAR" property="IDX" />
+        <result column="WWWPath" jdbcType="VARCHAR" property="WWWPath" />
+        <result column="picPath" jdbcType="VARCHAR" property="picPath" />
+    </resultMap>
+    <select id="findByShiPin" resultMap="BaseShiPinResultMap" parameterType="java.lang.String">
+        select  b.STCD,b.STTP,b.LTTD,b.LGTD,b.STNM,b.STLC,r.IDX,r.IPPort,r.picPath,r.PUID,r.WWWPath,r.CSTYPE
+        from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=8 and b.STCD=f.STCD
+        left join ST_MOVIE_R r on b.STCD=r.STCD
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                b.STCD =#{STCD}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.LsSwkrMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.LiShiShuiWeiKuRongLieBiao">
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="TM" jdbcType="VARCHAR" property="TM" />
+        <result column="RZ" jdbcType="VARCHAR" property="RZ" />
+        <result column="STCP" jdbcType="VARCHAR" property="STCP" />
+        <result column="LEVEL" jdbcType="VARCHAR" property="LEVEL" />
+        <result column="Canal_Name" jdbcType="VARCHAR" property="Canal_Name" />
+        <result column="AD_NM" jdbcType="VARCHAR" property="AD_NM" />
+    </resultMap>
+    <select id="findByLieBiao" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select * from
+        (select b.STCD, b.STNM, r.TM, r.RZ, r.STCP,
+        (select FieldName from WRP_FieldInfo where FormID='ST_RSVRCP_R' and FieldID='LEVEL' and Field=r.LEVEL) as level,
+        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as canal_name,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM,
+        ROW_NUMBER() OVER(Order by b.WZPX) AS RowId
+        from ST_STBPRP_B b
+        inner join  ST_STBPRP_F f on f.type=2 and b.stcd=f.STCD
+        left join ST_RSVRCP_R r on b.STCD=r.STCD
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="LEVEL!= null and LEVEL!= ''">
+                and r.level=#{LEVEL}
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and b.STGR=#{STGR}
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

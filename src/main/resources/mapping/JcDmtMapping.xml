@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.JcDmtMapper">
+    <resultMap id="DuoMeiTiResultMap" type="vip.yingmen.pojo.JcDuoMeiTi">
+        <result column="MAT" jdbcType="VARCHAR" property="mat" />
+        <result column="MATType" jdbcType="VARCHAR" property="mattype" />
+        <result column="COMMENTS" jdbcType="VARCHAR" property="comments" />
+    </resultMap>
+    <select id="findByDuoMeiTi" resultMap="DuoMeiTiResultMap" parameterType="java.lang.String">
+        select * from (select MAT,(select FieldName from WRP_FieldInfo where FormID='WRP_MediaAndText' and FieldID='MATType' and Field=MATType) as MATType,COMMENTS
+        ,ROW_NUMBER()OVER(ORDER BY ID) as RowId
+        from WRP_MediaAndText
+        <where>
+            <if test="MATType!= null and MATType!= ''">
+                MATType = #{MATType}
+            </if>
+            <if test="MAT!= null and MAT!= ''">
+                and MAT like '%'+#{MAT}+'%'
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

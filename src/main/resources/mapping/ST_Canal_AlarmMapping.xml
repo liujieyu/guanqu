@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_Canal_AlarmMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_Canal_Alarm">
+        <result column="ID" jdbcType="INTEGER" property="ID" />
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="Q" jdbcType="NUMERIC" property="Q" />
+        <result column="Z" jdbcType="NUMERIC" property="Z" />
+        <result column="JYQ" jdbcType="NUMERIC" property="JYQ" />
+        <result column="JYZ" jdbcType="NUMERIC" property="JYZ" />
+        <result column="MEMO" jdbcType="VARCHAR" property="MEMO" />
+    </resultMap>
+    <select id="findBySTCD" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select * from ST_Canal_Alarm
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                STCD = #{STCD}
+            </if>
+        </where>
+    </select>
+
+</mapper>

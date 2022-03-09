@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.LsTxxxMapper">
+    <resultMap id="LiShiXinXiResultMap" type="vip.yingmen.pojo.LiShiTuXiangXinXi">
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="TM" jdbcType="VARCHAR" property="TM" />
+        <result column="Image" jdbcType="LONGVARBINARY" property="Image" />
+    </resultMap>
+    <select id="findByLiShiTuXiangXinXi" resultMap="LiShiXinXiResultMap" parameterType="java.lang.String">
+        select b.STCD,b.STNM,CONVERT(varchar(16), r.TM, 120) as TM
+        from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=7 and b.STCD=f.STCD
+        left join ST_JPG_R r on b.STCD=r.STCD
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+        </where>
+    </select>
+    <select id="findByLsTuXiangTj" resultMap="LiShiXinXiResultMap" parameterType="java.lang.String">
+        select b.STCD,b.STNM,CONVERT(varchar(16), r.TM, 120) as TM
+        from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=7 and b.STCD=f.STCD
+        left join ST_JPG_R r on b.STCD=r.STCD
+        <where>
+            <if test="Time_min!= null and Time_min!= ''">
+                TM &gt;='${Time_min}' and TM &lt;='${Time_max}'
+            </if>
+        </where>
+    </select>
+
+
+    <select id="findByLiShiTuXiangpic" resultMap="LiShiXinXiResultMap" parameterType="java.lang.String">
+        select Image from ST_JPG_R
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                STCD=#{STCD}
+            </if>
+        </where>
+    </select>
+</mapper>

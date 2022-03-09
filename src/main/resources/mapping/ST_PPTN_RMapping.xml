@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_PPTN_RMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_PPTN_R">
+        <result column="ID" jdbcType="INTEGER" property="ID" />
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="TM" jdbcType="TIMESTAMP" property="TM" />
+        <result column="DRP" jdbcType="NUMERIC" property="DRP" />
+        <result column="INTV" jdbcType="NUMERIC" property="INTV" />
+        <result column="PDR" jdbcType="NUMERIC" property="PDR" />
+        <result column="DYP" jdbcType="NUMERIC" property="DYP" />
+        <result column="WTH" jdbcType="VARCHAR" property="WTH" />
+    </resultMap>
+    <select id="findBySingleLiShi" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from ST_PPTN_R
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                STCD = #{STCD}
+            </if>
+        </where>
+    </select>
+</mapper>

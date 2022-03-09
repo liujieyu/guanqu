@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.SWKRTwoGISMapper">
+    <resultMap id="TwoGISResultMap" type="vip.yingmen.pojo.SWKRTwoGIS">
+        <result column="STCP" jdbcType="VARCHAR" property="STCP" />
+        <result column="RZ" jdbcType="VARCHAR" property="RZ" />
+        <result column="TM" jdbcType="VARCHAR" property="TM" />
+    </resultMap>
+    <select id="findByTwoGIS" resultMap="TwoGISResultMap" parameterType="java.lang.String">
+        select * from
+        (select substring(CONVERT(varchar(100), TM, 120),1,20) as TM,RZ,STCP, ROW_NUMBER() OVER(Order by tm) AS RowId
+        from ST_RSVRCP_H
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                STCD = #{STCD}
+            </if>
+            <if test="Time_min!= null and Time_min!= ''and Time_max!= null and Time_max!= ''">
+                and TM &gt;='${Time_min}' and TM &lt;='${Time_max}'
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

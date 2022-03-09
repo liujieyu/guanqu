@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.JcQdMapper">
+    <resultMap id="QuDaoResultMap" type="vip.yingmen.pojo.JiChuShuJuQuDao">
+        <result column="Canal_Code" jdbcType="VARCHAR" property="Canal_Code" />
+        <result column="Canal_Name" jdbcType="VARCHAR" property="Canal_Name" />
+        <result column="User_Type" jdbcType="VARCHAR" property="User_Type" />
+        <result column="Canal_Level" jdbcType="VARCHAR" property="Canal_Level" />
+        <result column="Length" jdbcType="VARCHAR" property="Length" />
+        <result column="Normal_Flux" jdbcType="VARCHAR" property="Normal_Flux" />
+        <result column="Max_Flux" jdbcType="VARCHAR" property="Max_Flux" />
+        <result column="Min_Flux" jdbcType="VARCHAR" property="Min_Flux" />
+        <result column="Upper_Canal" jdbcType="VARCHAR" property="Upper_Canal" />
+        <result column="Upper_Canal_Coordinate" jdbcType="VARCHAR" property="Upper_Canal_Coordinate" />
+    </resultMap>
+    <select id="findByQuDao" resultMap="QuDaoResultMap" parameterType="java.lang.String">
+        select * from (select s.Canal_Code,s.Canal_Name,case User_Type when 1 then '输水渠道' when 2 then '排水渠道' end as User_Type,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IrrBTCanalSystem' and FieldID='Canal_Level' and Field=Canal_Level) as Canal_Level,
+        d.Length,d.Normal_Flux,d.Max_Flux,d.Min_Flux,(select Canal_Name from WRP_IrrBTCanalSystem where Canal_Code=s.Upper_Canal_Code) as Upper_Canal,Upper_Canal_Coordinate,
+        ROW_NUMBER() OVER(ORDER BY s.Canal_Code) as RowId
+        from WRP_IrrBTCanalSystem s left join WRP_IrrBTCanalDetail d on s.Canal_Code=d.Canal_Code
+        <where>
+            <if test="Canal_Name!= null and Canal_Name!= ''">
+                s.Canal_Name like '%'+#{Canal_Name}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and (s.Canal_Code = #{Canal_Code} or s.Canal_Code in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code})))
+            </if>
+            <if test="User_Type!= null and User_Type!= ''">
+                and User_Type=#{User_Type}
+            </if>
+            <if test="Canal_Level!= null and Canal_Level!= ''">
+                and Canal_Level=#{Canal_Level}
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

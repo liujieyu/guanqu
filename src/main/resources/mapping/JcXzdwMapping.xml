@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.JcXzdwMapper">
+    <resultMap id="XzdwResultMap" type="vip.yingmen.pojo.JcXingZhengDanWei">
+        <result column="AD_NM" jdbcType="VARCHAR" property="adnm" />
+        <result column="AD_LV" jdbcType="VARCHAR" property="adlv" />
+        <result column="Area" jdbcType="VARCHAR" property="area" />
+        <result column="UP_ADCD" jdbcType="VARCHAR" property="upadcd" />
+    </resultMap>
+    <select id="findByXingZhengDanWei" resultMap="XzdwResultMap" parameterType="java.lang.String">
+        WITH T AS
+        (
+        SELECT *,CAST(ad_cd AS VARBINARY(MAX)) AS px
+        FROM WRP_AD_B AS A
+        WHERE NOT EXISTS(SELECT * FROM WRP_AD_B WHERE ad_cd=A.up_adcd)
+        UNION ALL
+        SELECT A.*,CAST(B.px+CAST(A.ad_cd AS VARBINARY) AS VARBINARY(MAX))
+        FROM WRP_AD_B AS A
+        JOIN T AS B
+        ON A.up_adcd=B.ad_cd
+        )
+        select * from (select T.AD_NM,(select FieldName from WRP_FieldInfo where FormID='WRP_AD_B' and FieldID='AD_LV' and Field=T.AD_LV) as AD_LV,i.Area,
+        (select b.AD_NM from WRP_AD_B b where b.AD_CD=T.UP_ADCD) as UP_ADCD,ROW_NUMBER() OVER (ORDER BY T.px) as RowId
+        from T left join WRP_IrrBURegionalism i on T.AD_CD=i.AD_CD
+        <where>
+            <if test="AD_CD!= null and AD_CD!= ''">
+                a.AD_CD = #{AD_CD}
+            </if>
+            <if test="AD_LV!= null and AD_LV!= ''">
+                and a.AD_LV = #{AD_LV}
+            </if>
+            <if test="AD_NM!= null and AD_NM!= ''">
+                and a.AD_NM like '%'+#{AD_NM}+'%'
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.DetailsMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.Details">
+        <result column="ID" jdbcType="INTEGER" property="ID"/>
+        <result column="STCD" jdbcType="VARCHAR" property="STCD"/>
+        <result column="STNM" jdbcType="VARCHAR" property="STNM"/>
+        <result column="STTP" jdbcType="VARCHAR" property="STTP"/>
+        <result column="STGR" jdbcType="VARCHAR" property="STGR"/>
+        <result column="RELATECODE" jdbcType="INTEGER" property="RELATECODE"/>
+        <result column="ADDVCD" jdbcType="VARCHAR" property="ADDVCD"/>
+        <result column="GS" jdbcType="VARCHAR" property="GS"/>
+        <result column="LGTD" jdbcType="NUMERIC" property="LGTD"/>
+        <result column="LTTD" jdbcType="NUMERIC" property="LTTD"/>
+        <result column="STLC" jdbcType="VARCHAR" property="STLC"/>
+        <result column="HNNM" jdbcType="VARCHAR" property="HNNM"/>
+        <result column="CTCD" jdbcType="VARCHAR" property="CTCD"/>
+        <result column="RVCD" jdbcType="VARCHAR" property="RVCD"/>
+        <result column="ESSTDT" jdbcType="DATE" property="ESSTDT"/>
+        <result column="WDSTDT" jdbcType="DATE" property="WDSTDT"/>
+        <result column="DTMNM" jdbcType="VARCHAR" property="DTMNM"/>
+        <result column="DTMEL" jdbcType="NUMERIC" property="DTMEL"/>
+        <result column="DLOG" jdbcType="VARCHAR" property="DLOG"/>
+        <result column="ATCUNIT" jdbcType="VARCHAR" property="ATCUNIT"/>
+        <result column="ADMAUTH" jdbcType="VARCHAR" property="ADMAUTH"/>
+        <result column="LOCALITY" jdbcType="VARCHAR" property="LOCALITY"/>
+        <result column="STBK" jdbcType="VARCHAR" property="STBK"/>
+        <result column="STAZT" jdbcType="NUMERIC" property="STAZT"/>
+        <result column="DRNA" jdbcType="NUMERIC" property="DRNA"/>
+        <result column="FLTO" jdbcType="VARCHAR" property="FLTO"/>
+        <result column="DSTRVM" jdbcType="NUMERIC" property="DSTRVM"/>
+        <result column="MODITIME" jdbcType="TIMESTAMP" property="MODITIME"/>
+        <result column="COMMENTS" jdbcType="VARCHAR" property="COMMENTS"/>
+
+    </resultMap>
+
+    <select id="findByZhanDianXinXi" resultMap="BaseResultMap" parameterType="java.lang.String">
+            SELECT
+            TOP 1
+           b.ID,b.STCD,b.STTP,b.LTTD,b.LGTD,b.STNM,b.STLC,b.RELATECODE,b.ADDVCD,b.GS,b.STGR,b.HNNM,b.CTCD,b.RVCD,b.ESSTDT,
+			b.WDSTDT,b.DTMNM,b.DTMEL,b.DLOG,b.ATCUNIT,b.ADMAUTH,b.LOCALITY,b.STBK,b.STAZT,b.DRNA,b.FLTO,b.DSTRVM,b.MODITIME,b.COMMENTS
+            FROM ST_STBPRP_B b
+			inner join ST_STBPRP_F f on b.stcd=f.stcd
+            WHERE
+            b.STCD=#{ID}
+    </select>
+    <resultMap id="ShiPinResultMap" type="vip.yingmen.pojo.ShiPinDetails">
+        <result column="ID" jdbcType="INTEGER" property="ID"/>
+        <result column="STCD" jdbcType="VARCHAR" property="STCD"/>
+        <result column="STNM" jdbcType="VARCHAR" property="STNM"/>
+        <result column="STTP" jdbcType="VARCHAR" property="STTP"/>
+        <result column="STGR" jdbcType="VARCHAR" property="STGR"/>
+        <result column="RELATECODE" jdbcType="INTEGER" property="RELATECODE"/>
+        <result column="ADDVCD" jdbcType="VARCHAR" property="ADDVCD"/>
+        <result column="GS" jdbcType="VARCHAR" property="GS"/>
+        <result column="LGTD" jdbcType="NUMERIC" property="LGTD"/>
+        <result column="LTTD" jdbcType="NUMERIC" property="LTTD"/>
+        <result column="STLC" jdbcType="VARCHAR" property="STLC"/>
+        <result column="HNNM" jdbcType="VARCHAR" property="HNNM"/>
+        <result column="CTCD" jdbcType="VARCHAR" property="CTCD"/>
+        <result column="RVCD" jdbcType="VARCHAR" property="RVCD"/>
+        <result column="ESSTDT" jdbcType="DATE" property="ESSTDT"/>
+        <result column="WDSTDT" jdbcType="DATE" property="WDSTDT"/>
+        <result column="DTMNM" jdbcType="VARCHAR" property="DTMNM"/>
+        <result column="DTMEL" jdbcType="NUMERIC" property="DTMEL"/>
+        <result column="DLOG" jdbcType="VARCHAR" property="DLOG"/>
+        <result column="ATCUNIT" jdbcType="VARCHAR" property="ATCUNIT"/>
+        <result column="ADMAUTH" jdbcType="VARCHAR" property="ADMAUTH"/>
+        <result column="LOCALITY" jdbcType="VARCHAR" property="LOCALITY"/>
+        <result column="STBK" jdbcType="VARCHAR" property="STBK"/>
+        <result column="STAZT" jdbcType="NUMERIC" property="STAZT"/>
+        <result column="DRNA" jdbcType="NUMERIC" property="DRNA"/>
+        <result column="FLTO" jdbcType="VARCHAR" property="FLTO"/>
+        <result column="DSTRVM" jdbcType="NUMERIC" property="DSTRVM"/>
+        <result column="MODITIME" jdbcType="TIMESTAMP" property="MODITIME"/>
+        <result column="COMMENTS" jdbcType="VARCHAR" property="COMMENTS"/>
+        <result column="CSTYPE" jdbcType="VARCHAR" property="CSTYPE"/>
+        <result column="IPPort" jdbcType="VARCHAR" property="IPPort"/>
+        <result column="PUID" jdbcType="VARCHAR" property="PUID"/>
+        <result column="IDX" jdbcType="VARCHAR" property="IDX"/>
+        <result column="WWWPath" jdbcType="VARCHAR" property="WWWPath"/>
+        <result column="picPath" jdbcType="VARCHAR" property="picPath"/>
+    </resultMap>
+    <select id="findByZhanDianShiPin" resultMap="ShiPinResultMap" parameterType="java.lang.String">
+            SELECT
+            TOP 1
+			b.ID,b.STCD,b.STTP,b.LTTD,b.LGTD,b.STNM,b.STLC,b.RELATECODE,b.ADDVCD,b.GS,b.STGR,b.HNNM,b.CTCD,b.RVCD,b.ESSTDT,
+			b.WDSTDT,b.DTMNM,b.DTMEL,b.DLOG,b.ATCUNIT,b.ADMAUTH,b.LOCALITY,b.STBK,b.STAZT,b.DRNA,b.FLTO,b.DSTRVM,b.MODITIME,b.COMMENTS
+			,r.IDX,r.IPPort,r.picPath,r.PUID,r.WWWPath,r.CSTYPE
+            FROM ST_STBPRP_B b
+			inner join ST_STBPRP_F f on b.stcd=f.stcd
+			left join ST_MOVIE_R r on b.STCD=r.STCD
+            WHERE
+            b.STCD=#{ID}
+    </select>
+
+    <select id="findByZhanDianShiPin2" resultMap="ShiPinResultMap" parameterType="java.lang.String">
+			SELECT
+            TOP 1
+			b.ID,b.STCD,b.STTP,b.LTTD,b.LGTD,b.STNM,b.STLC,b.RELATECODE,b.ADDVCD,b.GS,b.STGR,b.HNNM,b.CTCD,b.RVCD,b.ESSTDT,
+			b.WDSTDT,b.DTMNM,b.DTMEL,b.DLOG,b.ATCUNIT,b.ADMAUTH,b.LOCALITY,b.STBK,b.STAZT,b.DRNA,b.FLTO,b.DSTRVM,b.MODITIME,b.COMMENTS
+			,r.IDX,r.IPPort,r.picPath,r.PUID,r.WWWPath,r.CSTYPE
+            FROM ST_STBPRP_B b,st_stbprp_F f,ST_MOVIE_R r
+			where b.RELATECODE=(select RELATECODE from ST_STBPRP_B where stcd=#{ID})
+			and  b.stcd=b.stcd and f.type=8 and b.stcd=r.stcd
+    </select>
+</mapper>

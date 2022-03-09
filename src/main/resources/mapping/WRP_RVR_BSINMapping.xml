@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.WRP_RVR_BSINMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.WRP_RVR_BSIN">
+        <result column="ID" jdbcType="INTEGER" property="ID" />
+        <result column="RVCD" jdbcType="VARCHAR" property="RVCD" />
+        <result column="RVNM" jdbcType="VARCHAR" property="RVNM" />
+        <result column="GS" jdbcType="VARCHAR" property="GS" />
+        <result column="ALIAS" jdbcType="VARCHAR" property="ALIAS" />
+        <result column="RVTP" jdbcType="VARCHAR" property="RVTP" />
+        <result column="RLEVEL" jdbcType="VARCHAR" property="RLEVEL" />
+        <result column="River_Width" jdbcType="NUMERIC" property="River_Width" />
+        <result column="River_Flux" jdbcType="NUMERIC" property="River_Flux" />
+        <result column="DWWT" jdbcType="VARCHAR" property="DWWT" />
+        <result column="DWWTCD" jdbcType="VARCHAR" property="DWWTCD" />
+        <result column="HWPS" jdbcType="VARCHAR" property="HWPS" />
+        <result column="HWEL" jdbcType="NUMERIC" property="HWEL" />
+        <result column="ESPS" jdbcType="VARCHAR" property="ESPS" />
+        <result column="ESEL" jdbcType="NUMERIC" property="ESEL" />
+        <result column="DTPL" jdbcType="VARCHAR" property="DTPL" />
+        <result column="RVLEN" jdbcType="NUMERIC" property="RVLEN" />
+        <result column="AVGG" jdbcType="NUMERIC" property="AVGG" />
+        <result column="CTAR" jdbcType="NUMERIC" property="CTAR" />
+        <result column="AVANRNAM" jdbcType="NUMERIC" property="AVANRNAM" />
+        <result column="ANRNSTDV" jdbcType="NUMERIC" property="ANRNSTDV" />
+        <result column="RVOV" jdbcType="VARCHAR" property="RVOV" />
+        <result column="DTUPDT" jdbcType="DATE" property="DTUPDT" />
+        <result column="MEMO" jdbcType="VARCHAR" property="MEMO" />
+    </resultMap>
+    <select id="findByRVCD" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select * from WRP_RVR_BSIN
+        <where>
+            <if test="RVCD!= null and RVCD!= ''">
+                RVCD = #{RVCD}
+            </if>
+        </where>
+    </select>
+</mapper>
