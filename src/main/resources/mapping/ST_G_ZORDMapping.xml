@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_G_ZORDMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_G_ZORD">
+        <result column="ID" jdbcType="INTEGER" property="ID" />
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="YR" jdbcType="INTEGER" property="YR" />
+        <result column="TMHZ" jdbcType="TIMESTAMP" property="TMHZ" />
+        <result column="THZ" jdbcType="NUMERIC" property="THZ" />
+        <result column="YHZQ" jdbcType="NUMERIC" property="YHZQ" />
+    </resultMap>
+    <select id="findBySTCD" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from ST_G_ZORD
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                STCD = #{STCD}
+            </if>
+        </where>
+    </select>
+</mapper>

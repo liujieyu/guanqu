@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ShuiKuShuiQingGISMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ShuiKuShuiQingGIS">
+        <result column="ID" jdbcType="VARCHAR" property="ID" />
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="STTP" jdbcType="VARCHAR" property="STTP" />
+        <result column="LGTD" jdbcType="VARCHAR" property="LGTD" />
+        <result column="LTTD" jdbcType="VARCHAR" property="LTTD" />
+        <result column="tm" jdbcType="VARCHAR" property="tm" />
+        <result column="_status" jdbcType="VARCHAR" property="_status" />
+        <result column="YUJING_FWL" jdbcType="VARCHAR" property="YUJING_FWL" />
+        <result column="YUJING_FWL79" jdbcType="VARCHAR" property="YUJING_FWL79" />
+        <result column="RZ" jdbcType="VARCHAR" property="RZ" />
+        <result column="RWPTN" jdbcType="VARCHAR" property="RWPTN" />
+        <result column="jxx" jdbcType="VARCHAR" property="jxx" />
+        <result column="CV" jdbcType="VARCHAR" property="CV" />
+        <result column="singular" jdbcType="VARCHAR" property="singular" />
+        <result column="W" jdbcType="VARCHAR" property="W" />
+    </resultMap>
+    <resultMap id="SiteGisInfoMap" type="vip.yingmen.pojo.SiteRealInfoGIS">
+        <result column="ID" jdbcType="VARCHAR" property="ID" />
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="STTP" jdbcType="VARCHAR" property="STTP" />
+        <result column="LGTD" jdbcType="VARCHAR" property="LGTD" />
+        <result column="LTTD" jdbcType="VARCHAR" property="LTTD" />
+        <result column="p" jdbcType="VARCHAR" property="p" />
+        <result column="hourp" jdbcType="VARCHAR" property="hourp" />
+        <result column="AD_NM" jdbcType="VARCHAR" property="adnm" />
+        <result column="_status" jdbcType="VARCHAR" property="_status" />
+        <result column="tm" jdbcType="VARCHAR" property="tm" />
+        <result column="YUJING_FWL" jdbcType="VARCHAR" property="YUJING_FWL" />
+        <result column="YUJING_FWL79" jdbcType="VARCHAR" property="YUJING_FWL79" />
+        <result column="RZ" jdbcType="VARCHAR" property="RZ" />
+        <result column="W" jdbcType="VARCHAR" property="W" />
+        <result column="RWPTN" jdbcType="VARCHAR" property="RWPTN" />
+        <result column="jxx" jdbcType="VARCHAR" property="jxx" />
+        <result column="CV" jdbcType="VARCHAR" property="CV" />
+        <result column="singular" jdbcType="VARCHAR" property="singular" />
+        <result column="gktm" jdbcType="TIMESTAMP" property="gktm" />
+        <result column="_gkstatus" jdbcType="VARCHAR" property="_gkstatus" />
+        <result column="vol" jdbcType="VARCHAR" property="vol" />
+        <result column="VOLMIN" jdbcType="VARCHAR" property="VOLMIN" />
+        <result column="VOLMAX" jdbcType="VARCHAR" property="VOLMAX" />
+        <result column="cs" jdbcType="VARCHAR" property="CS" />
+        <result column="RAIN1" jdbcType="VARCHAR" property="RAIN1"></result>
+        <result column="RAIN3" jdbcType="VARCHAR" property="RAIN3"></result>
+        <result column="RAIN6" jdbcType="VARCHAR" property="RAIN6"></result>
+        <result column="RAIN12" jdbcType="VARCHAR" property="RAIN12"></result>
+        <result column="RAIN24" jdbcType="VARCHAR" property="RAIN24"></result>
+    </resultMap>
+    <select id="findBySiteInfoGIS" resultMap="SiteGisInfoMap" parameterType="java.util.Map">
+        select * from (select b.ID,b.STTP,b.LGTD,b.LTTD,b.STNM,b.STCD,isnull(p,0) as p,isnull(hourp,0) as hourp,isnull(c1.RAIN1,0) as RAIN1,isnull(c2.RAIN3,0) as RAIN3,isnull(c3.RAIN6,0) as RAIN6,isnull(c4.RAIN12,0) as RAIN12,isnull(c5.RAIN24,0) as RAIN24,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+'|'+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,
+        CV,CONVERT(varchar(16), r.TM, 120) as tm,a.FWL AS YUJING_FWL,a.FWL79 AS YUJING_FWL79,r.RZ,r.RWPTN,r.W,case when MONTH(r.TM) >=7 and MONTH(r.TM) &lt;=9 then r.rz-a.FWL79 else r.RZ-a.FWL end as jxx,
+        t.VOLMIN,t.VOLMAX,CONVERT(varchar(16), s.TM, 120) as gktm,vol ,case when vol &lt;t.VOLMIN or vol &gt;t.VOLMAX or cs=0 or cs is null then 0 else 1 end as _gkstatus ,case cs when 1 then '正常' else '异常' end as cs,
+        ROW_NUMBER() OVER(Order by p desc) AS RowId from (select * from ST_STBPRP_B where STTP='PQ') b
+        left join (select stcd,sum(p) as p from ST_HP_C where DATEADD(hh,TM,CONVERT(varchar(100), DT, 111)) >='${Time_min}' and DATEADD(hh,TM,CONVERT(varchar(100), DT, 111))&lt;='${Time_max}' group by stcd ) c on b.STCD=c.STCD
+        left join(select stcd,p as hourp from ST_HP_C where DT=Substring(CONVERT(varchar,GETDATE(),120),1,10) and TM=DATEPART(HH,GETDATE())) hc on b.STCD=hc.STCD
+        left join (select stcd,sum(DRP) as RAIN1  from ST_PPTN_R where TM>=DATEADD(hh,-1,GETDATE()) and TM &lt;=GETDATE() group by stcd) c1 on b.STCD=c1.stcd
+        left join (select stcd,sum(DRP) as RAIN3  from ST_PPTN_R where TM>=DATEADD(hh,-3,GETDATE()) and TM &lt;=GETDATE() group by stcd) c2 on b.STCD=c2.stcd
+        left join (select stcd,sum(DRP) as RAIN6  from ST_PPTN_R where TM>=DATEADD(hh,-6,GETDATE()) and TM &lt;=GETDATE() group by stcd) c3 on b.STCD=c3.stcd
+        left join (select stcd,sum(DRP) as RAIN12  from ST_PPTN_R where TM>=DATEADD(hh,-12,GETDATE()) and TM &lt;=GETDATE() group by stcd) c4 on b.STCD=c4.stcd
+        left join (select stcd,sum(DRP) as RAIN24  from ST_PPTN_R where TM>=DATEADD(hh,-24,GETDATE()) and TM &lt;=GETDATE() group by stcd) c5 on b.STCD=c5.stcd
+        left join ST_RSVR_R1 r on b.STCD=r.STCD left join ST_RSV_Alarm a on r.STCD=a.STCD
+        inner join ST_StationStatus_R s on b.STCD=s.STCD left join ST_StationStatusType t on s.VOLTYPE=t.VOLTYPE
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    b.addvcd like #{ADDVCD}+'%'
+                </foreach>
+            </if>
+            <if test="STGR!= null and STGR != ''">
+                and b.STGR in (${STGR})
+            </if>
+            <if test="P!= null and P!= ''">
+                and p &gt;= #{P}
+            </if>
+            <if test="LEVEL!= null and LEVEL != ''">
+                and r.level in (${LEVEL})
+            </if>
+            <if test="_stat!= null and _stat!= '' and _stat == 1">
+                and cs=1  and vol &gt;=t.VOLMIN and vol &lt;=t.VOLMAX
+            </if>
+            <if test="_stat!= null and _stat!= '' and _stat == 3">
+                and (vol &lt;t.VOLMIN or vol &gt;t.VOLMAX)
+            </if>
+            <if test="_stat!= null and _stat!= '' and _stat == 4">
+                and (cs=0 or cs is null)
+            </if>
+            <if test="_stat!= null and _stat!= '' and _stat == 2">
+                and (cs=0 or cs is null or vol &lt;t.VOLMIN or vol &gt;t.VOLMAX)
+            </if>
+        </where>
+        ) as b
+    </select>
+    <select id="selectCurrentTime" resultType="java.lang.String">
+        select CONVERT(varchar(100),GETDATE(), 120) as nowtime
+    </select>
+    <select id="findByShuiKuShuiQingGIS" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select * from (select CV,b.ID,b.STCD,b.STTP,b.LTTD,b.LGTD,b.stnm ,CONVERT(varchar(16), TM, 120) as tm,a.FWL AS YUJING_FWL,a.FWL79 AS YUJING_FWL79,r.RZ,r.RWPTN,r.W,case when MONTH(TM) &gt;=7 and MONTH(TM) &lt;=9 then r.rz-a.FWL79 else r.RZ-a.FWL end as jxx
+        , ROW_NUMBER() OVER(Order by tm desc) AS RowId
+        from ST_STBPRP_B b
+        inner join  ST_STBPRP_F f on f.type=2 and b.stcd=f.stcd left join ST_RSVR_R1 r on b.STCD=r.STCD left join ST_RSV_Alarm a on r.STCD=a.STCD
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR != ''">
+                and b.STGR in (${STGR})
+            </if>
+            <if test="LEVEL!= null and LEVEL != ''">
+                and r.level in (${LEVEL})
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

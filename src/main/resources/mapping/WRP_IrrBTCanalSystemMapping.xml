@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.WRP_IrrBTCanalSystemMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.WRP_IrrBTCanalSystem">
+        <result column="ID" jdbcType="INTEGER" property="ID" />
+        <result column="Canal_Code" jdbcType="VARCHAR" property="Canal_Code" />
+        <result column="Canal_Name" jdbcType="VARCHAR" property="Canal_Name" />
+        <result column="GS" jdbcType="VARCHAR" property="GS" />
+        <result column="Canal_PY" jdbcType="VARCHAR" property="Canal_PY" />
+        <result column="User_Type" jdbcType="VARCHAR" property="User_Type" />
+        <result column="Canal_Length" jdbcType="NUMERIC" property="Canal_Length" />
+        <result column="Upper_Canal_Code" jdbcType="VARCHAR" property="Upper_Canal_Code" />
+        <result column="Upper_Canal_Coordinate" jdbcType="VARCHAR" property="Upper_Canal_Coordinate" />
+        <result column="Upper_Canal_Name" jdbcType="VARCHAR" property="Upper_Canal_Name" />
+        <result column="Canal_Level" jdbcType="VARCHAR" property="Canal_Level" />
+    </resultMap>
+    <select id="findAll" resultMap="BaseResultMap">
+        select * from WRP_IrrBTCanalSystem
+    </select>
+
+</mapper>

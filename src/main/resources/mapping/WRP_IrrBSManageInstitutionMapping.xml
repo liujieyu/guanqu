@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.WRP_IrrBSManageInstitutionMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.WRP_IrrBSManageInstitution">
+        <result column="ID" jdbcType="INTEGER" property="ID" />
+        <result column="Organ_PY" jdbcType="VARCHAR" property="Organ_PY" />
+        <result column="Organ_Code" jdbcType="VARCHAR" property="Organ_Code" />
+        <result column="IRACD" jdbcType="VARCHAR" property="IRACD" />
+        <result column="Male_Employee_Number" jdbcType="INTEGER" property="Male_Employee_Number" />
+        <result column="FeMale_Employee_Number" jdbcType="INTEGER" property="FeMale_Employee_Number" />
+        <result column="Senior_Number" jdbcType="INTEGER" property="Senior_Number" />
+        <result column="Engineer_Number" jdbcType="INTEGER" property="Engineer_Number" />
+        <result column="Upper_Major" jdbcType="INTEGER" property="Upper_Major" />
+        <result column="Average_Organ_id" jdbcType="VARCHAR" property="Average_Organ_id" />
+        <result column="Upper_Organ_Code" jdbcType="VARCHAR" property="Upper_Organ_Code" />
+    </resultMap>
+    <select id="findAll" parameterType="java.lang.String" resultMap="BaseResultMap">
+       select * from WRP_IrrBSManageInstitution
+       <where>
+           <if test="Organ_Name!= null and Organ_Name!= ''">
+               Organ_Name like '%'+#{Organ_Name}+'%'
+           </if>
+       </where>
+    </select>
+</mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.WRP_IrrBSPersonMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.WRP_IrrBSPerson">
+        <result column="Personal_Code" jdbcType="VARCHAR" property="Personal_Code" />
+        <result column="Post_Code" jdbcType="VARCHAR" property="Post_Code" />
+        <result column="Personal_Name" jdbcType="VARCHAR" property="Personal_Name" />
+        <result column="Sex" jdbcType="VARCHAR" property="Sex" />
+        <result column="Age" jdbcType="VARCHAR" property="Age" />
+        <result column="Offical_Rank" jdbcType="VARCHAR" property="Offical_Rank" />
+        <result column="Positional_Title" jdbcType="VARCHAR" property="Positional_Title" />
+        <result column="Educastional_Level" jdbcType="VARCHAR" property="Educastional_Level" />
+        <result column="Work_Time" jdbcType="VARCHAR" property="Work_Time" />
+        <result column="Working_Life" jdbcType="VARCHAR" property="Working_Life" />
+        <result column="IRACD" jdbcType="VARCHAR" property="IRACD" />
+        <result column="Organ_Code" jdbcType="VARCHAR" property="Organ_Code" />
+    </resultMap>
+    <select id="findAll" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from (select Personal_Name,case Sex when 1 then '女性' else '男性' end as
+        Sex,Age,Offical_Rank,Work_Time,Working_Life,Organ_Code,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IrrBSPerson' and FieldID='Positional_Title' and
+        Field=Positional_Title) as Positional_Title,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IrrBSPerson' and FieldID='Educastional_Level' and
+        Field=Positional_Title) as Educastional_Level
+        from WRP_IrrBSPerson
+        <where>
+            <if test="Post_Code!= null and Post_Code!= ''">
+                Post_Code=#{Post_Code}
+            </if>
+            <if test="Sex!= null and Sex!= ''">
+                and Sex=#{Sex}
+            </if>
+            <if test="Positional_Title!= null and Positional_Title!= ''">
+                AND Positional_Title=#{Positional_Title}
+            </if>
+            <if test="Educastional_Level!= null and Educastional_Level!= ''">
+                AND Educastional_Level=#{Educastional_Level}
+            </if>
+            <if test="Personal_Name!= null and Personal_Name!= ''">
+                AND Personal_Name like '%'+#{Personal_Name}+'%'
+            </if>
+        </where>
+        )b
+    </select>
+</mapper>

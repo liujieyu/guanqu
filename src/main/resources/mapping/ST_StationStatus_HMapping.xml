@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_StationStatus_HMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_StationStatus_H">
+        <result column="TM" jdbcType="VARCHAR" property="TM" />
+        <result column="VOL" jdbcType="VARCHAR" property="VOL" />
+        <result column="CS" jdbcType="VARCHAR" property="CS" />
+    </resultMap>
+    <select id="findByYunXingGongKuang" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from (select substring(CONVERT(varchar(100), TM, 120),1,16) as TM,VOL,case cs when 1 then '正常' else  '异常' end as CS,ROW_NUMBER() OVER(Order by tm) AS RowId
+        from ST_StationStatus_H
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                STCD = #{STCD}
+            </if>
+            <if test="Time_min!= null and Time_min!= ''and Time_max!= null and Time_max!= ''">
+                and TM &gt;= '${Time_min}' and TM &lt;='${Time_max}'
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

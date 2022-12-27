@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_RSVR_DMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_RSVR_D">
+        <result column="TM" jdbcType="VARCHAR" property="TM" />
+        <result column="RZ" jdbcType="VARCHAR" property="RZ" />
+        <result column="INQ" jdbcType="VARCHAR" property="INQ" />
+        <result column="OTQ" jdbcType="VARCHAR" property="OTQ" />
+        <result column="DW" jdbcType="VARCHAR" property="DW" />
+    </resultMap>
+
+    <select id="findBySingleRi" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from (select CONVERT(varchar(10), TM, 120) as TM,RZ,INQ,OTQ,DW,ROW_NUMBER() OVER(Order by tm) AS RowId
+        from ST_RSVR_D
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                STCD = #{STCD}
+            </if>
+            <if test="Time_min!= null and Time_min!= ''and Time_max!= null and Time_max!= ''">
+                and TM &gt;= '${Time_min}' and TM &lt;='${Time_max}'
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

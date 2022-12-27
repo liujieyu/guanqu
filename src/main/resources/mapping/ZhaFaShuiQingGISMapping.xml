@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ZhaFaShuiQingGISMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ZhaFaShuiQingGIS">
+        <result column="ID" jdbcType="VARCHAR" property="ID" />
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="STTP" jdbcType="VARCHAR" property="STTP" />
+        <result column="LGTD" jdbcType="VARCHAR" property="LGTD" />
+        <result column="LTTD" jdbcType="VARCHAR" property="LTTD" />
+        <result column="TM" jdbcType="VARCHAR" property="TM" />
+        <result column="_status" jdbcType="VARCHAR" property="_status" />
+        <result column="Q" jdbcType="VARCHAR" property="Q" />
+        <result column="YUJING_SZ" jdbcType="VARCHAR" property="YUJING_SZ" />
+        <result column="YUJING_EZ" jdbcType="VARCHAR" property="YUJING_EZ" />
+        <result column="YUJING_Q" jdbcType="VARCHAR" property="YUJING_Q" />
+        <result column="YUJING_JYSZ" jdbcType="VARCHAR" property="YUJING_JYSZ" />
+        <result column="YUJING_JYEZ" jdbcType="VARCHAR" property="YUJING_JYEZ" />
+        <result column="YUJING_JYQ" jdbcType="VARCHAR" property="YUJING_JYQ" />
+        <result column="UPZ" jdbcType="VARCHAR" property="UPZ" />
+        <result column="DWZ" jdbcType="VARCHAR" property="DWZ" />
+        <result column="SUPWPTN" jdbcType="VARCHAR" property="SUPWPTN" />
+        <result column="SDWWPTN" jdbcType="VARCHAR" property="SDWWPTN" />
+        <result column="ALARM" jdbcType="VARCHAR" property="ALARM" />
+    </resultMap>
+    <select id="findByZhaFaShuiQingGISGIS" resultMap="BaseResultMap" parameterType="java.util.Map">
+			SELECT *
+			FROM 
+			    (SELECT ALARM,
+			         b.ID,
+			         b.STCD,
+			         b.STTP,
+			         b.LTTD ,
+			         b.LGTD,
+			         b.STNM ,
+			        
+			        CASE
+			        WHEN (UPZ > SZ
+			            OR DWZ > EZ
+			            OR r.Q > a.Q) THEN
+			        0
+			        ELSE 1
+			        END AS _status , substring(CONVERT(varchar(100), TM, 120), 3, 20) AS TM , r.Q, a.SZ AS YUJING_SZ, a.EZ AS YUJING_EZ, a.Q AS YUJING_Q, a.JYSZ AS YUJING_JYSZ , a.JYEZ AS YUJING_JYEZ, a.JYQ AS YUJING_JYQ, UPZ, SUPWPTN, DWZ , SDWWPTN, ROW_NUMBER()
+			        OVER (ORDER BY tm DESC) AS RowId
+			    FROM ST_STBPRP_B b
+			    INNER JOIN ST_STBPRP_F f
+			        ON f.type = 5
+			            AND b.STCD = f.STCD
+			    LEFT JOIN ST_WAS_R1 r
+			        ON b.STCD = r.STCD
+			    LEFT JOIN ST_Gate_Alarm a
+			        ON b.STCD = a.STCD 
+			         <where>
+			            <if test="STNM!= null and STNM!= ''">
+			                b.stnm like '%'+#{STNM}+'%'
+			            </if>
+			            <if test="ADDVCD!= null and ADDVCD!= ''">
+			                and b.addvcd like #{ADDVCD}+'%'
+			            </if>
+			            <if test="Canal_Code!= null and Canal_Code!= ''">
+			                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+			                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+			            </if>
+			            <if test="CTYPE!= null and CTYPE != ''">
+			                and r.ctype=#{CTYPE}
+			            </if>
+			        </where>
+			        ) b
+        
+    </select>
+</mapper>

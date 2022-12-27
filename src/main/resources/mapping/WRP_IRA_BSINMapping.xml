@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.WRP_IRA_BSINMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.WRP_IRA_BSIN">
+        <result column="ID" jdbcType="INTEGER" property="ID" />
+        <result column="IRACD" jdbcType="VARCHAR" property="IRACD" />
+        <result column="IRANM" jdbcType="VARCHAR" property="IRANM" />
+        <result column="WTPLNM" jdbcType="VARCHAR" property="WTPLNM" />
+        <result column="IARHWPRTP" jdbcType="VARCHAR" property="IARHWPRTP" />
+        <result column="IRASC" jdbcType="VARCHAR" property="IRASC" />
+        <result column="DTST" jdbcType="VARCHAR" property="DTST" />
+        <result column="MNUN" jdbcType="VARCHAR" property="MNUN" />
+        <result column="CMUN" jdbcType="VARCHAR" property="CMUN" />
+        <result column="LC" jdbcType="VARCHAR" property="LC" />
+        <result column="IRRN" jdbcType="VARCHAR" property="IRRN" />
+        <result column="DSYFL" jdbcType="NUMERIC" property="DSYFL" />
+        <result column="INGYFL" jdbcType="NUMERIC" property="INGYFL" />
+        <result column="QUWTP" jdbcType="VARCHAR" property="QUWTP" />
+        <result column="QUWTPL" jdbcType="VARCHAR" property="QUWTPL" />
+        <result column="IRPL" jdbcType="NUMERIC" property="IRPL" />
+        <result column="DSIRAR" jdbcType="NUMERIC" property="DSIRAR" />
+        <result column="ACIRAR" jdbcType="NUMERIC" property="ACIRAR" />
+        <result column="CNHWPS" jdbcType="VARCHAR" property="CNHWPS" />
+        <result column="CNHWNM" jdbcType="VARCHAR" property="CNHWNM" />
+        <result column="CNHDDVFL" jdbcType="NUMERIC" property="CNHDDVFL" />
+        <result column="CNINGYFL" jdbcType="NUMERIC" property="CNINGYFL" />
+        <result column="MNCHNB" jdbcType="INTEGER" property="MNCHNB" />
+        <result column="MNCHLEN" jdbcType="NUMERIC" property="MNCHLEN" />
+        <result column="MNCHLEN" jdbcType="INTEGER" property="DTMCNB" />
+        <result column="DTMCLN" jdbcType="NUMERIC" property="DTMCLN" />
+        <result column="ANPP" jdbcType="NUMERIC" property="ANPP" />
+        <result column="IRAOV" jdbcType="VARCHAR" property="IRAOV" />
+        <result column="DTUPDT" jdbcType="DATE" property="DTUPDT" />
+    </resultMap>
+    <select id="findAll" resultMap="BaseResultMap">
+        select * from WRP_IRA_BSIN
+    </select>
+    <select id="findByIARHWPRTPAndIRASC" resultMap="BaseResultMap">
+        select * from WRP_IRA_BSIN
+        <where>
+            <if test="IARHWPRTP!= null and IARHWPRTP!= ''">
+                IARHWPRTP = #{IARHWPRTP}
+            </if>
+            <if test="IRASC!= null and IRASC!= ''">
+               and IRASC = #{IRASC}
+            </if>
+        </where>
+    </select>
+</mapper>

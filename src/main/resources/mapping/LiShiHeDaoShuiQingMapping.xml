@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.LsHdsqMapper">
+    <resultMap id="RiBiaoResultMap" type="vip.yingmen.pojo.HeDaoShuiQingRiBiao">
+        <result column="STNM" jdbcType="VARCHAR" property="STNM"/>
+        <result column="STCD" jdbcType="VARCHAR" property="STCD"/>
+        <result column="TM" jdbcType="VARCHAR" property="TM"/>
+        <result column="RZ" jdbcType="VARCHAR" property="RZ"/>
+        <result column="CV" jdbcType="VARCHAR" property="CV"/>
+        <result column="INQ" jdbcType="VARCHAR" property="INQ"/>
+        <result column="DW" jdbcType="VARCHAR" property="DW"/>
+        <result column="AWL" jdbcType="VARCHAR" property="AWL"/>
+        <result column="Max_RZ" jdbcType="VARCHAR" property="Max_RZ"/>
+        <result column="Max_TM" jdbcType="VARCHAR" property="Max_TM"/>
+        <result column="Min_RZ" jdbcType="VARCHAR" property="Min_RZ"/>
+        <result column="Min_TM" jdbcType="VARCHAR" property="Min_TM"/>
+        <result column="STGR" jdbcType="VARCHAR" property="STGR"/>
+        <result column="Canal_Name" jdbcType="VARCHAR" property="Canal_Name"/>
+        <result column="AD_NM" jdbcType="VARCHAR" property="AD_NM"/>
+    </resultMap>
+    <resultMap id="YueBiaoResultMap" type="vip.yingmen.pojo.HeDaoShuiQingYueBiao">
+        <result column="STNM" jdbcType="VARCHAR" property="STNM"/>
+        <result column="STCD" jdbcType="VARCHAR" property="STCD"/>
+        <result column="DT" jdbcType="VARCHAR" property="DT"/>
+        <result column="RZ" jdbcType="VARCHAR" property="RZ"/>
+        <result column="INQ" jdbcType="VARCHAR" property="INQ"/>
+        <result column="MW" jdbcType="VARCHAR" property="MW"/>
+        <result column="AWL" jdbcType="VARCHAR" property="AWL"/>
+        <result column="Max_RZ" jdbcType="VARCHAR" property="Max_RZ"/>
+        <result column="Max_TM" jdbcType="VARCHAR" property="Max_TM"/>
+        <result column="Min_RZ" jdbcType="VARCHAR" property="Min_RZ"/>
+        <result column="Min_TM" jdbcType="VARCHAR" property="Min_TM"/>
+        <result column="STGR" jdbcType="VARCHAR" property="STGR"/>
+        <result column="Canal_Name" jdbcType="VARCHAR" property="Canal_Name"/>
+        <result column="AD_NM" jdbcType="VARCHAR" property="AD_NM"/>
+    </resultMap>
+    <resultMap id="LiShiBiaoResultMap" type="vip.yingmen.pojo.HeDaoShuiQingLiShiBiao">
+        <result column="TM" jdbcType="VARCHAR" property="TM"/>
+        <result column="RZ" jdbcType="VARCHAR" property="RZ"/>
+        <result column="INQ" jdbcType="VARCHAR" property="INQ"/>
+        <result column="OTQ" jdbcType="VARCHAR" property="OTQ"/>
+        <result column="AWL" jdbcType="VARCHAR" property="AWL"/>
+    </resultMap>
+    <resultMap id="ZuiGaoShuiWeiResultMap" type="vip.yingmen.pojo.HeDaoShuiQingZuiGaoShuiWeiBiao">
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="TM" jdbcType="VARCHAR" property="TM" />
+        <result column="THZ" jdbcType="VARCHAR" property="THZ" />
+        <result column="YHZQ" jdbcType="VARCHAR" property="YHZQ" />
+        <result column="STGR" jdbcType="VARCHAR" property="STGR" />
+        <result column="Canal_Name" jdbcType="VARCHAR" property="Canal_Name" />
+        <result column="AD_NM" jdbcType="VARCHAR" property="AD_NM" />
+    </resultMap>
+    <select id="findByZhanDian" parameterType="java.lang.String" resultType="java.util.HashMap">
+        select b.STCD,b.STNM,a.AWL from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=3 and b.stcd=f.stcd left join ST_RSVR_R1 r on r.stcd=b.stcd
+        left join ST_RIVER_Alarm a on b.STCD=a.STCD
+        <where>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="LEVEL!= null and LEVEL!= ''">
+                and r.level=#{LEVEL}
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and b.STGR=#{STGR}
+            </if>
+            <if test="STNM!= null and STNM!= ''">
+                and b.stnm like '%'+#{STNM}+'%'
+            </if>
+        </where>
+    </select>
+
+    <select id="findByXiaoShi" parameterType="java.util.List" resultType="java.util.HashMap">
+        select * from (SELECT
+        CONVERT(VARCHAR(13),a.dt,120) AS DT,
+        b.*,
+        ROW_NUMBER() OVER(Order by a.dt desc) AS RowId
+        FROM
+        (
+        SELECT
+        dateadd(HH, number, '${Time_min}') DT
+        FROM
+        master..spt_values
+        WHERE
+        type = 'p'
+        AND dateadd(HH, number, '${Time_min}') &lt;='${Time_max}'
+        ) a
+        LEFT JOIN (SELECT
+        <foreach collection="list" item="item" index="index">
+                max(CASE b.stnm WHEN '${item}' THEN isnull(RZ,0) ELSE 0 end)${item}平均水位,
+                max(CASE b.stnm WHEN '${item}' THEN isnull(CV,0) ELSE 0 end)${item}水势,
+                max(CASE b.stnm WHEN '${item}' THEN isnull(INQ,0) ELSE 0 end)${item}平均流量,
+                max(CASE b.stnm WHEN '${item}' THEN isnull(HW,0) ELSE 0 end)${item}小时流量,
+        </foreach>
+        DATEADD(hh,TM,CONVERT(varchar(100), DT, 111)) as temp
+        FROM ST_RIVER_H h inner join ST_STBPRP_B b on h.STCD=b.STCD
+        where DATEADD(hh,TM,CONVERT(varchar(100), DT, 111))&gt;='${Time_min}' and DATEADD(hh,TM,CONVERT(varchar(100), DT, 111))&lt;='${Time_max}'
+        GROUP BY dt,tm
+        ) b ON a.dt = b.temp
+        ) as b where RowId between 1 and 999999999;
+    </select>
+    <select id="fandByRiBiao" parameterType="java.lang.String" resultMap="RiBiaoResultMap">
+        select * from (select b.STNM,b.STCD,c.TM,c.RZ,c.CV,c.INQ,c.DW,a.AWL,c.Max_RZ,CONVERT(varchar(16), c.Max_TM, 120) as Max_TM,c.Min_RZ,CONVERT(varchar(16), c.Min_TM, 120) as Min_TM,
+        (select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=b.STGR) as STGR,
+        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as Canal_Name,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM
+        , ROW_NUMBER() OVER(Order by (select stuff((select ',' + baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd order by baseid for xml path('')),1,1,''))) AS RowId
+        from ST_STBPRP_B b
+        inner join  ST_STBPRP_F f on f.type=3 and b.stcd=f.stcd
+        left join (select * from ST_RIVER_D
+        where
+        tm=cast(#{TM} as datetime)
+        ) c on b.stcd=c.stcd
+        left join ST_RIVER_Alarm a on b.STCD=a.STCD
+        <where>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and b.STGR=#{STGR}
+            </if>
+            <if test="STNM!= null and STNM!= ''">
+                and b.stnm like '%'+#{STNM}+'%'
+            </if>
+        </where>
+        ) as b
+    </select>
+
+    <select id="fandByYueBiao" parameterType="java.lang.String" resultMap="YueBiaoResultMap">
+        select * from (select b.STNM,b.STCD,convert(varchar,c.yr)+case when len(c.MON)=1 then '-0'+ convert(varchar,c.mon) else (select CONVERT(varchar,c.yr)+'-'+convert(varchar,c.mon)) end as DT,c.RZ,c.INQ,c.MW,a.AWL,c.Max_RZ,CONVERT(varchar(16), c.Max_TM, 120) as Max_TM,c.Min_RZ,CONVERT(varchar(16), c.Min_TM, 120) as Min_TM,
+        (select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=b.STGR) as STGR,
+        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as Canal_Name,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM
+        , ROW_NUMBER() OVER(Order by (select stuff((select ',' + baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd order by baseid for xml path('')),1,1,''))) AS RowId
+        from ST_STBPRP_B b
+        inner join  ST_STBPRP_F f on f.type=3 and b.stcd=f.stcd
+        left join (select * from ST_RIVER_M
+        where
+        yr=#{YR} and mon=#{MON}
+        ) c on b.stcd=c.stcd
+        left join ST_RIVER_Alarm a on b.STCD=a.STCD
+        <where>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and
+                (w.BaseID = #{Canal_Code} or w.BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and b.stgr=#{STGR}
+            </if>
+            <if test="STNM!= null and STNM!= ''">
+                and b.stnm like '%'+#{STNM}+'%'
+            </if>
+        </where>
+        ) as b
+    </select>
+
+    <select id="fandByLiShiBiao" parameterType="java.lang.String" resultMap="LiShiBiaoResultMap">
+        select * from (select substring(CONVERT(varchar(100), TM, 120),3,14) as TM,Z,Q,AWL, ROW_NUMBER() OVER(Order by tm desc) AS RowId
+        from ST_RIVER_R r
+        left join ST_STBPRP_B b on b.STCD=r.STCD
+        left join ST_RIVER_Alarm a on b.STCD=a.STCD
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                b.STCD = #{STCD}
+            </if>
+            <if test="Time_min!= null and Time_min!= ''and Time_max!= null and Time_max!= ''">
+                and tm &gt;='${Time_min}' and tm &lt;='${Time_max}'
+            </if>
+        </where>
+        ) as b
+    </select>
+
+    <select id="findByZuiGaoShuiWei" parameterType="java.lang.String" resultMap="ZuiGaoShuiWeiResultMap">
+        select * from (select b.STCD,b.STNM,CONVERT(varchar(16), tmhz, 120) as TM,THZ,YHZQ,(select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=b.STGR) as STGR,
+        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as Canal_Name,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM
+        , ROW_NUMBER() OVER(Order by (select stuff((select ',' + baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd order by baseid for xml path('')),1,1,''))) AS RowId
+        from ST_STBPRP_B b
+        inner join  ST_STBPRP_F f on f.type=3 and b.stcd=f.stcd
+        left join (select * from ST_G_RIVER
+        where yr=#{YR}) s on b.stcd=s.stcd
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and (w.BaseID = #{Canal_Code} or w.BaseID in(select Canal_Code from dbo.fn_getCanalChild('${Canal_Code}'))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and b.STGR=#{STGR}
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

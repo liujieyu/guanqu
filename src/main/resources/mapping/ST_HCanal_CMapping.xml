@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_HCanal_CMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_HCanal_C">
+        <result column="DT" jdbcType="VARCHAR" property="DT" />
+        <result column="A_Q" jdbcType="VARCHAR" property="A_Q" />
+        <result column="A_Z" jdbcType="VARCHAR" property="A_Z" />
+        <result column="WQ" jdbcType="VARCHAR" property="WQ" />
+    </resultMap>
+    <select id="findBySingleXiaoShi" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from (select CONVERT(VARCHAR(13),DATEADD(hh,TM,CONVERT(varchar(100), DT, 111)),120) as DT,A_Q,A_Z,WQ, ROW_NUMBER() OVER(Order by dt,tm) AS RowId
+        from ST_HCanal_C
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                STCD = #{STCD}
+            </if>
+            <if test="Time_min!= null and Time_min!= ''and Time_max!= null and Time_max!= ''">
+                and DATEADD(hh,TM,CONVERT(varchar(100), DT, 111)) &gt;='${Time_min}'
+                and DATEADD(hh,TM,CONVERT(varchar(100), DT, 111)) &lt;='${Time_max}'
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.JcSyxxMapper">
+    <resultMap id="ShuiYuanResultMap" type="vip.yingmen.pojo.JiChuShuiYuanXinXiShuiYuan">
+        <result column="SourceE_Name" jdbcType="VARCHAR" property="SourceE_Name" />
+        <result column="SourceE_Type" jdbcType="VARCHAR" property="SourceE_Type" />
+        <result column="Source_Type" jdbcType="VARCHAR" property="Source_Type" />
+    </resultMap>
+    <resultMap id="ShuiKuResultMap" type="vip.yingmen.pojo.JiChuShuiYuanShuiKu">
+        <result column="RSNM" jdbcType="VARCHAR" property="RSNM" />
+        <result column="PRSC" jdbcType="VARCHAR" property="PRSC" />
+        <result column="BLSYS" jdbcType="VARCHAR" property="BLSYS" />
+        <result column="AD_NM" jdbcType="VARCHAR" property="ADDVCD" />
+        <result column="TTSTCP" jdbcType="VARCHAR" property="TTSTCP" />
+        <result column="FLCNSTCP" jdbcType="VARCHAR" property="FLCNSTCP" />
+        <result column="MJFLSSCNWL" jdbcType="VARCHAR" property="MJFLSSCNWL" />
+        <result column="NRSTLV" jdbcType="VARCHAR" property="NRSTLV" />
+        <result column="CHFLLV" jdbcType="VARCHAR" property="CHFLLV" />
+    </resultMap>
+    <resultMap id="HeLiuResultMap" type="vip.yingmen.pojo.JiChuShuiYuanHeLiu">
+        <result column="RVNM" jdbcType="VARCHAR" property="RVNM" />
+        <result column="HWPS" jdbcType="VARCHAR" property="HWPS" />
+        <result column="HWEL" jdbcType="VARCHAR" property="HWEL" />
+        <result column="RVLEN" jdbcType="VARCHAR" property="RVLEN" />
+        <result column="CTAR" jdbcType="VARCHAR" property="CTAR" />
+        <result column="ESPS" jdbcType="VARCHAR" property="ESPS" />
+        <result column="ESEL" jdbcType="VARCHAR" property="ESEL" />
+        <result column="RVTP" jdbcType="VARCHAR" property="RVTP" />
+        <result column="RLEVEL" jdbcType="VARCHAR" property="RLEVEL" />
+        <result column="DTPL" jdbcType="VARCHAR" property="DTPL" />
+    </resultMap>
+    <resultMap id="JingResultMap" type="vip.yingmen.pojo.JiChuShuiYuanJing">
+        <result column="Well_Name" jdbcType="VARCHAR" property="Well_Name" />
+        <result column="Diameter" jdbcType="VARCHAR" property="Diameter" />
+        <result column="Depth" jdbcType="VARCHAR" property="Depth" />
+        <result column="Diameter_Type" jdbcType="VARCHAR" property="Diameter_Type" />
+        <result column="Depth_Type" jdbcType="VARCHAR" property="Depth_Type" />
+        <result column="Motivity_Type" jdbcType="VARCHAR" property="Motivity_Type" />
+        <result column="Material_Type" jdbcType="VARCHAR" property="Material_Type" />
+        <result column="AD_NM" jdbcType="VARCHAR" property="AD_NM" />
+        <result column="CANAL_NAME" jdbcType="VARCHAR" property="CANAL_NAME" />
+    </resultMap>
+    <select id="findByShuiYuan" resultMap="ShuiYuanResultMap" parameterType="java.lang.String">
+        select * from(select case sourceE_Type when 1 then (select RSNM from WRP_RSR_BSIN where RSCD=SourceE_Code) when 2 then (select RVNM from WRP_RVR_BSIN where RVCD=SourceE_Code) when 3 then (select Well_Name from WRP_IrrBFSource_Well where Well_Code=SourceE_Code) end as SourceE_Name,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IrrBFSource' and FieldID='SourceE_Type' and Field=SourceE_Type) as SourceE_Type,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IrrBFSource' and FieldID='Source_Type' and Field=Source_Type) as Source_Type,
+        ROW_NUMBER() OVER (ORDER By ID) as RowId
+        from WRP_IrrBFSource
+        <where>
+            <if test="SourceE_Type!= null and SourceE_Type!= ''">
+                SourceE_Type=#{SourceE_Type}
+            </if>
+            <if test="Source_Type!= null and Source_Type!= ''">
+                and Source_Type=#{Source_Type}
+            </if>
+            <if test="RSNM!= null and RSNM!= ''">
+                and SourceE_Code in(select RSCD from WRP_RSR_BSIN where RSNM like '%'+#{RSNM}+'%' union select RVCD from WRP_RVR_BSIN where RVNM like '%'+#{RSNM}+'%' union select Well_Code from WRP_IrrBFSource_Well where Well_Name like '%'+#{RSNM}+'%')
+            </if>
+        </where>
+        ) as b
+    </select>
+    <select id="findByShuiKu" resultMap="ShuiKuResultMap" parameterType="java.lang.String">
+        select * from(select RSNM,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_RSR_BSIN' and FieldID='PRSC' and Field=PRSC) as PRSC,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_RSR_BSIN' and FieldID='BLSYS' and Field=BLSYS) as BLSYS,ADDVCD,TTSTCP,FLCNSTCP,MJFLSSCNWL,NRSTLV,CHFLLV,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM,
+        ROW_NUMBER() OVER (ORDER by b.ID) as RowId
+        from WRP_RSR_BSIN b left join WRP_RSR_HYCH r  on b.RSCD=r.RSCD
+        <where>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                ADDVCD like #{ADDVCD}+'%'
+            </if>
+            <if test="PRSC!= null and PRSC!= ''">
+                and PRSC=#{PRSC}
+            </if>
+            <if test="BLSYS!= null and BLSYS!= ''">
+                and BLSYS=#{BLSYS}
+            </if>
+            <if test="RSNM!= null and RSNM!= ''">
+                and RSNM like '%'+#{RSNM}+'%'
+            </if>
+        </where>
+        )b
+    </select>
+    <select id="findByHeLiu" resultMap="ShuiKuResultMap" parameterType="java.lang.String">
+        select * from(select RVNM,HWPS,HWEL,RVLEN,CTAR,ESPS,ESEL,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_RVR_BSIN' and FieldID='RVTP' and Field=RVTP) as RVTP,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_RVR_BSIN' and FieldID='RLEVEL' and Field=RLEVEL) as RLEVEL,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_RVR_BSIN' and FieldID='DTPL' and Field=DTPL) as DTPL,
+        ROW_NUMBER() OVER (ORDER by b.ID) as RowId
+        from WRP_RVR_BSIN b
+        <where>
+            <if test="RVNM!= null and RVNM!= ''">
+                RVNM like '%'+#{RVNM}+'%'
+            </if>
+            <if test="RVTP!= null and RVTP!= ''">
+                and RVTP=#{RVTP}
+            </if>
+            <if test="RLEVEL!= null and RLEVEL!= ''">
+                and RLEVEL=#{RLEVEL}
+            </if>
+        </where>
+        )b
+    </select>
+    <select id="findByJing" resultMap="JingResultMap" parameterType="java.lang.String">
+        select * from(select Well_Name,Diameter,Depth,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IrrBFSource_Well' and FieldID='Diameter_Type' and Field=Diameter_Type) as Diameter_Type,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IrrBFSource_Well' and FieldID='Depth_Type' and Field=Depth_Type) as Depth_Type,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IrrBFSource_Well' and FieldID='Motivity_Type' and Field=Motivity_Type) as Motivity_Type,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IrrBFSource_Well' and FieldID='Material_Type' and Field=Material_Type) as Material_Type,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM,
+        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBFSource_Well') for xml path('')),1,1,'')) as CANAL_NAME,
+        ROW_NUMBER() OVER (ORDER by ID) as RowId
+        from WRP_IrrBFSource_Well s
+        <where>
+            <if test="Well_Name!= null and Well_Name!= ''">
+                s.Well_Name like '%'+#{Well_Name}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and (s.Canal_Code = #{Canal_Code} or s.Canal_Code in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code})))
+            </if>
+            <if test="Diameter_Type!= null and Diameter_Type!= ''">
+                and Diameter_Type=#{Diameter_Type}
+            </if>
+            <if test="Depth_Type!= null and Depth_Type!= ''">
+                and Depth_Type=#{Depth_Type}
+            </if>
+            <if test="Motivity_Type!= null and Motivity_Type!= ''">
+                and Motivity_Type=#{Motivity_Type}
+            </if>
+            <if test="Material_Type!= null and Material_Type!= ''">
+                and Material_Type=#{Material_Type}
+            </if>
+        </where>
+        )b
+    </select>
+</mapper>

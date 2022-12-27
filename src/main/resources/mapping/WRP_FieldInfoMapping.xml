@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.WRP_FieldInfoMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.WRP_FieldInfo">
+        <result column="ID" jdbcType="INTEGER" property="ID" />
+        <result column="FormANDFieldID" jdbcType="VARCHAR" property="FormANDFieldID" />
+        <result column="FormID" jdbcType="VARCHAR" property="FormID" />
+        <result column="FieldID" jdbcType="VARCHAR" property="FieldID" />
+        <result column="Field" jdbcType="INTEGER" property="Field" />
+        <result column="FieldName" jdbcType="INTEGER" property="FieldName" />
+    </resultMap>
+    <select id="findByJiBenXinXi" parameterType="java.lang.String" resultMap="BaseResultMap">
+       select * from  WRP_FieldInfo
+        <where>
+            <if test="FieldID!= null and FieldID!= ''">
+                FieldID = #{FieldID}
+            </if>
+        </where>
+    </select>
+    <select id="findByShuiKuShuiQingLevle" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select  * from  WRP_FieldInfo
+        <where>
+                FieldID ='level'
+                and FormID='ST_RSVR_R1'
+        </where>
+    </select>
+</mapper>

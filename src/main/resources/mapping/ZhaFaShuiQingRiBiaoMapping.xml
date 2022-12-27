@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ZhaFaShuiQingRiBiaoMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ZhaFaShuiQingRiBiao">
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="TM" jdbcType="VARCHAR" property="TM" />
+        <result column="DA_UPZ" jdbcType="VARCHAR" property="DA_UPZ" />
+        <result column="DA_DWZ" jdbcType="VARCHAR" property="DA_DWZ" />
+        <result column="DA_Q" jdbcType="VARCHAR" property="DA_Q" />
+        <result column="DWQ" jdbcType="VARCHAR" property="DWQ" />
+        <result column="CTYPE" jdbcType="VARCHAR" property="CTYPE" />
+        <result column="Canal_Name" jdbcType="VARCHAR" property="Canal_Name" />
+        <result column="AD_NM" jdbcType="VARCHAR" property="AD_NM" />
+    </resultMap>
+    <select id="fandByRiBiao" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from (select b.STNM,b.STCD,c.TM,c.DA_UPZ,c.DA_DWZ,c.DA_Q,c.DWQ,
+        case ctype when 1 then '闸门' when 2 then '阀门' end as CTYPE,
+        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as Canal_Name,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM
+        , ROW_NUMBER() OVER(Order by b.stcd) AS RowId
+        from ST_STBPRP_B b
+        inner join  ST_STBPRP_F f on f.type=5 and b.stcd=f.stcd
+        left join (select * from ST_DWAS_C
+        <where>
+                tm=cast(#{TM} as datetime)
+                ) c on b.stcd=c.stcd
+                left join ST_WAS_R1 r on r.stcd=b.stcd
+        </where>
+        <where>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="CTYPE!= null and CTYPE!= ''">
+                and r.ctype=#{CTYPE}
+            </if>
+            <if test="STNM!= null and STNM!= ''">
+                and b.stnm like '%'+#{STNM}+'%'
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

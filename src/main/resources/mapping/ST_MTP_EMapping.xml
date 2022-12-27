@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_MTP_EMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_MTP_E">
+        <result column="DT" jdbcType="VARCHAR" property="DT" />
+        <result column="P" jdbcType="VARCHAR" property="P" />
+    </resultMap>
+
+    <select id="findBySingleYue" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from (SELECT
+        CONVERT(VARCHAR(7),a.dt,120) AS dt,
+        ISNULL(b.P, '0') AS p,
+        ROW_NUMBER() OVER(Order by a.dt) AS RowId
+        FROM
+        (
+        SELECT
+        dateadd(MM, number, '${Time_min}') dt
+        FROM
+        master..spt_values
+        WHERE
+        type = 'p'
+        AND dateadd(MM, number,'${Time_min}') &lt;='${Time_max}'
+        ) a
+        LEFT JOIN (select convert(datetime ,(convert(varchar,yr)+'-'+convert(varchar,mon)+'-01')) as dt,P from ST_MTP_E where STCD=#{STCD} and convert(datetime ,(convert(varchar,yr)+'-'+convert(varchar,mon)+'-01'))&gt;='${Time_min}' and convert(datetime ,(convert(varchar,yr)+'-'+convert(varchar,mon)+'-01'))&lt;='${Time_max}'
+        ) b ON a.dt = b.dt
+        ) as b
+    </select>
+</mapper>

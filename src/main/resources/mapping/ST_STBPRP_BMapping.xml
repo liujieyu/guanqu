@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_STBPRP_BMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_STBPRP_B">
+        <result column="ID" jdbcType="INTEGER" property="ID" />
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STTP" jdbcType="VARCHAR" property="STTP" />
+        <result column="STGR" jdbcType="VARCHAR" property="STGR" />
+        <result column="RELATECODE" jdbcType="INTEGER" property="RELATECODE" />
+        <result column="ADDVCD" jdbcType="VARCHAR" property="ADDVCD" />
+        <result column="GS" jdbcType="VARCHAR" property="GS" />
+        <result column="LGTD" jdbcType="NUMERIC" property="LGTD" />
+        <result column="LTTD" jdbcType="NUMERIC" property="LTTD" />
+        <result column="STLC" jdbcType="VARCHAR" property="STLC" />
+        <result column="HNNM" jdbcType="VARCHAR" property="HNNM" />
+        <result column="CTCD" jdbcType="VARCHAR" property="CTCD" />
+        <result column="RVCD" jdbcType="VARCHAR" property="RVCD" />
+        <result column="ESSTDT" jdbcType="DATE" property="ESSTDT" />
+        <result column="WDSTDT" jdbcType="DATE" property="WDSTDT" />
+        <result column="DTMNM" jdbcType="VARCHAR" property="DTMNM" />
+        <result column="DTMEL" jdbcType="NUMERIC" property="DTMEL" />
+        <result column="DLOG" jdbcType="VARCHAR" property="DLOG" />
+        <result column="ATCUNIT" jdbcType="VARCHAR" property="ATCUNIT" />
+        <result column="ADMAUTH" jdbcType="VARCHAR" property="ADMAUTH" />
+        <result column="LOCALITY" jdbcType="VARCHAR" property="LOCALITY" />
+        <result column="STBK" jdbcType="VARCHAR" property="STBK" />
+        <result column="STAZT" jdbcType="NUMERIC" property="STAZT" />
+        <result column="DRNA" jdbcType="NUMERIC" property="DRNA" />
+        <result column="FLTO" jdbcType="VARCHAR" property="FLTO" />
+        <result column="DSTRVM" jdbcType="NUMERIC" property="DSTRVM" />
+        <result column="MODITIME" jdbcType="TIMESTAMP" property="MODITIME" />
+        <result column="COMMENTS" jdbcType="VARCHAR" property="COMMENTS" />
+    </resultMap>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select * from ST_STBPRP_B
+    </select>
+
+    <select id="findByRELATECODE" resultMap="BaseResultMap">
+        select * from ST_STBPRP_B
+        <where>
+            <if test="RELATECODE!= null and RELATECODE!= ''">
+                RELATECODE = #{RELATECODE}
+            </if>
+        </where>
+    </select>
+</mapper>

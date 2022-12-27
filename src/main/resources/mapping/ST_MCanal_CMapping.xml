@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_MCanal_CMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_MCanal_C">
+        <result column="DT" jdbcType="VARCHAR" property="DT" />
+        <result column="MA_Z" jdbcType="VARCHAR" property="MA_Z" />
+        <result column="MA_Q" jdbcType="VARCHAR" property="MA_Q" />
+        <result column="MWQ" jdbcType="VARCHAR" property="MWQ" />
+
+    </resultMap>
+    <select id="findBySingleYue" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from (select CONVERT(varchar,yr)+case when MON &lt;10 then '-0'+convert(varchar,mon) else (select CONVERT(varchar,yr)+'-'+CONVERT(varchar,MON)) end as DT,MA_Z,MA_Q,MWQ, ROW_NUMBER() OVER(Order by yr,mon) AS RowId
+        from ST_MCanal_C
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                STCD = #{STCD}
+            </if>
+            <if test="Time_min!= null and Time_min!= ''and Time_max!= null and Time_max!= ''">
+                and (CONVERT(varchar,yr)+case when MON &lt;10 then '-0'+convert(varchar,mon) else (select CONVERT(varchar,yr)+'-'+CONVERT(varchar,MON)) end) &gt;='${Time_min}'
+                and (CONVERT(varchar,yr)+case when MON &lt;10 then '-0'+convert(varchar,mon) else (select CONVERT(varchar,yr)+'-'+CONVERT(varchar,MON)) end) &lt;='${Time_max}'
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

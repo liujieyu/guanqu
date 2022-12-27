@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.QuDaoShuiQingRiBiaoMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.QuDaoShuiQingRiBiao">
+        <result column="stnm" jdbcType="VARCHAR" property="stnm" />
+        <result column="stcd" jdbcType="VARCHAR" property="stcd" />
+        <result column="tm" jdbcType="DATE" property="tm" />
+        <result column="da_q" jdbcType="NUMERIC" property="da_q" />
+        <result column="da_z" jdbcType="NUMERIC" property="da_z" />
+        <result column="dwq" jdbcType="NUMERIC" property="dwq" />
+        <result column="stype" jdbcType="VARCHAR" property="stype" />
+        <result column="canal_name" jdbcType="VARCHAR" property="canal_name" />
+        <result column="adnm" jdbcType="VARCHAR" property="adnm" />
+        <result column="RowId" jdbcType="VARCHAR" property="RowId" />
+    </resultMap>
+    <select id="findByQuDaoShuiQingRiBiao" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from (select b.stnm,b.stcd,c.tm,c.da_q,c.da_z,c.dwq,
+        (select FieldName from WRP_FieldInfo where FormANDFieldID='101' and Field=stype) as stype,
+        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as canal_name,
+        (select (select ad_nm from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+ad_nm from WRP_AD_B m where ad_cd=addvcd) as adnm
+        , ROW_NUMBER() OVER(Order by b.stcd) AS RowId
+        from ST_STBPRP_B b
+        inner join  ST_STBPRP_F f on f.type=4 and b.stcd=f.stcd
+        left join (select * from ST_DCanal_C
+        <where>
+            <if test="tm!= null and tm!= ''">
+                tm=cast(#{tm} as datetime)
+                ) c on b.stcd=c.stcd
+                left join ST_Canal_R1 r on r.stcd=b.stcd
+            </if>
+        </where>
+        <where>
+            <if test="stnm!= null and stnm!= ''">
+                b.stnm like '%'+#{stnm}+'%'
+            </if>
+            <if test="addvcd!= null and addvcd!= ''">
+                and b.addvcd like #{addvcd}+'%'
+            </if>
+            <if test="canal_code!= null and canal_code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{canal_code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{canal_code}))))
+            </if>
+            <if test="stype!= null and stype!= ''">
+                and r.stype=#{stype}
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

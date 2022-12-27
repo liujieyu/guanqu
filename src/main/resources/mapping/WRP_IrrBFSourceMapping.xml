@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.WRP_IrrBFSourceMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.WRP_IrrBFSource">
+        <result column="ID" jdbcType="INTEGER" property="ID" />
+        <result column="SourceE_Code" jdbcType="VARCHAR" property="SourceE_Code" />
+        <result column="SourceE_Name" jdbcType="VARCHAR" property="SourceE_Name" />
+        <result column="SourceE_Type" jdbcType="VARCHAR" property="SourceE_Type" />
+        <result column="Source_Type" jdbcType="VARCHAR" property="Source_Type" />
+        <result column="GS" jdbcType="VARCHAR" property="GS" />
+    </resultMap>
+    <select id="findByShuiYuanXinXi" parameterType="java.lang.String" resultMap="BaseResultMap">
+       select * from WRP_IrrBFSource
+    </select>
+</mapper>

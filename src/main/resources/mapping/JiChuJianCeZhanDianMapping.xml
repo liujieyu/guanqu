@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.JcJczdMapper">
+    <resultMap id="JianCeZhanDianResultMap" type="vip.yingmen.pojo.JiChuJianCeZhanDian">
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STTP" jdbcType="VARCHAR" property="STTP" />
+        <result column="STGR" jdbcType="VARCHAR" property="STGR" />
+        <result column="THYPE" jdbcType="VARCHAR" property="THYPE" />
+        <result column="ESSTDT" jdbcType="VARCHAR" property="ESSTDT" />
+        <result column="DLOG" jdbcType="VARCHAR" property="DLOG" />
+        <result column="ADMAUTH" jdbcType="VARCHAR" property="ADMAUTH" />
+        <result column="AD_NM" jdbcType="VARCHAR" property="AD_NM" />
+        <result column="CANAL_NAME" jdbcType="VARCHAR" property="CANAL_NAME" />
+    </resultMap>
+    <select id="findByJianCeZhanDian" resultMap="JianCeZhanDianResultMap" parameterType="java.lang.String">
+        select * from (select STNM,(select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STTP' and Field=STTP) as STTP,
+        (select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=STGR) as STGR,
+        (select stuff((select ',' + FieldName from WRP_FieldInfo where FormID='ST_STBPRP_F' and FieldID='TYPE' and Field in(select type from ST_STBPRP_F f where F.STCD=B.STCD) for xml path('')),1,1,'')) as THYPE,
+        ESSTDT,DLOG,ADMAUTH,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM,
+        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as CANAL_NAME
+        ,ROW_NUMBER()OVER(ORDER BY ID) as RowId
+        from ST_STBPRP_B b
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                STNM like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and ADDVCD like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and (w.BaseID = #{Canal_Code} or w.BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STTP!= null and STTP!= ''">
+                and b.STTP=#{STTP}
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and b.STGR=#{STGR}
+            </if>
+            <if test="TYPE!= null and TYPE!= ''">
+                and b.STCD in(select STCD from ST_STBPRP_F where TYPE=#{TYPE})
+            </if>
+        </where>
+        )b
+    </select>
+</mapper>

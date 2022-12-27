@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.JcQsssMapper">
+    <resultMap id="ShuiZhaResultMap" type="vip.yingmen.pojo.JiChuQuShuiSheShiShuiZha">
+        <result column="SLNM" jdbcType="VARCHAR" property="SLNM"/>
+        <result column="SLTP" jdbcType="VARCHAR" property="SLTP"/>
+        <result column="GTHLAM" jdbcType="VARCHAR" property="GTHLAM"/>
+        <result column="GTHLNTHG" jdbcType="VARCHAR" property="GTHLNTHG"/>
+        <result column="GTHLNTWD" jdbcType="VARCHAR" property="GTHLNTWD"/>
+        <result column="GTTTWD" jdbcType="VARCHAR" property="GTTTWD"/>
+        <result column="GTTTLEN" jdbcType="VARCHAR" property="GTTTLEN"/>
+        <result column="AD_NM" jdbcType="VARCHAR" property="AD_NM"/>
+        <result column="AD_NM" jdbcType="VARCHAR" property="ADDVCD"/>
+    </resultMap>
+    <select id="findByShuiZha" resultMap="ShuiZhaResultMap" parameterType="java.lang.String">
+        select * from (select ADDVCD,SLNM,(select FieldName from WRP_FieldInfo where FormID='WRP_IrrBAWaterGate' and FieldID='SLTP' and Field=SLTP) as SLTP,
+        GTHLAM,GTHLNTHG,GTHLNTWD,GTTTWD,GTTTLEN,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM,
+        ROW_NUMBER() OVER(ORDER BY ID) as RowId
+        from WRP_IrrBAWaterGate
+        <where>
+            <if test="SLNM!= null and SLNM!= ''">
+                SLNM like '%'+#{SLNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and ADDVCD like #{ADDVCD}+'%'
+            </if>
+            <if test="SLTP!= null and SLTP!= ''">
+                and SLTP=#{SLTP}
+            </if>
+            <if test="GS!= null and GS!= ''">
+                and GS=#{GS}
+            </if>
+        </where>
+        )b
+    </select>
+
+    <resultMap id="SheShiResultMap" type="vip.yingmen.pojo.JCQSSSSheShi">
+        <result column="FStructure_Name" jdbcType="VARCHAR" property="fstructureName"/>
+        <result column="FStructure_Type" jdbcType="VARCHAR" property="fstructureType"/>
+        <result column="Fetch_Mode" jdbcType="VARCHAR" property="fetchMode"/>
+    </resultMap>
+    <select id="findBySheShi" resultMap="SheShiResultMap" parameterType="java.lang.String">
+        select * from (select case FStructure_Type when 1 then (select SLNM from WRP_IrrBAWaterGate where SLCD=FStructure_Code)
+        when 2 then (select Dam_Name from WRP_IrrBFStructure_Dam where Dam_Code=FStructure_Code)
+        when 3 then (select IDSTNM from WRP_IrrBFPumpStation where IDSTCD=FStructure_Code) end as FStructure_Name,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IrrBFStructure' and FieldID='FStructure_Type' and Field=FStructure_Type) as FStructure_Type,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IrrBFStructure' and FieldID='Fetch_Mode' and Field=Fetch_Mode) as Fetch_Mode,
+        ROW_NUMBER() OVER(ORDER BY ID) as RowId
+        from WRP_IrrBFStructure
+        <where>
+            <if test="FStructure_Name!= null and FStructure_Name!= ''">
+                FStructure_Code in(select SLCD from WRP_IrrBAWaterGate where SLNM like '%'+#{FStructure_Name}+'%' union all select Dam_Code from WRP_IrrBFStructure_Dam where Dam_Name like '%'+#{FStructure_Name}+'%' union all select IDSTCD from WRP_IrrBFPumpStation where IDSTNM like '%'+#{FStructure_Name}+'%')
+            </if>
+            <if test="FStructure_Type!= null and FStructure_Type!= ''">
+                and FStructure_Type = #{FStructure_Type}
+            </if>
+            <if test="Fetch_Mode!= null and Fetch_Mode!= ''">
+                and Fetch_Mode=#{Fetch_Mode}
+            </if>
+            <if test="GS!= null and GS!= ''">
+                and GS=#{GS}
+            </if>
+        </where>
+        )b
+    </select>
+
+    <resultMap id="BaResultMap" type="vip.yingmen.pojo.JCQSSSBa">
+        <result column="Dam_Type" jdbcType="VARCHAR" property="damType"/>
+        <result column="Dam_Grade" jdbcType="VARCHAR" property="damGrade"/>
+        <result column="Dam_Name" jdbcType="VARCHAR" property="damName"/>
+        <result column="Structure_Type" jdbcType="VARCHAR" property="structureType"/>
+        <result column="Dam_Height" jdbcType="VARCHAR" property="damHeight"/>
+        <result column="Standard_FC" jdbcType="VARCHAR" property="standardFc"/>
+    </resultMap>
+    <select id="findByBa" resultMap="BaResultMap" parameterType="java.lang.String">
+        select * from (select Dam_Name,(select FieldName from WRP_FieldInfo where FormID='WRP_IrrBFStructure_Dam' and FieldID='Dam_Type' and Field=Dam_Type) as Dam_Type,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IrrBFStructure_Dam' and FieldID='Dam_Grade' and Field=Dam_Grade) as Dam_Grade,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IrrBFStructure_Dam' and FieldID='Structure_Type' and Field=Structure_Type) as Structure_Type,
+        Dam_Height,Standard_FC,
+        ROW_NUMBER() OVER(ORDER BY ID) as RowId
+        from WRP_IrrBFStructure_Dam
+        <where>
+            <if test="Dam_Name!= null and Dam_Name!= ''">
+                Dam_Name like '%'+#{Dam_Name}+'%'
+            </if>
+            <if test="Dam_Type!= null and Dam_Type!= ''">
+                and Dam_Type = #{Dam_Type}
+            </if>
+            <if test="Dam_Grade!= null and Dam_Grade!= ''">
+                and Dam_Grade=#{Dam_Grade}
+            </if>
+            <if test="Structure_Type!= null and Structure_Type!= ''">
+                and Structure_Type=#{Structure_Type}
+            </if>
+            <if test="GS!= null and GS!= ''">
+                and GS=#{GS}
+            </if>
+        </where>
+        )b
+    </select>
+
+
+    <resultMap id="BengZhanResultMap" type="vip.yingmen.pojo.JCQSSSBengZhan">
+        <result column="IDSTNM" jdbcType="VARCHAR" property="idstnm"/>
+        <result column="IDSTTP" jdbcType="VARCHAR" property="idsttp"/>
+        <result column="INPW" jdbcType="VARCHAR" property="inpw"/>
+        <result column="UNAM" jdbcType="VARCHAR" property="unam"/>
+        <result column="DRAR" jdbcType="VARCHAR" property="drar"/>
+        <result column="IRAR" jdbcType="VARCHAR" property="irar"/>
+        <result column="CPYR" jdbcType="VARCHAR" property="cPyr"/>
+        <result column="AD_NM" jdbcType="VARCHAR" property="adnm"/>
+    </resultMap>
+    <select id="findByBengZhan" resultMap="BengZhanResultMap" parameterType="java.lang.String">
+        select * from (select IDSTNM,(select FieldName from WRP_FieldInfo where FormID='WRP_IrrBFPumpStation' and FieldID='IDSTTP' and Field=IDSTTP) as IDSTTP,INPW,INFLW,UNAM,DRAR,IRAR,CPYR,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM,
+        ROW_NUMBER() OVER (ORDER BY ID) as RowId
+        from WRP_IrrBFPumpStation
+        <where>
+            <if test="IDSTNM!= null and IDSTNM!= ''">
+                IDSTNM like '%'+#{IDSTNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and ADDVCD like #{ADDVCD}+'%'
+            </if>
+            <if test="IDSTTP!= null and IDSTTP!= ''">
+                and IDSTTP=#{IDSTTP}
+            </if>
+            <if test="GS!= null and GS!= ''">
+                and GS=#{GS}
+            </if>
+        </where>
+        )b
+    </select>
+</mapper>

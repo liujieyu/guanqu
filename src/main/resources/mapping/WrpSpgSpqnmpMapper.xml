@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.WrpSpgSpqnmpMapper">
+    <!-- 断面信息 -->
+    <resultMap id="DmInfoMap" type="vip.yingmen.pojo.WrpSectionB">
+        <id column="ID" property="id" />
+        <result column="STCD" property="stcd" />
+        <result column="DAMCD" property="damcd" />
+        <result column="WALL_TYPE" property="wallType" />
+        <result column="DAMLEN" property="damlen" />
+        <result column="DAMWD" property="damwd" />
+        <result column="TEXT" property="text" />
+        <result column="DTUPTIM" property="dtuptim" />
+        <result column="STNM" property="stnm" />
+        <result column="AD_NM" property="adnm" />
+    </resultMap>
+    <!-- 断面特征信息 -->
+    <resultMap id="DmtzInfoMap" type="vip.yingmen.pojo.WrpDamsB">
+        <id column="ID" property="id" />
+        <result column="STCD" property="stcd" />
+        <result column="DAMCD" property="damcd" />
+        <result column="DAMSCD" property="damscd" />
+        <result column="DAMSNM" property="damsnm" />
+        <result column="REDI" property="redi" />
+        <result column="POEL" property="poel" />
+        <result column="DTUPTM" property="dtuptm" />
+    </resultMap>
+    <!-- 渗流量测点信息 -->
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.WrpSpgSpqnmp">
+        <id column="ID" property="id" />
+        <result column="STCD" property="stcd" />
+        <result column="DAMCD" property="damcd" />
+        <result column="MPCD" property="mpcd" />
+        <result column="CH" property="ch" />
+        <result column="OFAX" property="ofax" />
+        <result column="EL" property="el" />
+        <result column="INDT" property="indt" />
+        <result column="DVCD" property="dvcd" />
+        <result column="ESLG" property="eslg" />
+        <result column="NRLT" property="nrlt" />
+        <result column="RM" property="rm" />
+        <result column="DTUPTM" property="dtuptm" />
+        <result column="DHNAME" property="dhname" />
+        <result column="SETINFO" property="setinfo" />
+        <result column="TDMIN" property="tdmin" />
+        <result column="SPPRWL" property="spprwl" />
+        <result column="STNM" property="stnm" />
+        <result column="AD_NM" property="adnm" />
+    </resultMap>
+    <!-- 渗流量设施信息 -->
+    <resultMap id="SllssInfoMap" type="vip.yingmen.pojo.WrpSpgLsy">
+        <id column="ID" property="id" />
+        <result column="MPCD" property="mpcd" />
+        <result column="LTYPE" property="ltype" />
+        <result column="DHNAME" property="dhname" />
+        <result column="SETINFO" property="setinfo" />
+        <result column="TDMIN" property="tdmin" />
+        <result column="SPPRWL" property="spprwl" />
+        <result column="INDT" property="indt" />
+        <result column="DVCD" property="dvcd" />
+        <result column="DTUPTM" property="dtuptm" />
+    </resultMap>
+    <!-- 渗压管信息 -->
+    <resultMap id="SygInfoMap" type="vip.yingmen.pojo.WrpSpgPztb">
+        <id column="ID" property="id" />
+        <result column="STCD" property="stcd" />
+        <result column="DAMCD" property="damcd" />
+        <result column="MPCD" property="mpcd" />
+        <result column="CH" property="ch" />
+        <result column="OFAX" property="ofax" />
+        <result column="MSPS" property="msps" />
+        <result column="IPBTEL" property="ipbtel" />
+        <result column="IPTPEL" property="iptpel" />
+        <result column="TBTPEL" property="tbtpel" />
+        <result column="TBBTEL" property="tbbtel" />
+        <result column="PZTBTEL" property="pztbtel" />
+        <result column="DVCD" property="dvcd" />
+        <result column="ESLG" property="eslg" />
+        <result column="NRLT" property="nrlt" />
+        <result column="RM" property="rm" />
+        <result column="EL" property="el" />
+        <result column="MSTP" property="mstp" />
+        <result column="DTUPTM" property="dtuptm" />
+        <result column="STNM" property="stnm" />
+        <result column="AD_NM" property="adnm" />
+    </resultMap>
+    <!-- 表面水平位移信息 -->
+    <resultMap id="SpwyInfoMap" type="vip.yingmen.pojo.WrpDfrSrhrdsmp">
+        <id column="ID" property="id" />
+        <result column="STCD" property="stcd" />
+        <result column="DAMCD" property="damcd" />
+        <result column="MPCD" property="mpcd" />
+        <result column="CH" property="ch" />
+        <result column="OFAX" property="ofax" />
+        <result column="EL" property="el" />
+        <result column="STVLX" property="stvlx" />
+        <result column="STVLY" property="stvly" />
+        <result column="XYHRDS" property="xyhrds" />
+        <result column="TP" property="tp" />
+        <result column="BSIN" property="bsin" />
+        <result column="INDT" property="indt" />
+        <result column="DTDT" property="dtdt" />
+        <result column="DVCD" property="dvcd" />
+        <result column="ESLG" property="eslg" />
+        <result column="NRLT" property="nrlt" />
+        <result column="RM" property="rm" />
+        <result column="DTUPTM" property="dtuptm" />
+        <result column="STNM" property="stnm" />
+        <result column="AD_NM" property="adnm" />
+    </resultMap>
+    <!-- 表面垂直位移信息 -->
+    <resultMap id="CjwyInfoMap" type="vip.yingmen.pojo.WrpDfrSrvrdsmp">
+        <id column="ID" property="id" />
+        <result column="STCD" property="stcd" />
+        <result column="DAMCD" property="damcd" />
+        <result column="MPCD" property="mpcd" />
+        <result column="CH" property="ch" />
+        <result column="OFAX" property="ofax" />
+        <result column="INEL" property="inel" />
+        <result column="VRDS" property="vrds" />
+        <result column="TP" property="tp" />
+        <result column="BSIN" property="bsin" />
+        <result column="INDT" property="indt" />
+        <result column="DTDT" property="dtdt" />
+        <result column="DVCD" property="dvcd" />
+        <result column="ESLG" property="eslg" />
+        <result column="NRLT" property="nrlt" />
+        <result column="RM" property="rm" />
+        <result column="DTUPTM" property="dtuptm" />
+        <result column="STNM" property="stnm" />
+        <result column="AD_NM" property="adnm" />
+    </resultMap>
+    <!--行政区划树信息-->
+    <resultMap id="XzqhTreeInfo" type="vip.yingmen.pojo.TreeData">
+        <result column="STCD" property="stcd"/>
+        <result column="STNM" property="stnm"/>
+        <result column="AD_CD" property="adcd"/>
+        <result column="AD_NM" property="adnm"/>
+        <result column="UP_ADCD" property="updacd"/>
+        <result column="UP_NM" property="upnm"/>
+    </resultMap>
+    <!--根据断面编号获取断面信息-->
+    <select id="findSafeDmInfoByDmbh" parameterType="java.lang.String" resultMap="DmInfoMap">
+    select w.STCD,DAMCD,DAMLEN,DAMWD,CONVERT(varchar(16),DTUPTIM,120) as DTUPTIM,(select FieldName from WRP_FieldInfo where FormANDFieldID='2801' and FieldID='WALL_TYPE' and Field=w.WALL_TYPE) as WALL_TYPE from WRP_SECTION_B w where DAMCD=#{DAMCD}
+    </select>
+    <!--根据断面编号获取断面特征信息-->
+    <select id="findSafeDmtzInfoByDmbh" parameterType="java.lang.String" resultMap="DmtzInfoMap">
+        select STCD,DAMCD,DAMSCD,DAMSNM,REDI,POEL,CONVERT(varchar(16),DTUPTM,120) as DTUPTM from WRP_DAMS_B where DAMCD=#{DAMCD}
+    </select>
+    <!--根据测点编号获取渗流量测点信息-->
+    <select id="findSafeSllInfoByCdbh" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select s.STCD,s.DAMCD,s.MPCD,s.CH,s.OFAX,s.EL,s.INDT,s.DVCD,s.ESLG,s.NRLT,CONVERT(varchar(16),s.DTUPTM,120) as DTUPTM,(select FieldName from WRP_FieldInfo where FormID='WRP_SPG_LSY' and FieldID='LTYPE' and Field=l.LTYPE)as LTYPE,l.DHNAME,l.TDMIN,l.SPPRWL from (select *from WRP_SPG_SPQNMP where MPCD=#{MPCD}) s
+        inner join (select * from WRP_SPG_LSY where MPCD=#{MPCD}) l on s.MPCD=l.MPCD
+    </select>
+    <!--根据测点编号获取渗压管信息-->
+    <select id="findSafeSYgInfoByCdbh" parameterType="java.lang.String" resultMap="SygInfoMap">
+        select STCD,DAMCD,MPCD,CH,case when OFAX>=0 then '下游'+convert(varchar(20),ABS(OFAX)) else '上游'+convert(varchar(20),ABS(OFAX)) end as OFAX,(select FieldName from WRP_FieldInfo where FormID='WRP_SPG_PZTB' and FieldID='MSPS' and Field=w.MSPS)as MSPS,IPBTEL,IPTPEL,TBTPEL,TBBTEL,PZTBTEL,DVCD,ESLG,NRLT,EL,(select FieldName from WRP_FieldInfo where FormANDFieldID='3002' and FieldID='MSTP' and Field=w.MSTP)as MSTP,CONVERT(varchar(16),DTUPTM,120) as DTUPTM from WRP_SPG_PZTB w
+        where MPCD=#{MPCD}
+    </select>
+    <!--根据测点编号获取表面水平位移信息-->
+    <select id="findSafeSpwyInfoByCdbh" parameterType="java.lang.String" resultMap="SpwyInfoMap">
+        select ID,STCD,DAMCD,MPCD,CH,OFAX,EL,STVLX,STVLY,XYHRDS,TP,BSIN,substring(CONVERT(varchar(100), INDT, 120),1,10) as INDT,substring(CONVERT(varchar(100), DTDT, 120),1,10) as DTDT,DVCD,ESLG,NRLT,substring(CONVERT(varchar(100), DTUPTM, 120),1,16) as DTUPTM from WRP_DFR_SRHRDSMP where MPCD=#{MPCD}
+    </select>
+    <!--根据测点编号获取表面垂直位移信息-->
+    <select id="findSafeCzwyInfoByCdbh" parameterType="java.lang.String" resultMap="CjwyInfoMap">
+        select ID,STCD,DAMCD,MPCD,CH,OFAX,INEL,VRDS,TP,BSIN,substring(CONVERT(varchar(100), INDT, 120),1,10) as INDT,substring(CONVERT(varchar(100), DTDT, 120),1,10) as DTDT,DVCD,ESLG,NRLT,substring(CONVERT(varchar(100), DTUPTM, 120),1,16) as DTUPTM from WRP_DFR_SRVRDSMP where MPCD=#{MPCD}
+    </select>
+    <!--获取断面信息表格数据-->
+    <select id="findDuanmianInfoByPage" parameterType="java.util.Map" resultMap="DmInfoMap">
+    select b.STNM,(select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,w.STCD,DAMCD,DAMLEN,DAMWD,CONVERT(varchar(16),DTUPTIM,120) as DTUPTIM,(select FieldName from WRP_FieldInfo where FormANDFieldID='2801' and FieldID='WALL_TYPE' and Field=w.WALL_TYPE) as WALL_TYPE from WRP_SECTION_B w inner join ST_STBPRP_B b on w.STCD=b.STCD
+        <where>
+        <if test="STNM!= null and STNM!= ''">
+            (b.stnm like '%'+#{STNM}+'%' or w.DAMCD like '%'+#{STNM}+'%')
+        </if>
+        <if test="ADDlist != null and ADDlist.size > 0">
+            and
+            <foreach collection="ADDlist" item="ADDVCD" separator=" or ">
+                (b.addvcd like #{ADDVCD}+'%')
+            </foreach>
+        </if>
+        <if test="WALLTYPE !=null and WALLTYPE !=''">
+            and w.WALL_TYPE=#{WALLTYPE}
+        </if>
+        </where>
+    </select>
+    <!--渗流量信息表格数据-->
+    <select id="findShenliuInfoByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select b.STNM,(select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,s.STCD,s.DAMCD,s.MPCD,s.CH,s.OFAX,s.EL,l.TDMIN,l.SPPRWL from WRP_SPG_SPQNMP s
+        inner join WRP_SPG_LSY l on s.MPCD=l.MPCD inner join ST_STBPRP_B b on s.STCD=b.STCD
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                (b.stnm like '%'+#{STNM}+'%' or s.DAMCD like '%'+#{STNM}+'%' or s.MPCD like '%'+#{STNM}+'%')
+            </if>
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" separator=" or ">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <!--渗流压力信息表格数据-->
+    <select id="fineSheyaInfoByPage" parameterType="java.util.Map" resultMap="SygInfoMap">
+        select b.STNM,(select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,w.STCD,DAMCD,MPCD,CH,OFAX,(select FieldName from WRP_FieldInfo where FormANDFieldID='3001' and FieldID='MSPS' and Field=w.MSPS)as MSPS,PZTBTEL,EL from WRP_SPG_PZTB w
+        inner join ST_STBPRP_B b on w.STCD=b.STCD
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                (b.stnm like '%'+#{STNM}+'%' or w.DAMCD like '%'+#{STNM}+'%' or w.MPCD like '%'+#{STNM}+'%')
+            </if>
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" separator=" or ">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
+            </if>
+            <if test="MSPS !=null and MSPS !=''">
+                and w.MSPS=#{MSPS}
+            </if>
+        </where>
+    </select>
+    <!--水平位移信息表格数据-->
+    <select id="fineWeiyiInfoByPage" parameterType="java.util.Map" resultMap="SpwyInfoMap">
+       select b.STNM,(select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,w.STCD,DAMCD,MPCD,CH,OFAX,EL,STVLX,STVLY,XYHRDS from WRP_DFR_SRHRDSMP w
+        inner join ST_STBPRP_B b on w.STCD=b.STCD
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                (b.stnm like '%'+#{STNM}+'%' or w.DAMCD like '%'+#{STNM}+'%' or w.MPCD like '%'+#{STNM}+'%')
+            </if>
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" separator=" or ">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <!--沉降位移信息表格数据-->
+    <select id="fineChenjiangInfoByPage" parameterType="java.util.Map" resultMap="CjwyInfoMap">
+        select b.STNM,(select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,w.STCD,DAMCD,MPCD,CH,OFAX,INEL,VRDS from WRP_DFR_SRVRDSMP w
+        inner join ST_STBPRP_B b on w.STCD=b.STCD
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                (b.stnm like '%'+#{STNM}+'%' or w.DAMCD like '%'+#{STNM}+'%' or w.MPCD like '%'+#{STNM}+'%')
+            </if>
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" separator=" or ">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <!--行政区划树数据-->
+    <select id="findXzqhAndSiteTreeData" parameterType="java.lang.String" resultMap="XzqhTreeInfo">
+        select b.STCD,b.STNM,w.AD_CD,w.AD_NM,w.UP_ADCD,(select AD_NM from WRP_AD_B as up where up.AD_CD=w.UP_ADCD) as UP_NM from
+        (select STCD,STNM,ADDVCD from ST_STBPRP_B) as b inner join WRP_AD_B w on b.ADDVCD=w.AD_CD
+        where b.STCD in (select STCD from ${TABLENAME})
+    </select>
+    <!--查询测点编号-->
+    <select id="findCdbhByTable" resultType="java.util.Map">
+      select MPCD as value,MPCD as label from ${TABLENAME} where STCD=#{STCD}
+    </select>
+</mapper>

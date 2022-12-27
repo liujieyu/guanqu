@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.JcLyMapper">
+    <resultMap id="LyResultMap" type="vip.yingmen.pojo.JcLiuYuXinXi">
+        <result column="CTNM" jdbcType="VARCHAR" property="ctnm" />
+        <result column="VA" jdbcType="VARCHAR" property="va" />
+        <result column="RK" jdbcType="VARCHAR" property="rk" />
+        <result column="GD" jdbcType="VARCHAR" property="gd" />
+        <result column="Address" jdbcType="VARCHAR" property="address" />
+        <result column="GS" jdbcType="VARCHAR" property="gs" />
+    </resultMap>
+    <select id="findByJcLiuYuXinXi" resultMap="LyResultMap" parameterType="java.lang.String">
+        select * from (select CTNM,VA,RK,GD,Address,
+        (select IRANM from WRP_IRA_BSIN where IRACD=l.GS) as GS,
+        ROW_NUMBER() OVER(ORDER BY l.ID) as RowId
+        from WRP_LY_BSIN l
+        <where>
+            <if test="GS!= null and GS!= ''">
+               GS = #{GS}
+            </if>
+            <if test="CTNM!= null and CTNM!= ''">
+                and a.CTNM like '%'+#{CTNM}+'%'
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>
