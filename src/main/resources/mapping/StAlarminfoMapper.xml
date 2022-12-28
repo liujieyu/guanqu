@@ -36,6 +36,7 @@
         <result column="TWH_P" property="twhP" />
         <result column="OD_P" property="odP" />
         <result column="MEMO" property="memo" />
+        <result column="STLC" property="stlc" />
     </resultMap>
     <!-- 水库水位预警指标查询映射结果 -->
     <resultMap id="StRsvAlarmResultMap" type="vip.yingmen.entity.StRsvAlarm">
@@ -131,17 +132,29 @@
         <if test="stnm != null &amp;&amp; stnm != ''">
             and b.STNM like '%'+#{stnm}+'%'
         </if>
+        <if test="ADDlist != null and ADDlist.size > 0">
+            and
+            <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                b.ADDVCD like #{ADDVCD}+'%'
+            </foreach>
+        </if>
     </select>
     <!--降雨预警指标分页查询-->
     <select id="selectStPpAlarmByPage" resultMap="StPpAlarmResultMap" parameterType="vip.yingmen.entity.LvDingParam">
     select * from
-    (select b.STNM,a.STCD,a.EWL,(select FieldName from WRP_FieldInfo where FormID='ST_PP_Alarm' and FieldID='EWL' and Field=a.EWL) as EWLNAME,a.PTD_P,a.OH_P,a.TH_P,a.SH_P,a.TWH_P,a.OD_P, ROW_NUMBER() OVER(Order by ${orderBy} ${sequence}) AS RowId
+    (select b.STNM,STLC,a.STCD,a.EWL,(select FieldName from WRP_FieldInfo where FormID='ST_PP_Alarm' and FieldID='EWL' and Field=a.EWL) as EWLNAME,a.PTD_P,a.OH_P,a.TH_P,a.SH_P,a.TWH_P,a.OD_P, ROW_NUMBER() OVER(Order by ${orderBy} ${sequence}) AS RowId
     from ST_PP_Alarm a inner join st_stbprp_b b on a.STCD=b.STCD where 1=1
         <if test="types != null &amp;&amp; types > 0 ">
             and a.EWL=#{types}
         </if>
         <if test="stnm != null &amp;&amp; stnm != ''">
             and b.STNM like '%'+#{stnm}+'%'
+        </if>
+        <if test="ADDlist != null and ADDlist.size > 0">
+            and
+            <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                b.ADDVCD like #{ADDVCD}+'%'
+            </foreach>
         </if>
     ) as b where RowId between #{begincount} and #{endcount}
     </select>

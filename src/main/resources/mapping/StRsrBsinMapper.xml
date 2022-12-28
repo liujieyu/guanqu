@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.StRsrBsinMapper">
+
+    <!-- 水库站基本信息查询映射结果 -->
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.StRsrBsin">
+        <id column="ID" property="id" />
+        <result column="STCD" property="stcd" />
+        <result column="RTUNM" property="rtunm" />
+        <result column="RVCD" property="rvcd" />
+        <result column="HNNM" property="hnnm" />
+        <result column="CTCD" property="ctcd" />
+        <result column="LGTD1" property="lgtd1" />
+        <result column="LTTD1" property="lttd1" />
+        <result column="STLC" property="stlc" />
+        <result column="ADDVCD" property="addvcd" />
+        <result column="DTMNM" property="dtmnm" />
+        <result column="DTMEL" property="dtmel" />
+        <result column="DTPR" property="dtpr" />
+        <result column="STTP" property="sttp" />
+        <result column="FRGRD" property="frgrd" />
+        <result column="DRNA" property="drna" />
+        <result column="PHCD" property="phcd" />
+        <result column="USFL" property="usfl" />
+        <result column="COMMENTS" property="comments" />
+        <result column="ADDTIME" property="addtime" />
+        <result column="DTUPTM" property="dtuptm" />
+    </resultMap>
+    <!--防洪基本信息-->
+    <resultMap id="StRsrHychMap" type="vip.yingmen.pojo.StRsrHych">
+        <id column="ID" property="id" />
+        <result column="STCD" property="stcd" />
+        <result column="RSVRTP" property="rsvrtp" />
+        <result column="DAMEL" property="damel" />
+        <result column="CHFL" property="chfl" />
+        <result column="DSFL" property="dsfl" />
+        <result column="NORMZ" property="normz" />
+        <result column="DDWZ" property="ddwz" />
+        <result column="ACTZ" property="actz" />
+        <result column="TTCP" property="ttcp" />
+        <result column="FLDCP" property="fldcp" />
+        <result column="ACTCP" property="actcp" />
+        <result column="DDCP" property="ddcp" />
+        <result column="HHRZ" property="hhrz" />
+        <result column="HMXW" property="hmxw" />
+        <result column="LAZ" property="laz" />
+        <result column="SFQ" property="sfq" />
+        <result column="MODITIME" property="moditime" />
+        <result column="DTUPTM" property="dtuptm" />
+        <result column="SWL" jdbcType="NUMERIC" property="SWL" />
+        <result column="FWL" jdbcType="NUMERIC" property="FWL" />
+        <result column="FWL79" jdbcType="NUMERIC" property="FWL79" />
+        <result column="ZCWL" jdbcType="NUMERIC" property="ZCWL" />
+        <result column="SJWL" jdbcType="NUMERIC" property="SJWL" />
+        <result column="XHWL" jdbcType="NUMERIC" property="XHWL" />
+    </resultMap>
+    <!--水库站基本信息查询-->
+    <select id="selectRsrBsinInfoByCon" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select * from ST_RSR_BSIN
+        <where>
+            <if test="STCD !=null and STCD != ''">
+                STCD=#{STCD}
+            </if>
+            <if test="STNM!= null and STNM!= ''">
+              and  RTUNM like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    ADDVCD like #{ADDVCD}+'%'
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <!--测站防洪基本信息查询-->
+    <select id="selectRsrHychByCon" resultMap="StRsrHychMap" parameterType="java.util.Map">
+      select s.STCD,b.STNM,b.STLC,b.ADDVCD,a.FWL,a.FWL79,a.SWL,a.ZCWL,a.SJWL,a.XHWL,(select FieldName from WRP_FieldInfo where FormID='ST_RSVR_R1' and FieldID='LEVEL' and Field=s.RSVRTP) as RSVRTP,s.DAMEL,s.CHFL,s.DSFL,s.NORMZ,s.DDWZ,s.ACTZ,s.TTCP,s.FLDCP,s.ACTCP,s.DDCP,s.HHRZ,s.HMXW,s.LAZ,s.SFQ from ST_RSR_HYCH s inner join ST_STBPRP_B b on s.STCD=b.STCD inner join ST_RSV_Alarm a on s.STCD=a.STCD
+      <where>
+          <if test="STCD !=null and STCD != ''">
+              s.STCD=#{STCD}
+          </if>
+          <if test="STNM!= null and STNM!= ''">
+              and  b.STNM like '%'+#{STNM}+'%'
+          </if>
+          <if test="ADDlist != null and ADDlist.size > 0">
+              and
+              <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                  b.ADDVCD like #{ADDVCD}+'%'
+              </foreach>
+          </if>
+      </where>
+    </select>
+</mapper>
