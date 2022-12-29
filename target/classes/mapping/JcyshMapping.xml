@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.JcYshMapper">
+    <resultMap id="YongShuiHuResultMap" type="vip.yingmen.pojo.JcyshYongShuiHu">
+        <result column="Cell_Name" jdbcType="VARCHAR" property="cellName" />
+        <result column="Cell_Code" jdbcType="VARCHAR" property="cellCode" />
+        <result column="Cell_Type" jdbcType="VARCHAR" property="cellType" />
+        <result column="GS" jdbcType="VARCHAR" property="gs" />
+    </resultMap>
+    <select id="findByYongShuiHu" resultMap="YongShuiHuResultMap" parameterType="java.lang.String">
+        select * from (select Cell_Name,Cell_Code,(select FieldName from WRP_FieldInfo where FormID='WRP_IrrBUUser' and FieldID='Cell_Typ' and Field=Cell_Type) as Cell_Type,
+        (select IRANM from WRP_IRA_BSIN where IRACD=i.GS) as GS,
+        ROW_NUMBER() OVER(ORDER BY ID) as RowId
+        from WRP_IrrBUUser i
+        <where>
+            <if test="Cell_Type!= null and Cell_Type!= ''">
+                Cell_Type = #{Cell_Type}
+            </if>
+            <if test="GS!= null and GS!= ''">
+                and GS = #{GS}
+            </if>
+            <if test="Cell_Name!= null and Cell_Name!= ''">
+                and Cell_Name like '%'+#{Cell_Name}+'%'
+            </if>
+        </where>
+        ) as b
+    </select>
+
+    <resultMap id="NonYeYongShuiResultMap" type="vip.yingmen.pojo.JcyshNonYeYongShui">
+        <result column="Cell_Name" jdbcType="VARCHAR" property="cellName" />
+        <result column="TotalArea" jdbcType="VARCHAR" property="totalArea" />
+        <result column="AD_NM" jdbcType="VARCHAR" property="adnm" />
+        <result column="Canal_Name" jdbcType="VARCHAR" property="canalName" />
+        <result column="GS" jdbcType="VARCHAR" property="gs" />
+    </resultMap>
+    <select id="findByNonYeYongShui" resultMap="NonYeYongShuiResultMap" parameterType="java.lang.String">
+        select * from (select u.Cell_Name,TotalArea,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=i.AD_CD) as AD_NM,
+        (select Canal_Name from WRP_IrrBTCanalSystem s where s.Canal_Code=i.Canal_Code) as Canal_Name,
+        (select IRANM from WRP_IRA_BSIN where IRACD=u.GS) as GS,
+        ROW_NUMBER() OVER(ORDER BY i.ID) as RowId
+        from WRP_IrrBUUser_AGCL i inner join WRP_IrrBUUser u on u.Cell_Type=1 and u.Cell_Code=i.Cell_Code
+        <where>
+            <if test="Cell_Name!= null and Cell_Name!= ''">
+                 u.Cell_Name like '%'+#{Cell_Name}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and (Canal_Code=#{Canal_Code} or Canal_Code in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code})))
+            </if>
+            <if test="AD_CD!= null and AD_CD!= ''">
+                and AD_CD like #{AD_CD}+'%'
+            </if>
+        </where>
+        ) as b
+    </select>
+
+    <resultMap id="GongYeYongShuiResultMap" type="vip.yingmen.pojo.JcyshGongYeYongShui">
+        <result column="Cell_Name" jdbcType="VARCHAR" property="cellName" />
+        <result column="ID_NM" jdbcType="VARCHAR" property="idnm" />
+        <result column="Yield" jdbcType="VARCHAR" property="yield" />
+        <result column="Quota" jdbcType="VARCHAR" property="quota" />
+        <result column="AD_NM" jdbcType="VARCHAR" property="adnm" />
+        <result column="Canal_Name" jdbcType="VARCHAR" property="canalName" />
+        <result column="GS" jdbcType="VARCHAR" property="gs" />
+    </resultMap>
+    <select id="findByGongYeYongShui" resultMap="GongYeYongShuiResultMap" parameterType="java.lang.String">
+        select * from (select u.Cell_Name,(select ID_NM from WRP_IrrBUUser_IndItem w where w.ID_CD=i.ID_CD) as ID_NM,Yield,Quota,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=i.AD_CD) as AD_NM,
+        (select Canal_Name from WRP_IrrBTCanalSystem s where s.Canal_Code=i.Canal_Code) as Canal_Name,
+        (select IRANM from WRP_IRA_BSIN where IRACD=u.GS) as GS,
+        ROW_NUMBER() OVER(ORDER BY i.ID) as RowId
+        from WRP_IrrBUUser_IDCL i inner join WRP_IrrBUUser u on u.Cell_Type=2 and u.Cell_Code=i.Cell_Code
+        <where>
+            <if test="Cell_Name!= null and Cell_Name!= ''">
+                u.Cell_Name like '%'+#{Cell_Name}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and (Canal_Code=#{Canal_Code} or Canal_Code in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code})))
+            </if>
+            <if test="AD_CD!= null and AD_CD!= ''">
+                and AD_CD like #{AD_CD}+'%'
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

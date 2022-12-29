@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.WRP_LY_BSINMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.WRP_LY_BSIN">
+        <result column="ID" jdbcType="INTEGER" property="ID" />
+        <result column="CTCD" jdbcType="VARCHAR" property="CTCD" />
+        <result column="CTNM" jdbcType="VARCHAR" property="CTNM" />
+        <result column="GS" jdbcType="VARCHAR" property="GS" />
+        <result column="IWSCD" jdbcType="VARCHAR" property="IWSCD" />
+        <result column="OWSCD" jdbcType="VARCHAR" property="OWSCD" />
+        <result column="Address" jdbcType="VARCHAR" property="Address" />
+        <result column="VA" jdbcType="NUMERIC" property="VA" />
+        <result column="RK" jdbcType="INTEGER" property="RK" />
+        <result column="GD" jdbcType="NUMERIC" property="GD" />
+        <result column="MEMO" jdbcType="VARCHAR" property="MEMO" />
+    </resultMap>
+    <select id="findByCTCD" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select * from WRP_LY_BSIN
+        <where>
+            <if test="CTCD!= null and CTCD!= ''">
+                CTCD = #{CTCD}
+            </if>
+        </where>
+    </select>
+</mapper>

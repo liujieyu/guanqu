@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.WrpSpgSpprLMapper">
+
+    <!-- 渗流量数据 -->
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.WrpSpgSpprL">
+        <id column="ID" property="id" />
+        <result column="MPCD" property="mpcd" />
+        <result column="MSTM" property="mstm" />
+        <result column="SPPRWL" property="spprwl" />
+        <result column="TM" property="tm" />
+        <result column="WLYZ" property="wlyz" />
+        <result column="WLJYZ" property="wljyz" />
+        <result column="STCD" property="stcd" />
+        <result column="DAMCD" property="damcd" />
+    </resultMap>
+    <!-- 渗流压力数据 -->
+    <resultMap id="SlylResultMap" type="vip.yingmen.pojo.WrpSpgSppr">
+        <id column="ID" property="id" />
+        <result column="MPCD" property="mpcd" />
+        <result column="MSTM" property="mstm" />
+        <result column="SPPRWM" property="spprwm" />
+        <result column="TM" property="tm" />
+        <result column="PZYZ" property="pzyz" />
+        <result column="PZJYZ" property="pzjyz" />
+        <result column="STCD" property="stcd" />
+        <result column="DAMCD" property="damcd" />
+    </resultMap>
+    <!-- 表面位移数据 -->
+    <resultMap id="SpwyResultMap" type="vip.yingmen.pojo.WrpDfrSrhrds">
+        <id column="ID" property="id" />
+        <result column="MPCD" property="mpcd" />
+        <result column="MSTM" property="mstm" />
+        <result column="XHRDS" property="xhrds" />
+        <result column="YHRDS" property="yhrds" />
+        <result column="ESLG" property="eslg" />
+        <result column="NRLT" property="nrlt" />
+        <result column="XYHRDS" property="xyhrds" />
+        <result column="XJYZ" property="xjyz" />
+        <result column="YJYZ" property="yjyz" />
+        <result column="STCD" property="stcd" />
+        <result column="DAMCD" property="damcd" />
+    </resultMap>
+    <!-- 垂直位移数据 -->
+    <resultMap id="CjwyResultMap" type="vip.yingmen.pojo.WrpDfrSrvrds">
+        <id column="ID" property="id" />
+        <result column="MPCD" property="mpcd" />
+        <result column="MSTM" property="mstm" />
+        <result column="VRDS" property="vrds" />
+        <result column="INEL" property="inel" />
+        <result column="VJYZ" property="vjyz" />
+        <result column="VRDSYJ" property="vrdsyj" />
+        <result column="STCD" property="stcd" />
+        <result column="DAMCD" property="damcd" />
+    </resultMap>
+    <!--大坝安全地理数据-->
+    <resultMap id="SafeSiteGisInfoMap" type="vip.yingmen.pojo.SiteSafeInfoGIS">
+        <result column="STCD" property="STCD" />
+        <result column="STTP" property="STTP" />
+        <result column="LTTD" property="LTTD" />
+        <result column="LGTD" property="LGTD" />
+        <result column="STNM" property="STNM" />
+        <result column="AD_NM" property="adnm" />
+    </resultMap>
+    <!--根据条件获取实时大坝站点信息-->
+    <select id="findSafeBySiteInfoGIS" resultMap="SafeSiteGisInfoMap" parameterType="java.util.Map">
+        select * from (select b.ID,b.STTP,b.LGTD,b.LTTD,b.STNM,b.STCD,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+'|'+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,
+        ROW_NUMBER() OVER(Order by p desc) AS RowId from (select * from ST_STBPRP_B where STTP='PQ') b
+        left join (select stcd,sum(p) as p from ST_HP_C where DATEADD(hh,TM,CONVERT(varchar(100), DT, 111)) >='${Time_min}' and DATEADD(hh,TM,CONVERT(varchar(100), DT, 111))&lt;='${Time_max}' group by stcd ) c on b.STCD=c.STCD
+        left join ST_RSVR_R1 r on b.STCD=r.STCD left join ST_RSV_Alarm a on r.STCD=a.STCD
+        inner join ST_StationStatus_R s on b.STCD=s.STCD left join ST_StationStatusType t on s.VOLTYPE=t.VOLTYPE
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    b.addvcd like #{ADDVCD}+'%'
+                </foreach>
+            </if>
+            <if test="STGR!= null and STGR != ''">
+                and b.STGR in (${STGR})
+            </if>
+            <if test="P!= null and P!= ''">
+                and p &gt;= #{P}
+            </if>
+            <if test="LEVEL!= null and LEVEL != ''">
+                and r.level in (${LEVEL})
+            </if>
+            <if test="_stat!= null and _stat!= '' and _stat == 1">
+                and cs=1  and vol &gt;=t.VOLMIN and vol &lt;=t.VOLMAX
+            </if>
+            <if test="_stat!= null and _stat!= '' and _stat == 3">
+                and (vol &lt;t.VOLMIN or vol &gt;t.VOLMAX)
+            </if>
+            <if test="_stat!= null and _stat!= '' and _stat == 4">
+                and (cs=0 or cs is null)
+            </if>
+            <if test="_stat!= null and _stat!= '' and _stat == 2">
+                and (cs=0 or cs is null or vol &lt;t.VOLMIN or vol &gt;t.VOLMAX)
+            </if>
+        </where>
+        ) as b
+    </select>
+    <!--根据水库站点编码条件查询渗流量-->
+    <select id="findSafeSllByStcds" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select w.STCD,w.DAMCD,w.MPCD,CONVERT(varchar(16), l.MSTM, 120) as MSTM,l.SPPRWL,l.TM,y.SPPRWL as WLYZ,(l.SPPRWL-y.SPPRWL) as WLJYZ from WRP_SPG_SPQNMP w
+        inner join WRP_SPG_LSY y on w.MPCD=y.MPCD
+        inner join WRP_SPG_SPPR_L1 l on w.MPCD=l.MPCD
+        <where>
+            <if test="STCDlist !=null and STCDlist.size>0">
+                w.STCD in
+                <foreach collection="STCDlist" item="STCD" open="(" separator="," close=")">
+                    #{STCD}
+                </foreach>
+            </if>
+        </where>
+        order by w.STCD asc,WLJYZ desc
+    </select>
+    <!--根据水库站点编码条件查询渗流压力-->
+    <select id="findSafeSlylByStcds" resultMap="SlylResultMap" parameterType="java.util.Map">
+        select w.STCD,w.DAMCD,r.MPCD,CONVERT(varchar(16), r.MSTM, 120) as MSTM,r.SPPRWM,r.TM,w.PZTBTEL as PZYZ,(r.SPPRWM-w.PZTBTEL) as PZJYZ from WRP_SPG_PZTB w
+        inner join WRP_SPG_SPPR1 r on w.MPCD=r.MPCD
+        <where>
+            <if test="STCDlist !=null and STCDlist.size>0">
+                w.STCD in
+                <foreach collection="STCDlist" item="STCD" open="(" separator="," close=")">
+                    #{STCD}
+                </foreach>
+            </if>
+        </where>
+        order by w.STCD,PZJYZ desc
+    </select>
+    <!--根据水库站点编码条件查询水平位移-->
+    <select id="findSafeSpwyByStcds" resultMap="SpwyResultMap" parameterType="java.util.Map">
+        select w.STCD,w.DAMCD,w.MPCD,w.XYHRDS,CONVERT(varchar(16), s.MSTM, 120) as MSTM,case when s.XHRDS>=0 then '向下游'+convert(varchar(20),ABS(s.XHRDS)) else '向上游'+convert(varchar(20),ABS(s.XHRDS)) end as XHRDS,(ABS(s.XHRDS)-w.XYHRDS) as XJYZ,case when s.YHRDS>=0 then '向左岸'+convert(varchar(20),ABS(s.YHRDS)) else '向右岸'+convert(varchar(20),ABS(s.YHRDS)) end as YHRDS,(ABS(s.YHRDS)-w.XYHRDS) as YJYZ,((ABS(s.XHRDS)-w.XYHRDS)+(ABS(s.YHRDS)-w.XYHRDS)) as ORDERBY from WRP_DFR_SRHRDSMP w
+        inner join WRP_DFR_SRHRDS1 s on w.MPCD=s.MPCD
+        <where>
+            <if test="STCDlist !=null and STCDlist.size>0">
+                w.STCD in
+                <foreach collection="STCDlist" item="STCD" open="(" separator="," close=")">
+                    #{STCD}
+                </foreach>
+            </if>
+        </where>
+        order by w.STCD,ORDERBY desc
+    </select>
+    <!--根据水库站点编码条件查询垂直位移-->
+    <select id="findSafeczwyByStcds" resultMap="CjwyResultMap" parameterType="java.util.Map">
+        select w.STCD,w.DAMCD,w.MPCD,w.VRDS as VRDSYJ,v.INEL,CONVERT(varchar(16), v.MSTM, 120) as MSTM,case when v.VRDS>=0 then '下沉'+convert(varchar(20),ABS(v.VRDS)) else '抬升'+convert(varchar(20),ABS(v.VRDS)) end as VRDS,(ABS(v.VRDS)-w.VRDS) as VJYZ from WRP_DFR_SRVRDSMP w inner join WRP_DFR_SRVRDS1 v on w.MPCD=v.MPCD
+        <where>
+            <if test="STCDlist !=null and STCDlist.size>0">
+                w.STCD in
+                <foreach collection="STCDlist" item="STCD" open="(" separator="," close=")">
+                    #{STCD}
+                </foreach>
+            </if>
+        </where>
+        order by w.STCD,VJYZ desc
+    </select>
+    <!--渗流压力历史数据-->
+    <select id="findSafeSlylBylishi" resultMap="SlylResultMap" parameterType="java.lang.String">
+        select * from (select substring(CONVERT(varchar(100), MSTM, 120),1,16) as MSTM,w.SPPRWM,w.TM, ROW_NUMBER() OVER(Order by MSTM) AS RowId from WRP_SPG_SPPR w
+        where MPCD=#{MPCD}
+        and MSTM>='${Time_min}' and MSTM &lt;='${Time_max}'
+        ) as b
+    </select>
+    <!--渗流量历史数据-->
+    <select id="findSafeSllBylishi" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select * from (select substring(CONVERT(varchar(100), MSTM, 120),1,16) as MSTM,w.SPPRWL,w.TM,ROW_NUMBER() OVER(Order by MSTM) AS RowId from WRP_SPG_SPPR_L w
+        where MPCD=#{MPCD}
+        and MSTM>='${Time_min}' and MSTM &lt;='${Time_max}'
+        ) as b
+    </select>
+    <!--表面水平位移历史数据-->
+    <select id="findSafeSpwyBylishi" resultMap="SpwyResultMap" parameterType="java.lang.String">
+        select * from (select substring(CONVERT(varchar(100), MSTM, 120),1,16) as MSTM,case when w.XHRDS>=0 then '向下游'+convert(varchar(20),ABS(w.XHRDS)) else '向上游'+convert(varchar(20),ABS(w.XHRDS)) end as XHRDS,case when w.YHRDS>=0 then '向左岸'+convert(varchar(20),ABS(w.YHRDS)) else '向右岸'+convert(varchar(20),ABS(w.YHRDS)) end as YHRDS,w.ESLG,w.NRLT,ROW_NUMBER() OVER(Order by MSTM) AS RowId from WRP_DFR_SRHRDS w
+        where MPCD=#{MPCD}
+        and MSTM>='${Time_min}' and MSTM &lt;='${Time_max}'
+        ) as b
+    </select>
+    <!--表面垂直位移历史数据-->
+    <select id="findSafeCzwyBylishi" resultMap="CjwyResultMap" parameterType="java.lang.String">
+        select * from (select substring(CONVERT(varchar(100), MSTM, 120),1,16) as MSTM,case when w.VRDS>=0 then '下沉'+convert(varchar(20),ABS(w.VRDS)) else '抬升'+convert(varchar(20),ABS(w.VRDS)) end as VRDS,w.INEL,ROW_NUMBER() OVER(Order by MSTM) AS RowId from WRP_DFR_SRVRDS w
+        where MPCD=#{MPCD}
+        and MSTM>='${Time_min}' and MSTM &lt;='${Time_max}'
+        ) as b
+    </select>
+    <!--渗流量超阈值统计-->
+    <select id="findSafeSllByTongji" resultType="java.util.Map">
+        select  count(*) as TOTAL,sum(case when b.yjval>0 then 1 else 0 end) as YJNUM  from
+        (select w.STCD,sum(case when(l.SPPRWL-s.SPPRWL)>=0 then 1 else 0  end) as yjval from WRP_SPG_SPPR_L1 l
+        inner join WRP_SPG_SPQNMP w on l.MPCD=w.MPCD
+        inner join WRP_SPG_LSY s on l.MPCD=s.MPCD
+        group by w.STCD) as b
+    </select>
+    <!--渗流压力超阈值统计-->
+    <select id="findSafeSlylByTongji" resultType="java.util.Map">
+        select count(*) as TOTAL,sum(case when b.yjval>0 then 1 else 0 end) as YJNUM from
+        (select w.STCD,sum(case when (l.SPPRWM-w.PZTBTEL)>=0 then 1 else 0 end) as yjval from WRP_SPG_SPPR1 l inner join WRP_SPG_PZTB w on l.MPCD=w.MPCD
+        group by w.STCD) as b
+    </select>
+    <!--位移变形超阈值统计-->
+    <select id="findSafeWybxByTongji" resultType="java.util.Map">
+        select count(*) as TOTAL,sum(case when b.yjval>0 then 1 else 0 end) as YJNUM from
+        (select w.STCD,sum(case when (ABS(s.XHRDS)-w.XYHRDS)>=0 or (ABS(s.YHRDS)-w.XYHRDS)>=0 then 1 else 0 end) as yjval from WRP_DFR_SRHRDS1 s
+        inner join WRP_DFR_SRHRDSMP w on s.MPCD=w.MPCD
+        group by w.STCD) as b
+    </select>
+    <!--沉降变形超阈值统计-->
+    <select id="findSageCjbxByTongji" resultType="java.util.Map">
+        select count(*) as TOTAL,sum(case when b.yjval>0 then 1 else 0 end) as YJNUM from
+        (select w.STCD,sum(case when (ABS(s.VRDS)-w.VRDS)>=0 then 1 else 0 end) as yjval from WRP_DFR_SRVRDS1 s inner join WRP_DFR_SRVRDSMP w on s.MPCD=w.MPCD
+        group by w.STCD) as b
+    </select>
+</mapper>

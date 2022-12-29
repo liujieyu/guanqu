@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_YRP_FMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_YRP_F">
+        <result column="YR" jdbcType="VARCHAR" property="YR" />
+        <result column="P" jdbcType="VARCHAR" property="P" />
+    </resultMap>
+
+    <select id="findBySingleNian" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from (SELECT
+        a.yr,
+        ISNULL(b.P, '0') AS p,
+        ROW_NUMBER() OVER(Order by a.yr) AS RowId
+        FROM
+        (
+        SELECT
+        ${Time_min}+number yr
+        FROM
+        master..spt_values
+        WHERE
+        type = 'p'
+        AND ${Time_min}+number&lt;=${Time_max}
+        ) a
+        LEFT JOIN (select * from ST_YRP_F where STCD=#{STCD} and yr&gt;=${Time_min} and yr&lt;=${Time_max}
+        ) b ON a.yr = b.YR
+        ) as b
+    </select>
+</mapper>

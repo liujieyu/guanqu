@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ShuiKuShuiQingZuiGaoShuiWeiMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ShuiKuShuiQingZuiGaoShuiWei">
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="TM" jdbcType="VARCHAR" property="TM" />
+        <result column="THZ" jdbcType="VARCHAR" property="THZ" />
+        <result column="YHZQ" jdbcType="VARCHAR" property="YHZQ" />
+        <result column="LEVEL" jdbcType="VARCHAR" property="LEVEL" />
+        <result column="STGR" jdbcType="VARCHAR" property="STGR" />
+        <result column="Canal_Name" jdbcType="VARCHAR" property="Canal_Name" />
+        <result column="AD_NM" jdbcType="VARCHAR" property="AD_NM" />
+    </resultMap>
+    <select id="findByZuiGaoShuiWei" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from (select b.STCD,b.STNM,CONVERT(varchar(16), tmhz, 120) as TM,THZ,YHZQ,(select FieldName from WRP_FieldInfo where FormID='ST_RSVR_R1' and FieldID='LEVEL' and Field=r.level) as LEVEL,(select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=b.STGR) as STGR,
+        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as Canal_Name,
+        (select (select ad_nm from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+ad_nm from WRP_AD_B m where ad_cd=addvcd) as AD_NM
+        , ROW_NUMBER() OVER(Order by tmhz) AS RowId
+        from ST_STBPRP_B b
+        inner join  ST_STBPRP_F f on f.type=2 and b.stcd=f.stcd
+        left join (select * from ST_G_ZORD
+        <where>
+            yr=#{yr}) s on b.stcd=s.stcd
+            left join ST_RSVR_R1 r on r.stcd=b.stcd
+        </where>
+        <where>
+            <if test="stnm!= null and stnm!= ''">
+                b.stnm like '%'+#{stnm}+'%'
+            </if>
+            <if test="addvcd!= null and addvcd!= ''">
+                and b.addvcd like #{addvcd}+'%'
+            </if>
+            <if test="stgr!= null and stgr!= ''">
+                and b.STGR=#{stgr}
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

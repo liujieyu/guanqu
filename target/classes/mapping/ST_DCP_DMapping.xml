@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_DCP_DMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_DCP_D">
+        <result column="dt" jdbcType="VARCHAR" property="DT" />
+        <result column="P" jdbcType="VARCHAR" property="P" />
+
+    </resultMap>
+
+    <select id="findBySingleXun" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from (SELECT
+        a.dt,
+        ISNULL(b.P, '0') AS p,
+        ROW_NUMBER() OVER(Order by a.dt) AS RowId
+        FROM
+        (SELECT convert(varchar(7),dateadd(m,a.number,'${Time_min}'),120)+(case b.number when 0 then '上旬' when 1 then '中旬' else '下旬' end)dt,
+        dateadd(d,b.number*10,dateadd(m,a.number,'${Time_min}')) dt1
+        FROM master..spt_values a,master..spt_values b
+        where a.type='p' and b.type='p' and
+        dateadd(m,a.number,'${Time_min}')&lt;='${Time_max}' and b.number&lt;3
+        ) a
+        LEFT JOIN (select case when datepart(dd,PTBGDT)&lt;=10 then convert(varchar(7),PTBGDT,120)+'上旬' when datepart(dd,PTBGDT)>=21 then convert(varchar(7),PTBGDT,120)+'下旬' else convert(varchar(7),PTBGDT,120)+'中旬' end as dt,P
+        from ST_DCP_D where STCD=#{STCD} and convert(varchar(7),PTBGDT,120)&gt;='${Time_min_1}' and convert(varchar(7),PTBGDT,120)&lt;='${Time_max_1}'
+        ) b ON a.dt = b.dt
+        ) as b
+    </select>
+</mapper>

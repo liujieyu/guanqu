@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ZhaFaZhuangTaiGISMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ZhaFaZhuangTaiGIS">
+        <result column="ID" jdbcType="VARCHAR" property="ID"/>
+        <result column="STNM" jdbcType="VARCHAR" property="STNM"/>
+        <result column="STCD" jdbcType="VARCHAR" property="STCD"/>
+        <result column="STTP" jdbcType="VARCHAR" property="STTP"/>
+        <result column="LGTD" jdbcType="VARCHAR" property="LGTD"/>
+        <result column="LTTD" jdbcType="VARCHAR" property="LTTD"/>
+        <result column="TM" jdbcType="TIMESTAMP" property="TM"/>
+        <result column="_status" jdbcType="VARCHAR" property="_status"/>
+        <result column="q" jdbcType="VARCHAR" property="q"/>
+        <result column="upz" jdbcType="VARCHAR" property="upz"/>
+        <result column="dwz" jdbcType="VARCHAR" property="dwz"/>
+        <result column="state" jdbcType="VARCHAR" property="state"/>
+        <result column="OD" jdbcType="VARCHAR" property="OD"/>
+        <result column="H" jdbcType="VARCHAR" property="H"/>
+        <result column="Strobe_Hight" jdbcType="VARCHAR" property="strobeHight"/>
+    </resultMap>
+    <select id="findByZhaFaZhuangTaiGIS" resultMap="BaseResultMap" parameterType="java.util.List">
+        select * from(select case when error=1 or td=1 then 0 else 1 end as
+        _status,OD,H,b.ID,b.STCD,b.STTP,b.LTTD,b.LGTD,b.STNM,upz,dwz,q,
+        (select Strobe_Hight from WRP_IrrBAStrobe where Strobe_Code in(select baseid from ST_STINFO_WRP w
+        where FormID='WRP_IrrBAStrobe' and w.stcd=b.stcd) ) as Strobe_Hight,
+        r.TM,case op when 0 then '关' when 1 then '开' else
+        ''end + case up when 1 then '上升' else '' end +case down when 1 then '下降' else '' end +case STOP when 1 then '急停'
+        else '' end + case lowerlimit when 1 then '已达下限' else '' end + case upperlimit when 1 then '已达上限' else '' end +
+        case error when 1 then '故障' else '' end + case bdkz when 1 then '现地控制' else '' end + case td when 1 then '停电'
+        else '' end as state, ROW_NUMBER() OVER(Order by r.stnm ) AS RowId
+        from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=6 and b.stcd=f.stcd left join ST_Gatage_R r on
+        b.STCD=r.STCD
+        <where>
+                b.stnm like '%'+#{STNM}+'%'
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="STCD!= null and STCD!= ''">
+                and b.STCD = #{STCD}
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from
+                dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="CTYPE!= null and CTYPE != ''">
+                and r.ctype in (${CTYPE})
+            </if>
+            <if test="list[0]!=null and list[0]!=''">
+                and(
+                <foreach collection="list" item="item" index="index">
+                    <if test="index>0">
+                        OR
+                    </if>
+                    <if test="item==1">
+                       op=1
+                    </if>
+                    <if test="item==2">
+                        up=1
+                    </if>
+                    <if test="item==3">
+                        down=1
+                    </if>
+                    <if test="item==4">
+                        stop=1
+                    </if>
+                    <if test="item==5">
+                        UPPERLIMIT=1
+                    </if>
+                    <if test="item==6">
+                        LOWERLIMIT=1
+                    </if>
+                    <if test="item==7">
+                         error=1
+                    </if>
+                    <if test="item==8">
+                         td=1
+                    </if>
+                    <if test="item==9">
+                         BDKZ=1
+                    </if>
+                    <if test="item==10">
+                        op=0
+                    </if>
+                </foreach>
+                )
+            </if>
+        </where>
+        ) as b
+    </select>
+    <select id="findByZhaFaZhuangTaiGIS1" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select * from(select case when error=1 or td=1 then 0 else 1 end as _status,b.ID,b.STCD,b.STTP,b.LTTD,b.LGTD,b.STNM,upz,dwz,q,r.TM,case op when 0 then '关' when 1 then '开' else ''end + case up when 1 then '上升' else '' end +case down when 1 then '下降' else '' end +case STOP when 1 then '急停' else '' end + case lowerlimit when 1 then '已达下限' else '' end + case upperlimit when 1 then '已达上限' else '' end + case error when 1 then '故障' else '' end + case bdkz when 1 then '现地控制' else '' end + case td when 1 then '停电' else '' end as state, ROW_NUMBER() OVER(Order by r.stnm ) AS RowId
+        from ST_STBPRP_B b inner join  ST_STBPRP_F f on f.type=6 and b.stcd=f.stcd left join ST_Gatage_R r on b.STCD=r.STCD
+        ) as b
+    </select>
+     <select id="findByZhaFaZhuangTaiGIS1ByStcd" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select * from(select case when error=1 or td=1 then 0 else 1 end as _status,b.ID,b.STCD,b.STTP,b.LTTD,b.LGTD,b.STNM,upz,dwz,q,r.TM,case op when 0 then '关' when 1 then '开' else ''end + case up when 1 then '上升' else '' end +case down when 1 then '下降' else '' end +case STOP when 1 then '急停' else '' end + case lowerlimit when 1 then '已达下限' else '' end + case upperlimit when 1 then '已达上限' else '' end + case error when 1 then '故障' else '' end + case bdkz when 1 then '现地控制' else '' end + case td when 1 then '停电' else '' end as state, ROW_NUMBER() OVER(Order by r.stnm ) AS RowId
+        	from ST_STBPRP_B b 
+        	inner join  ST_STBPRP_F f on f.type=6 and b.stcd=f.stcd 
+        	left join ST_Gatage_R r on b.STCD=r.STCD
+        	where  b.stcd = #{stcd}
+        ) as b
+    </select>
+     <select id="findByZhaFaZhuangTaiGIS8" resultMap="BaseResultMap" >
+        select * from(select case when error=1 or td=1 then 0 else 1 end as _status,b.ID,b.STCD,b.STTP,b.LTTD,b.LGTD,b.STNM,upz,dwz,q,r.TM,case op when 0 then '关' when 1 then '开' else ''end + case up when 1 then '上升' else '' end +case down when 1 then '下降' else '' end +case STOP when 1 then '急停' else '' end + case lowerlimit when 1 then '已达下限' else '' end + case upperlimit when 1 then '已达上限' else '' end + case error when 1 then '故障' else '' end + case bdkz when 1 then '现地控制' else '' end + case td when 1 then '停电' else '' end as state, ROW_NUMBER() OVER(Order by r.stnm ) AS RowId
+        from ST_STBPRP_B b inner join  ST_STBPRP_F f on f.type=8 and b.stcd=f.stcd left join ST_Gatage_R r on b.STCD=r.STCD
+        	where  b.stcd = #{stcd}
+        ) as b
+    </select>
+    
+         <select id="findByZhaFaZhuangTaiGISByOther" resultMap="BaseResultMap" >
+		select top 1  * from(select case when error=1 or td=1 then 0 else 1 end as _status,b.ID,b.STCD,b.STTP,b.LTTD,b.LGTD,b.STNM,upz,dwz,q,r.TM,b.RELATECODE  ,case op when 0 then '关' when 1 then '开' else ''end + case up when 1 then '上升' else '' end +case down when 1 then '下降' else '' end +case STOP when 1 then '急停' else '' end + case lowerlimit when 1 then '已达下限' else '' end + case upperlimit when 1 then '已达上限' else '' end + case error when 1 then '故障' else '' end + case bdkz when 1 then '现地控制' else '' end + case td when 1 then '停电' else '' end as state, ROW_NUMBER() OVER(Order by r.stnm ) AS RowId
+					 from ST_STBPRP_B b
+					 inner join  ST_STBPRP_B other on b.RELATECODE = other.RELATECODE
+					 inner join  ST_STBPRP_F f on f.type=8 and other.stcd=f.stcd 
+					 left join ST_Gatage_R r on b.STCD=r.STCD
+	        	 where  b.stcd = #{stcd}
+	        ) as b
+    </select>
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_ZQRL_BMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_ZQRL_B">
+        <result column="ID" jdbcType="INTEGER" property="ID" />
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="YR" jdbcType="INTEGER" property="YR" />
+        <result column="Z" jdbcType="NUMERIC" property="Z" />
+        <result column="Q" jdbcType="NUMERIC" property="Q" />
+        <result column="FLAG" jdbcType="VARCHAR" property="FLAG" />
+        <result column="Memo" jdbcType="VARCHAR" property="Memo" />
+    </resultMap>
+    <select id="findBySTCD" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select * from ST_ZQRL_B
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                STCD = #{STCD}
+            </if>
+        </where>
+    </select>
+</mapper>

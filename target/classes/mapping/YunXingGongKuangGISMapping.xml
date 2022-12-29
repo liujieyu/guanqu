@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.YunXingGongKuangGISMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.YunXingGongKuangGIS">
+        <result column="ID" jdbcType="VARCHAR" property="ID" />
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="STTP" jdbcType="VARCHAR" property="STTP" />
+        <result column="LGTD" jdbcType="VARCHAR" property="LGTD" />
+        <result column="LTTD" jdbcType="VARCHAR" property="LTTD" />
+        <result column="tm" jdbcType="TIMESTAMP" property="tm" />
+        <result column="_status" jdbcType="VARCHAR" property="_status" />
+        <result column="STLC" jdbcType="VARCHAR" property="STLC" />
+        <result column="VOLMIN" jdbcType="VARCHAR" property="VOLMIN" />
+        <result column="VOLMAX" jdbcType="VARCHAR" property="VOLMAX" />
+    </resultMap>
+    <select id="findByYunXingGongKuangGIS" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select * from(
+        select t.VOLMIN,t.VOLMAX,b.ID,b.STCD,b.STTP,b.LTTD,b.LGTD,b.STNM,b.STLC
+        ,substring(CONVERT(varchar(16), TM, 120),3,14) as tm,vol
+        ,case when vol &lt;t.VOLMIN or vol &gt;t.VOLMAX or cs=0 or cs is null then 0 else 1 end as _status
+        ,case cs when 1 then '正常' else '异常' end as cs, ROW_NUMBER() OVER(Order by r.stnm ) AS RowId  
+        from ST_STBPRP_B b 
+        inner join ST_StationStatus_R r  on b.STCD=r.STCD 
+        left join ST_StationStatusType t on r.VOLTYPE=t.VOLTYPE
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="_stat!= null and _stat!= '' and _stat == 1">
+                and cs=1  and vol &gt;=t.VOLMIN and vol &lt;=t.VOLMAX
+            </if>
+            <if test="_stat!= null and _stat!= '' and _stat == 3">
+                and (vol &lt;t.VOLMIN or vol &gt;t.VOLMAX)
+            </if>
+            <if test="_stat!= null and _stat!= '' and _stat == 4">
+            and (cs=0 or cs is null)
+            </if>
+            <if test="_stat!= null and _stat!= '' and _stat == 2">
+                and (cs=0 or cs is null or vol &lt;t.VOLMIN or vol &gt;t.VOLMAX)
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

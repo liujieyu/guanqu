@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_JPG_HMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_JPG_H">
+        <result column="Save_Path" jdbcType="VARCHAR" property="Save_Path" />
+        <result column="TM" jdbcType="VARCHAR" property="TM" />
+    </resultMap>
+
+    <select id="findBySingleLiShi" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from (select Save_Path,TM,ROW_NUMBER() OVER(Order by TM desc) AS RowId from ST_JPG_H
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                STCD = #{STCD}
+            </if>
+            <if test="Time_min!= null and Time_min!= ''and Time_max!= null and Time_max!= ''">
+                and TM &gt;= '${Time_min}' and TM &lt;='${Time_max}'
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_WAS_RMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_WAS_R">
+        <result column="TM" jdbcType="VARCHAR" property="TM" />
+        <result column="UPZ" jdbcType="VARCHAR" property="UPZ" />
+        <result column="DWZ" jdbcType="VARCHAR" property="DWZ" />
+        <result column="Q" jdbcType="VARCHAR" property="Q" />
+    </resultMap>
+    <select id="findBySingleLiShi" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from (select substring(CONVERT(varchar(100), TM, 120),1,16) as TM,UPZ,DWZ,Q, ROW_NUMBER() OVER(Order by tm) AS RowId
+        from ST_WAS_R
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                STCD = #{STCD}
+            </if>
+            <if test="Time_min!= null and Time_min!= ''and Time_max!= null and Time_max!= ''">
+                and TM &gt;= '${Time_min}' and TM &lt;='${Time_max}'
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

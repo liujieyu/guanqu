@@ -1,0 +1,651 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.LsYqMapper">
+    <resultMap id="XiaoShiTongJiResultMap" type="vip.yingmen.pojo.LiShiYuQingTongJi">
+        <result column="ZongZhanShu" jdbcType="VARCHAR" property="ZongZhanShu" />
+        <result column="JiangYuZhanShu" jdbcType="VARCHAR" property="JiangYuZhanShu" />
+        <result column="ZuiDaJiangYu" jdbcType="VARCHAR" property="ZuiDaJiangYu" />
+        <result column="PingJunJiangYu" jdbcType="VARCHAR" property="PingJunJiangYu" />
+    </resultMap>
+    <resultMap id="XiaoShiZhanShuTongJiResultMap" type="vip.yingmen.pojo.LiShiYuQingXiaoShiZhanShuTongJi">
+        <result column="rain1" jdbcType="VARCHAR" property="rain1" />
+        <result column="rain2" jdbcType="VARCHAR" property="rain2" />
+        <result column="rain3" jdbcType="VARCHAR" property="rain3" />
+        <result column="rain4" jdbcType="VARCHAR" property="rain4" />
+        <result column="rain5" jdbcType="VARCHAR" property="rain5" />
+        <result column="rain6" jdbcType="VARCHAR" property="rain6" />
+    </resultMap>
+    <resultMap id="XiaoShiLieBiaoResultMap" type="vip.yingmen.pojo.LiSHiYuQingXiaoShiLieBiao">
+        <result column="xian" jdbcType="VARCHAR" property="XIAN" />
+        <result column="zhen" jdbcType="VARCHAR" property="ZHEN" />
+        <result column="cun" jdbcType="VARCHAR" property="CUN" />
+        <result column="stgr" jdbcType="VARCHAR" property="STGR" />
+        <result column="p" jdbcType="VARCHAR" property="P" />
+        <result column="stnm" jdbcType="VARCHAR" property="STNM" />
+        <result column="stcd" jdbcType="VARCHAR" property="STCD" />
+        <result column="raininfo" jdbcType="VARCHAR" property="RAININFO" />
+    </resultMap>
+    <resultMap id="XunLieBiaoResultMap" type="vip.yingmen.pojo.LiSHiYuQingXunLieBiao">
+        <result column="ZhongXunYuLiang" jdbcType="VARCHAR" property="ZhongXunYuLiang" />
+        <result column="ShangXunYuLiang" jdbcType="VARCHAR" property="ShangXunYuLiang" />
+        <result column="p" jdbcType="VARCHAR" property="P" />
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="XiaXunYuLiang" jdbcType="VARCHAR" property="XiaXunYuLiang" />
+        <result column="STGR" jdbcType="VARCHAR" property="STGR" />
+        <result column="canal_name" jdbcType="VARCHAR" property="Canal_Name" />
+        <result column="AD_NM" jdbcType="VARCHAR" property="AD_NM" />
+    </resultMap>
+    <resultMap id="ZGSWTJResultMap" type="vip.yingmen.pojo.LSYQShuiWeiTJ">
+        <result column="totalcount" jdbcType="VARCHAR" property="totalcount"/>
+    </resultMap>
+    <select id="findByXiaoShiTongJi" resultMap="XiaoShiTongJiResultMap" parameterType="java.lang.String">
+        select count(b.stcd) ZongZhanShu,count(c.stcd) JiangYuZhanShu,max(c.p) ZuiDaJiangYu,Convert(decimal(18,1),avg(c.p)) PingJunJiangYu from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.stcd
+        left join
+        (select stcd,sum(p) as p from ST_HP_C where
+        dateadd(hh,tm,convert(varchar(10),dt))&gt;='${Time_min}' and dateadd(hh,tm,convert(varchar(10),dt))&lt;='${Time_max}'
+        group by stcd
+        ) as c on b.stcd=c.stcd
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and stgr = #{STGR}
+            </if>
+            <if test="P!= null and P!= ''">
+                and p &gt;= #{P}
+            </if>
+        </where>
+    </select>
+    <select id="findByXiaoShiTZhanShuongJi" resultMap="XiaoShiZhanShuTongJiResultMap" parameterType="java.lang.String">
+        select sum(case when p&gt;0 and p&lt;10 then 1 else 0 end) as rain1,sum(case when p&gt;=10 and p&lt;25 then 1 else 0 end) as rain2,sum(case when p&gt;=25 and p&lt;50 then 1 else 0 end) as rain3,sum(case when p&gt;=50 and p&lt;100 then 1 else 0 end) as rain4,sum(case when p&gt;=100 and p&lt;250 then 1 else 0 end) as rain5,sum(case when p&gt;=250 then 1 else 0 end) as rain6
+        from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.stcd
+        left join
+        (select stcd,sum(p) as p from ST_HP_C
+        where
+        dateadd(hh,tm,convert(varchar(10),dt))&gt;='${Time_min}' and dateadd(hh,tm,convert(varchar(10),dt))&lt;='${Time_max}'
+        group by STCD)c1 on b.stcd=c1.stcd
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and stgr = #{STGR}
+            </if>
+            <if test="P!= null and P!= ''">
+                and p &gt;= #{P}
+            </if>
+        </where>
+    </select>
+    <select id="findByXiaoShiLieBiao" resultMap="XiaoShiLieBiaoResultMap" parameterType="java.lang.String">
+        select
+        (select ad_nm from WRP_AD_B where ad_cd=substring(addvcd,1,6)+'000000') as xian,
+        (select ad_nm from WRP_AD_B where ad_cd=substring(addvcd,1,9)+'000') as zhen,
+        (select ad_nm from WRP_AD_B where ad_cd=addvcd) as cun,
+        (select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=b.stgr) as stgr,
+        b.stnm,c.p,b.stcd
+        from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.stcd
+        left join
+        (select stcd,sum(p) as p from ST_HP_C where
+        dateadd(hh,tm,convert(varchar(10),dt))&gt;='${Time_min}' and dateadd(hh,tm,convert(varchar(10),dt))&lt;='${Time_max}'
+        group by stcd
+        ) as c on b.stcd=c.stcd
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and b.stgr = #{STGR}
+            </if>
+            <if test="P!= null and P!= ''">
+                and p &gt;= #{P}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="findByZhanDian" parameterType="java.lang.String" resultType="java.util.HashMap">
+        select b.STNM,b.STCD from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.stcd left join ST_Canal_R1 r on r.stcd=b.stcd
+        <where>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from
+                dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and b.stgr=#{STGR}
+            </if>
+            <if test="STNM!= null and STNM!= ''">
+                and b.stnm like '%'+#{STNM}+'%'
+            </if>
+        </where>
+    </select>
+
+    <select id="findByXiaoShiTeZheng" parameterType="java.util.List" resultType="java.util.HashMap">
+        SELECT convert(varchar(13),dateadd(hh,tm,convert(varchar(10),dt)),120) as dt,
+        <foreach collection="list" item="item" index="index">
+            max(CASE b.stnm WHEN '${item}' THEN isnull(p,0) ELSE 0 end)${item}雨量,
+        </foreach>
+        GETDATE()
+        FROM ST_HP_C h inner join ST_STBPRP_B b on h.stcd=b.STCD
+        where dateadd(hh,tm,convert(varchar(10),dt))&gt;= '${Time_min}' and dateadd(hh,tm,convert(varchar(10),dt))&lt;= '${Time_max}'
+        GROUP BY dt,tm
+        order by dt
+    </select>
+
+
+    <select id="findByRiTongJi" resultMap="XiaoShiTongJiResultMap" parameterType="java.lang.String">
+            select count(b.stcd) ZongZhanShu,count(c.stcd) JiangYuZhanShu,max(c.p) ZuiDaJiangYu,Convert(decimal(18,1),avg(c.p)) PingJunJiangYu from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.stcd
+            left join
+            (select stcd,p as p from ST_DP_C where
+            TM='${TM}'
+            ) as c on b.stcd=c.stcd
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and stgr = #{STGR}
+            </if>
+            <if test="P!= null and P!= ''">
+                and p &gt;= #{P}
+            </if>
+        </where>
+    </select>
+    <select id="findByRiZhanShuTongJi" resultMap="XiaoShiZhanShuTongJiResultMap" parameterType="java.lang.String">
+            select sum(case when p&gt;0 and p&lt;10 then 1 else 0 end) as rain1,sum(case when p&gt;=10 and p&lt;25 then 1 else 0 end) as rain2,sum(case when p&gt;=25 and p&lt;50 then 1 else 0 end) as rain3,sum(case when p&gt;=50 and p&lt;100 then 1 else 0 end) as rain4,sum(case when p&gt;=100 and p&lt;250 then 1 else 0 end) as rain5,sum(case when p&gt;=250 then 1 else 0 end) as rain6
+            from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.STCD
+            left join
+            (select stcd,p from ST_DP_C where
+            TM='${TM}'
+            ) as c1 on b.stcd=c1.stcd
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and stgr = #{STGR}
+            </if>
+            <if test="P!= null and P!= ''">
+                and p &gt;= #{P}
+            </if>
+        </where>
+    </select>
+
+    <select id="findByRiLieBiao" resultType="java.util.HashMap" parameterType="java.lang.String">
+        select * from (select b.STCD,b.stnm,c.p,h.*,
+        (select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=STGR) as STGR,
+        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as canal_name,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM
+        ,ROW_NUMBER() OVER (ORDER BY b.wzpx) as RowId
+        from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.stcd
+        left join
+        (select stcd,p from ST_DP_C where
+        TM='${TM}'
+        ) as c on b.stcd=c.STCD
+        left join (select * from (select STCD as temp,P,convert(varchar(2),TM)+':00-'+convert(varchar(2),(IIF(TM=23,0,TM+1)))+':00' as TM from ST_HP_C
+        where
+        DATEADD(hh,TM,CONVERT(varchar(100), DT, 111))&gt;='${Time_min}' and DATEADD(hh,TM,CONVERT(varchar(100), DT, 111))&lt;='${Time_max}') b
+        PIVOT(MAX(P) FOR
+        TM IN ([8:00-9:00],[9:00-10:00],[10:00-11:00],[11:00-12:00],[12:00-13:00],[13:00-14:00],[14:00-15:00],[15:00-16:00],[16:00-17:00],[17:00-18:00],[18:00-19:00],[19:00-20:00],[20:00-21:00],[21:00-22:00],[22:00-23:00],[23:00-0:00],[0:00-1:00],[1:00-2:00],[2:00-3:00],[3:00-4:00],[4:00-5:00],[5:00-6:00],[6:00-7:00],[7:00-8:00])
+        ) a) h on b.STCD=h.temp
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and stgr = #{STGR}
+            </if>
+            <if test="P!= null and P!= ''">
+                and p &gt;= #{P}
+            </if>
+        </where>
+        )b where RowId between (#{_page}-1)*#{_page_size} and #{_page}*#{_page_size}
+    </select>
+
+    <select id="findByXunTongJi" resultMap="XiaoShiTongJiResultMap" parameterType="java.lang.String">
+        select count(distinct b.stcd) ZongZhanShu,count(distinct c.stcd) JiangYuZhanShu,max(c.p) ZuiDaJiangYu,Convert(decimal(18,1),avg(c.p)) PingJunJiangYu from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.stcd
+        left join
+        (select stcd,p as p from ST_DCP_D where
+        convert(varchar(7),PTBGDT,120)='${TM}'
+        ) as c on b.stcd=c.stcd
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and stgr = #{STGR}
+            </if>
+            <if test="P!= null and P!= ''">
+                and p &gt;= #{P}
+            </if>
+        </where>
+    </select>
+
+    <select id="findByXunZhanShuTongJi" resultMap="XiaoShiZhanShuTongJiResultMap" parameterType="java.lang.String">
+        select sum(case when p&gt;0 and p&lt;10 then 1 else 0 end) as rain1,sum(case when p&gt;=10 and p&lt;25 then 1 else 0 end) as rain2,sum(case when p&gt;=25 and p&lt;50 then 1 else 0 end) as rain3,sum(case when p&gt;=50 and p&lt;100 then 1 else 0 end) as rain4,sum(case when p&gt;=100 and p&lt;250 then 1 else 0 end) as rain5,sum(case when p&gt;=250 then 1 else 0 end) as rain6
+        from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.STCD
+        left join
+        (select stcd,p from ST_MTP_E where
+        YR=#{YR} and MON=#{MON}
+        ) as c1 on b.stcd=c1.stcd
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and stgr = #{STGR}
+            </if>
+            <if test="P!= null and P!= ''">
+                and p &gt;= #{P}
+            </if>
+        </where>
+    </select>
+
+    <select id="findByXunLieBiao" resultMap="XunLieBiaoResultMap" parameterType="java.lang.String">
+        select * from (select b.STCD,b.STNM,e.P,d.ShangXunYuLiang,d.ZhongXunYuLiang,d.XiaXunYuLiang,
+        (select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=STGR) as STGR,
+        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as canal_name,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM
+        ,ROW_NUMBER() OVER (ORDER BY b.wzpx) as RowId
+        from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.stcd
+        left join
+        (select STCD,P from ST_MTP_E
+        where
+        YR=#{YR} and MON=#{MON}
+        ) e on b.stcd=e.stcd
+        left join
+        (select STCD,
+        max(CASE WHEN datepart(dd,PTBGDT)&lt;=10 THEN p ELSE 0 end)'ShangXunYuLiang',
+        max(CASE WHEN datepart(dd,PTBGDT)&gt;10 and datepart(dd,PTBGDT)&lt;21 THEN p ELSE 0 end)'ZhongXunYuLiang',
+        max(CASE WHEN datepart(dd,PTBGDT)&gt;=21 THEN p ELSE 0 end)'XiaXunYuLiang'
+        from ST_DCP_D
+        where convert(varchar(7),PTBGDT,120)='${TM}'
+        group by STCD) d on b.STCD=d.STCD
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and b.stgr = #{STGR}
+            </if>
+            <if test="P!= null and P!= ''">
+                and p &gt;= #{P}
+            </if>
+        </where>
+    </select>
+
+    <select id="findByYueTongJi" resultMap="XiaoShiTongJiResultMap" parameterType="java.lang.String">
+        select count(b.stcd) ZongZhanShu,count(c.stcd) JiangYuZhanShu,max(c.p) ZuiDaJiangYu,Convert(decimal(18,1),avg(c.p)) PingJunJiangYu from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.stcd
+        left join
+        (select stcd,p as p from ST_MTP_E where
+        YR=#{YR} and MON=#{MON}
+        ) as c on b.stcd=c.stcd
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and stgr = #{STGR}
+            </if>
+            <if test="P!= null and P!= ''">
+                and p &gt;= #{P}
+            </if>
+        </where>
+    </select>
+
+    <select id="findByYueZhanShuTongJi" resultMap="XiaoShiZhanShuTongJiResultMap" parameterType="java.lang.String">
+        select sum(case when p&gt;0 and p&lt;50 then 1 else 0 end) as rain1,sum(case when p&gt;=50 and p&lt;100 then 1 else 0 end) as rain2,sum(case when p&gt;=100 and p&lt;150 then 1 else 0 end) as rain3,sum(case when p&gt;=150 and p&lt;250 then 1 else 0 end) as rain4,sum(case when p&gt;=250 and p&lt;400 then 1 else 0 end) as rain5,sum(case when p&gt;=400 then 1 else 0 end) as rain6
+        from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.STCD
+        left join
+        (select stcd,p from ST_MTP_E where
+        YR=#{YR} and MON=#{MON}
+        ) as c1 on b.stcd=c1.stcd
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and stgr = #{STGR}
+            </if>
+            <if test="P!= null and P!= ''">
+                and p &gt;= #{P}
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="YlbResultMap" type="vip.yingmen.pojo.LsYqYueBiao">
+        <result column="STCD"  property="STCD"/>
+        <result column="STNM"  property="STNM"/>
+        <result column="p"  property="p"/>
+        <result column="1"  property="a1"/>
+        <result column="2"  property="a2"/>
+        <result column="3"  property="a3"/>
+        <result column="4"  property="a4"/>
+        <result column="5"  property="a5"/>
+        <result column="6"  property="a6"/>
+        <result column="7"  property="a7"/>
+        <result column="8"  property="a8"/>
+        <result column="9"  property="a9"/>
+        <result column="10"  property="a10"/>
+        <result column="11"  property="a11"/>
+        <result column="12"  property="a12"/>
+        <result column="13"  property="a13"/>
+        <result column="14"  property="a14"/>
+        <result column="15"  property="a15"/>
+        <result column="16"  property="a16"/>
+        <result column="17"  property="a17"/>
+        <result column="18"  property="a18"/>
+        <result column="19"  property="a19"/>
+        <result column="20"  property="a20"/>
+        <result column="21"  property="a21"/>
+        <result column="22"  property="a22"/>
+        <result column="23"  property="a23"/>
+        <result column="24"  property="a24"/>
+        <result column="25"  property="a25"/>
+        <result column="26"  property="a26"/>
+        <result column="27"  property="a27"/>
+        <result column="28"  property="a28"/>
+        <result column="29"  property="a29"/>
+        <result column="30"  property="a30"/>
+        <result column="STGR"  property="STGR"/>
+        <result column="canal_name"  property="canal_name"/>
+        <result column="AD_NM"  property="AD_NM"/>
+    </resultMap>
+    <select id="findByYueLieBiao" resultMap="YlbResultMap" parameterType="java.lang.String">
+        select * from (select b.STCD,b.STNM,e.p,d.*,
+        (select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=STGR) as STGR,
+        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as canal_name,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM
+        ,ROW_NUMBER() OVER (ORDER BY b.wzpx) as RowId
+        from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.stcd
+        left join
+        (select STCD,P from ST_MTP_E
+        where
+        YR=#{YR} and MON=#{MON}
+        ) e on b.stcd=e.stcd
+        left join (select * from (select STCD as temp,P,datepart(dd,TM) as TM from ST_DP_C where
+        convert(varchar(7),TM,120)='${TM}'
+        ) b
+        PIVOT(MAX(P) FOR
+        TM IN ([1],[2],[3],[4],[5],[6],[7],[8],[9],[10],[11],[12],[13],[14],[15],
+        [16],[17],[18],[19],[20],[21],[22],[23],[24],[25],[26],[27],[28],[29],[30])
+        ) a) d on b.STCD=d.temp
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and b.stgr = #{STGR}
+            </if>
+            <if test="P!= null and P!= ''">
+                and p &gt;= #{P}
+            </if>
+        </where>
+        )b where RowId between (#{_page}-1)*#{_page_size} and #{_page}*#{_page_size}
+    </select>
+    <select id="findByNianTongJi" resultMap="XiaoShiTongJiResultMap" parameterType="java.lang.String">
+        select count(b.stcd) ZongZhanShu,count(c.stcd) JiangYuZhanShu,max(c.p) ZuiDaJiangYu,Convert(decimal(18,1),avg(c.p)) PingJunJiangYu from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.stcd
+        left join
+        (select stcd,p as p from ST_YRP_F where
+        YR=#{YR}
+        ) as c on b.stcd=c.stcd
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and stgr = #{STGR}
+            </if>
+            <if test="P!= null and P!= ''">
+                and p &gt;= #{P}
+            </if>
+        </where>
+    </select>
+
+    <select id="findByNianZhanShuTongJi" resultMap="XiaoShiZhanShuTongJiResultMap" parameterType="java.lang.String">
+        select sum(case when p&gt;0 and p&lt;800 then 1 else 0 end) as rain1,sum(case when p&gt;=800 and p&lt;1150 then 1 else 0 end) as rain2,sum(case when p&gt;=1150 and p&lt;1400 then 1 else 0 end) as rain3,sum(case when p&gt;=1400 and p&lt;1650 then 1 else 0 end) as rain4,sum(case when p>=1650 and p&lt;2000 then 1 else 0 end) as rain5,sum(case when p&gt;=2000 then 1 else 0 end) as rain6
+        from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.STCD
+        left join
+        (select stcd,p from ST_YRP_F where YR=#{YR}) as c1 on b.stcd=c1.stcd
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and stgr = #{STGR}
+            </if>
+            <if test="P!= null and P!= ''">
+                and p &gt;= #{P}
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="NlbResultMap" type="vip.yingmen.pojo.LsYqNianBiao">
+        <result column="STCD"  property="STCD"/>
+        <result column="STNM"  property="STNM"/>
+        <result column="p"  property="p"/>
+        <result column="1月"  property="a1"/>
+        <result column="2月"  property="a2"/>
+        <result column="3月"  property="a3"/>
+        <result column="4月"  property="a4"/>
+        <result column="5月"  property="a5"/>
+        <result column="6月"  property="a6"/>
+        <result column="7月"  property="a7"/>
+        <result column="8月"  property="a8"/>
+        <result column="9月"  property="a9"/>
+        <result column="10月"  property="a10"/>
+        <result column="11月"  property="a11"/>
+        <result column="12月"  property="a12"/>
+        <result column="STGR"  property="STGR"/>
+        <result column="canal_name"  property="canal_name"/>
+        <result column="AD_NM"  property="AD_NM"/>
+    </resultMap>
+    <select id="findByNianLieBiao" resultMap="NlbResultMap" parameterType="java.lang.String">
+        select * from (select b.STCD,b.STNM,y.p,d.*,
+        (select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=STGR) as STGR,
+        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as canal_name,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM
+        ,ROW_NUMBER() OVER (ORDER BY b.wzpx) as RowId
+        from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.stcd
+        left join
+        (select stcd,p as p from ST_YRP_F where
+        YR=#{YR}
+        ) as y on b.stcd=y.stcd
+        left join (select * from (select STCD as temp,P,CONVERT(varchar(2),MON)+'月' as MON from ST_MTP_E where
+        YR=#{YR}
+        ) b
+        PIVOT(MAX(P) FOR
+        MON IN ([1月],[2月],[3月],[4月],[5月],[6月],[7月],[8月],[9月],[10月],[11月],[12月])
+        ) a) d on b.STCD=d.temp
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and b.stgr = #{STGR}
+            </if>
+            <if test="P!= null and P!= ''">
+                and p &gt;= #{P}
+            </if>
+        </where>
+        )b where RowId between (#{_page}-1)*#{_page_size} and #{_page}*#{_page_size}
+    </select>
+
+    <select id="findByZGSWTJ" resultMap="ZGSWTJResultMap" parameterType="java.lang.String">
+        select count(*) totalcount
+        from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.STCD=f.STCD
+        left join ST_MaxPTP_C c on b.STCD=c.STCD
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and b.stgr = #{STGR}
+            </if>
+            <if test="YR!= null and YR!= ''">
+                and YR = #{YR}
+            </if>
+        </where>
+    </select>
+    <resultMap id="ZGSWLieBiaoResultMap" type="vip.yingmen.pojo.LSYQZGSWLieBiao">
+        <result column="STNM" jdbcType="VARCHAR" property="STNM"/>
+        <result column="STCD" jdbcType="VARCHAR" property="STCD"/>
+        <result column="Max_OP" jdbcType="VARCHAR" property="Max_OP"/>
+        <result column="Max_OBT" jdbcType="VARCHAR" property="Max_OBT"/>
+        <result column="Max_TP" jdbcType="VARCHAR" property="Max_TP"/>
+        <result column="Max_TBT" jdbcType="VARCHAR" property="Max_TBT"/>
+        <result column="Max_SP" jdbcType="VARCHAR" property="Max_SP"/>
+        <result column="Max_SBT" jdbcType="VARCHAR" property="Max_SBT"/>
+        <result column="Max_TWP" jdbcType="VARCHAR" property="Max_TWP"/>
+        <result column="Max_TWBT" jdbcType="VARCHAR" property="Max_TWBT"/>
+        <result column="Canal_Name" jdbcType="VARCHAR" property="Canal_Name"/>
+        <result column="AD_NM" jdbcType="VARCHAR" property="AD_NM"/>
+        <result column="Max_DP" jdbcType="VARCHAR" property="Max_DP"/>
+        <result column="Max_DBT" jdbcType="VARCHAR" property="Max_DBT"/>
+    </resultMap>
+    <select id="findByZGSWLieBiao" resultMap="ZGSWLieBiaoResultMap" parameterType="java.lang.String">
+        select * from (select b.STNM,b.STCD,Max_OP,CONVERT(varchar(16),Max_OBT,120) as Max_OBT,Max_TP,CONVERT(varchar(16),Max_TBT,120) as Max_TBT,Max_SP,CONVERT(varchar(16),Max_SBT,120) as Max_SBT,Max_TWP,CONVERT(varchar(16),Max_TWBT,120) as Max_TWBT,
+        Max_DP,CONVERT(varchar(16),Max_DBT,120) as Max_DBT,(select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=STGR) as STGR,
+        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as Canal_Name,
+        (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM
+        ,ROW_NUMBER() OVER(Order By b.wzpx) as RowId
+        from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.STCD=f.STCD
+        left join ST_MaxPTP_C c on b.STCD=c.STCD
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                b.stnm like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDVCD!= null and ADDVCD!= ''">
+                and b.addvcd like #{ADDVCD}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
+                and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and b.stgr = #{STGR}
+            </if>
+            <if test="YR!= null and YR!= ''">
+                and YR = #{YR}
+            </if>
+        </where>
+        ) b
+    </select>
+</mapper>

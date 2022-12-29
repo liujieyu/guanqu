@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_Gatage_HMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_Gatage_H">
+        <result column="TM" jdbcType="TIMESTAMP" property="TM" />
+        <result column="OD" jdbcType="NUMERIC" property="OD" />
+        <result column="Q" jdbcType="NUMERIC" property="Q" />
+        <result column="UPZ" jdbcType="NUMERIC" property="UPZ" />
+        <result column="DWZ" jdbcType="NUMERIC" property="DWZ" />
+    </resultMap>
+    <select id="findByZhaFaZhuangTai" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from (select substring(CONVERT(varchar(100), TM, 120),1,16) as tm,OD,Q,UPZ,DWZ,ROW_NUMBER() OVER(Order by tm) AS RowId
+        from ST_Gatage_H
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                STCD = #{STCD}
+            </if>
+            <if test="Time_min!= null and Time_min!= ''and Time_max!= null and Time_max!= ''">
+                and TM &gt;= '${Time_min}' and TM &lt;='${Time_max}'
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.JcJzwMapper">
+    <resultMap id="DuCaoResultMap" type="vip.yingmen.pojo.JCJZWDuCao">
+        <result column="Flum_Name" jdbcType="VARCHAR" property="flumName" />
+        <result column="Matieral_Type" jdbcType="VARCHAR" property="matieralType" />
+        <result column="FlumBody_Type" jdbcType="VARCHAR" property="flumBodyType" />
+        <result column="Flum_Length" jdbcType="VARCHAR" property="flumLength" />
+        <result column="D_FL" jdbcType="VARCHAR" property="dfl" />
+        <result column="ADD_FL" jdbcType="VARCHAR" property="addfl" />
+        <result column="IN_Z" jdbcType="VARCHAR" property="inz" />
+        <result column="OUT_Z" jdbcType="VARCHAR" property="outz" />
+        <result column="Canal_Name" jdbcType="VARCHAR" property="canalName" />
+        <result column="GS" jdbcType="VARCHAR" property="gs" />
+    </resultMap>
+    <select id="findByDuCao" resultMap="DuCaoResultMap" parameterType="java.lang.String">
+        select * from (select Flum_Name,(select FieldName from WRP_FieldInfo where FormID='WRP_IrrBTFlume' and FieldID='Matieral_Type' and Field=Matieral_Type) as Matieral_Type,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IrrBTFlume' and FieldID='FlumBody_Type' and Field=FlumBody_Type) as FlumBody_Type,
+        Flum_Length,D_FL,ADD_FL,IN_Z,OUT_Z,(select Canal_Name from WRP_IrrBTCanalSystem s where s.Canal_Code=i.Canal_Code) as Canal_Name,
+        (select IRANM from WRP_IRA_BSIN where IRACD=i.GS) as GS,
+        ROW_NUMBER() OVER(ORDER BY i.ID) as RowId
+        from WRP_IrrBTFlume i
+        <where>
+            <if test="Matieral_Type!= null and Matieral_Type!= ''">
+                Matieral_Type = #{Matieral_Type}
+            </if>
+            <if test="FlumBody_Type!= null and FlumBody_Type!= ''">
+                and FlumBody_Type = #{FlumBody_Type}
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and (Canal_Code=#{Canal_Code} or Canal_Code in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code})))
+            </if>
+            <if test="Flum_Name!= null and Flum_Name!= ''">
+                and Flum_Name like '%'+#{Flum_Name}+'%'
+            </if>
+        </where>
+        ) as b
+    </select>
+
+    <resultMap id="SuiDongResultMap" type="vip.yingmen.pojo.JCJZWSuiDong">
+        <result column="Tunnel_Name" jdbcType="VARCHAR" property="tunnelName" />
+        <result column="Tunnel_Diameter" jdbcType="VARCHAR" property="tunnelDiameter" />
+        <result column="Tunnel_Length" jdbcType="VARCHAR" property="tunnelLength" />
+        <result column="Design_Flux" jdbcType="VARCHAR" property="designFlux" />
+        <result column="Add_Flux" jdbcType="VARCHAR" property="addFlux" />
+        <result column="Canal_Name" jdbcType="VARCHAR" property="canalName" />
+        <result column="GS" jdbcType="VARCHAR" property="gs" />
+    </resultMap>
+    <select id="findBySuiDong" resultMap="SuiDongResultMap" parameterType="java.lang.String">
+        select * from (select Tunnel_Name,Tunnel_Diameter,Tunnel_Length,Design_Flux,Add_Flux,(select Canal_Name from WRP_IrrBTCanalSystem s where s.Canal_Code=i.Canal_Code) as Canal_Name,
+        (select IRANM from WRP_IRA_BSIN where IRACD=i.GS) as GS,
+        ROW_NUMBER() OVER(ORDER BY i.ID) as RowId
+        from WRP_IrrBTTunnel i
+        <where>
+
+            <if test="Tunnel_Name!= null and Tunnel_Name!= ''">
+                 Tunnel_Name like '%'+#{Tunnel_Name}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and (Canal_Code=#{Canal_Code} or Canal_Code in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code})))
+            </if>
+        </where>
+        ) as b
+    </select>
+
+
+    <resultMap id="DaoHongXiResultMap" type="vip.yingmen.pojo.JCJZWDaoHongXi">
+        <result column="I_Siphon_Name" jdbcType="VARCHAR" property="isiphonName" />
+        <result column="I_Siphon_Type" jdbcType="VARCHAR" property="isiphonType" />
+        <result column="Structure_Type" jdbcType="VARCHAR" property="structureType" />
+        <result column="Style" jdbcType="VARCHAR" property="style" />
+        <result column="Design_Flux" jdbcType="VARCHAR" property="designFlux" />
+        <result column="Check_Flux" jdbcType="VARCHAR" property="checkFlux" />
+        <result column="I_Length" jdbcType="VARCHAR" property="ilength" />
+        <result column="DIAMETER" jdbcType="VARCHAR" property="diameter" />
+        <result column="IN_Z" jdbcType="VARCHAR" property="inz" />
+        <result column="OUT_Z" jdbcType="VARCHAR" property="outz" />
+        <result column="Canal_Name" jdbcType="VARCHAR" property="canalName" />
+        <result column="GS" jdbcType="VARCHAR" property="gs" />
+    </resultMap>
+    <select id="findByDaoHongXi" resultMap="DaoHongXiResultMap" parameterType="java.lang.String">
+        select * from (select I_Siphon_Name,(select FieldName from WRP_FieldInfo where FormID='WRP_IrrBTInvertedsiphon' and FieldID='I_Siphon_Type' and Field=I_Siphon_Type) as I_Siphon_Type,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IrrBTInvertedsiphon' and FieldID='Structure_Type' and Field=Structure_Type) as Structure_Type,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IrrBTInvertedsiphon' and FieldID='Style' and Field=Style) as Style,
+        Design_Flux,Check_Flux,I_Length,DIAMETER,IN_Z,OUT_Z,(select Canal_Name from WRP_IrrBTCanalSystem s where s.Canal_Code=i.Canal_Code) as Canal_Name,
+        (select IRANM from WRP_IRA_BSIN where IRACD=i.GS) as GS,
+        ROW_NUMBER() OVER(ORDER BY i.ID) as RowId
+        from WRP_IrrBTInvertedsiphon i
+        <where>
+            <if test="I_Siphon_Name!= null and I_Siphon_Name!= ''">
+                 I_Siphon_Name like '%'+#{I_Siphon_Name}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and (Canal_Code=#{Canal_Code} or Canal_Code in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code})))
+            </if>
+            <if test="I_Siphon_Type!= null and I_Siphon_Type!= ''">
+                and I_Siphon_Type = #{I_Siphon_Type}
+            </if>
+            <if test="Structure_Type!= null and Structure_Type!= ''">
+                and Structure_Type = #{Structure_Type}
+            </if>
+            <if test="Style!= null and Style!= ''">
+                and Style = #{Style}
+            </if>
+        </where>
+        ) as b
+    </select>
+
+    <resultMap id="HanDongResultMap" type="vip.yingmen.pojo.JCJZWHanDong">
+        <result column="Culvert_Name" jdbcType="VARCHAR" property="culvertName" />
+        <result column="Entrance_Form" jdbcType="VARCHAR" property="entranceForm" />
+        <result column="Body_Type" jdbcType="VARCHAR" property="bodyType" />
+        <result column="Hole_diametral" jdbcType="VARCHAR" property="holediametral" />
+        <result column="Hole_Length" jdbcType="VARCHAR" property="holeLength" />
+        <result column="Design_Flux" jdbcType="VARCHAR" property="designFlux" />
+        <result column="Add_Flux" jdbcType="VARCHAR" property="addFlux" />
+        <result column="Canal_Name" jdbcType="VARCHAR" property="canalName" />
+        <result column="GS" jdbcType="VARCHAR" property="gs" />
+    </resultMap>
+    <select id="findByHanDong" resultMap="HanDongResultMap" parameterType="java.lang.String">
+        select * from (select Culvert_Name,(select FieldName from WRP_FieldInfo where FormID='WRP_IrrBTCulvert' and FieldID='Entrance_Form' and Field=Entrance_Form) as Entrance_Form,
+        (select FieldName from WRP_FieldInfo where FormID='WRP_IrrBTCulvert' and FieldID='Body_Type' and Field=Body_Type) as Body_Type,
+        Hole_diametral,Hole_Length,Design_Flux,Add_Flux,(select Canal_Name from WRP_IrrBTCanalSystem s where s.Canal_Code=i.Canal_Code) as Canal_Name,
+        (select IRANM from WRP_IRA_BSIN where IRACD=i.GS) as GS,
+        ROW_NUMBER() OVER(ORDER BY i.ID) as RowId
+        from WRP_IrrBTCulvert i
+        <where>
+            <if test="Culvert_Name!= null and Culvert_Name!= ''">
+                 Culvert_Name like '%'+#{Culvert_Name}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and (Canal_Code=#{Canal_Code} or Canal_Code in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code})))
+            </if>
+            <if test="Entrance_Form!= null and Entrance_Form!= ''">
+                and Entrance_Form = #{Entrance_Form}
+            </if>
+            <if test="Body_Type!= null and Body_Type!= ''">
+                and Body_Type = #{Body_Type}
+            </if>
+        </where>
+        ) as b
+    </select>
+
+    <resultMap id="DouPoResultMap" type="vip.yingmen.pojo.JCJZWDouPo">
+        <result column="Chute_Name" jdbcType="VARCHAR" property="chuteName" />
+        <result column="Start_Coordinate" jdbcType="VARCHAR" property="startCoordinate" />
+        <result column="End_Coordinate" jdbcType="VARCHAR" property="endCoordinate" />
+        <result column="Canal_Name" jdbcType="VARCHAR" property="canalName" />
+        <result column="GS" jdbcType="VARCHAR" property="gs" />
+    </resultMap>
+    <select id="findByDouPo" resultMap="DouPoResultMap" parameterType="java.lang.String">
+        select * from (select Chute_Name,(select Canal_Name from WRP_IrrBTCanalSystem s where s.Canal_Code=i.Canal_Code) as Canal_Name,Start_Coordinate,End_Coordinate,
+        (select IRANM from WRP_IRA_BSIN where IRACD=i.GS) as GS,
+        ROW_NUMBER()OVER(ORDER BY ID) as RowId
+        from WRP_IrrBTChute i
+        <where>
+            <if test="Chute_Name!= null and Chute_Name!= ''">
+                Chute_Name like '%'+#{Chute_Name}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and (Canal_Code=#{Canal_Code} or Canal_Code in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code})))
+            </if>
+        </where>
+        ) as b
+    </select>
+
+    <resultMap id="ChenShaDiResultMap" type="vip.yingmen.pojo.JCJZWChenShaDi">
+        <result column="DediBasin_Name" jdbcType="VARCHAR" property="dediBasinName" />
+        <result column="DediBasin_Length" jdbcType="VARCHAR" property="dediBasinLength" />
+        <result column="Average_Depth" jdbcType="VARCHAR" property="averageDepth" />
+        <result column="Start_Coordinate" jdbcType="VARCHAR" property="startCoordinate" />
+        <result column="End_Coordinate" jdbcType="VARCHAR" property="endCoordinate" />
+        <result column="Canal_Name" jdbcType="VARCHAR" property="canalName" />
+        <result column="GS" jdbcType="VARCHAR" property="gs" />
+    </resultMap>
+    <select id="findByChenShaDi" resultMap="ChenShaDiResultMap" parameterType="java.lang.String">
+        select * from (select DediBasin_Name,DediBasin_Length,Average_Depth,Start_Coordinate,End_Coordinate,
+        (select Canal_Name from WRP_IrrBTCanalSystem s where s.Canal_Code=i.Canal_Code) as Canal_Name,
+        (select IRANM from WRP_IRA_BSIN where IRACD=i.GS) as GS,
+        ROW_NUMBER() OVER(ORDER BY ID) as RowId
+        from WRP_IrrBTSediBasin i
+        <where>
+            <if test="DediBasin_Name!= null and DediBasin_Name!= ''">
+                DediBasin_Name like '%'+#{DediBasin_Name}+'%'
+            </if>
+            <if test="Canal_Code!= null and Canal_Code!= ''">
+                and (Canal_Code=#{Canal_Code} or Canal_Code in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code})))
+            </if>
+        </where>
+        ) as b
+    </select>
+</mapper>

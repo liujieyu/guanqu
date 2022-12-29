@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_DP_CMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_DP_C">
+        <result column="TM" jdbcType="VARCHAR" property="TM" />
+        <result column="P" jdbcType="VARCHAR" property="P" />
+    </resultMap>
+
+    <select id="findBySingleRiBiao" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from (SELECT
+        CONVERT(VARCHAR(10),a.dt,120) AS TM,
+        ISNULL(b.P, '0') AS p,
+        ROW_NUMBER() OVER(Order by a.dt) AS RowId
+        FROM
+        (
+        SELECT
+        dateadd(DD, number, '${Time_min}') dt
+        FROM
+        master..spt_values
+        WHERE
+        type = 'p'
+        AND dateadd(DD, number, '${Time_min}') &lt;='${Time_max}'
+        ) a
+        LEFT JOIN (select * from ST_DP_C where STCD=#{STCD} and TM&gt;='${Time_min}' and TM&lt;='${Time_max}'
+        ) b ON a.dt = b.TM
+        ) as b
+    </select>
+</mapper>

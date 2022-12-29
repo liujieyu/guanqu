@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.FLayersMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.FLayers">
+        <result column="ID" jdbcType="INTEGER" property="ID" />
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STTP" jdbcType="VARCHAR" property="STTP" />
+        <result column="STGR" jdbcType="VARCHAR" property="STGR" />
+        <result column="RELATECODE" jdbcType="INTEGER" property="RELATECODE" />
+        <result column="ADDVCD" jdbcType="VARCHAR" property="ADDVCD" />
+        <result column="GS" jdbcType="VARCHAR" property="GS" />
+        <result column="LGTD" jdbcType="NUMERIC" property="LGTD" />
+        <result column="LTTD" jdbcType="NUMERIC" property="LTTD" />
+        <result column="STLC" jdbcType="VARCHAR" property="STLC" />
+        <result column="HNNM" jdbcType="VARCHAR" property="HNNM" />
+        <result column="CTCD" jdbcType="VARCHAR" property="CTCD" />
+        <result column="RVCD" jdbcType="VARCHAR" property="RVCD" />
+        <result column="ESSTDT" jdbcType="DATE" property="ESSTDT" />
+        <result column="WDSTDT" jdbcType="DATE" property="WDSTDT" />
+        <result column="DTMNM" jdbcType="VARCHAR" property="DTMNM" />
+        <result column="DTMEL" jdbcType="NUMERIC" property="DTMEL" />
+        <result column="DLOG" jdbcType="VARCHAR" property="DLOG" />
+        <result column="ATCUNIT" jdbcType="VARCHAR" property="ATCUNIT" />
+        <result column="ADMAUTH" jdbcType="VARCHAR" property="ADMAUTH" />
+        <result column="LOCALITY" jdbcType="VARCHAR" property="LOCALITY" />
+        <result column="STBK" jdbcType="VARCHAR" property="STBK" />
+        <result column="STAZT" jdbcType="NUMERIC" property="STAZT" />
+        <result column="DRNA" jdbcType="NUMERIC" property="DRNA" />
+        <result column="FLTO" jdbcType="VARCHAR" property="FLTO" />
+        <result column="DSTRVM" jdbcType="NUMERIC" property="DSTRVM" />
+        <result column="MODITIME" jdbcType="TIMESTAMP" property="MODITIME" />
+        <result column="COMMENTS" jdbcType="VARCHAR" property="COMMENTS" />
+        <result column="type" jdbcType="VARCHAR" property="type" />
+        <result column="TM" jdbcType="TIMESTAMP" property="TM" />
+        <result column="Q" jdbcType="NUMERIC" property="Q" />
+        <result column="Z" jdbcType="NUMERIC" property="Z" />
+        <result column="WPTN" jdbcType="VARCHAR" property="WPTN" />
+        <result column="S" jdbcType="NUMERIC" property="S" />
+        <result column="FormID" jdbcType="VARCHAR" property="FormID" />
+        <result column="BaseID" jdbcType="VARCHAR" property="BaseID" />
+        <result column="Canal_Name" jdbcType="VARCHAR" property="Canal_Name" />
+    </resultMap>
+    <select id="findFLayers" resultMap="BaseResultMap">
+        SELECT
+        ST_STBPRP_B.*,
+        ST_STBPRP_F.type,
+        ST_Canal_R1.TM,
+        ST_Canal_R1.Q,
+        ST_Canal_R1.Z,
+        ST_Canal_R1.WPTN,
+        ST_Canal_R1.S,
+        ST_STINFO_WRP.FormID,
+        ST_STINFO_WRP.BaseID,
+        WRP_IrrBTCanalSystem.Canal_Name
+        FROM ST_STBPRP_B
+        LEFT JOIN ST_STBPRP_F ON ST_STBPRP_F.STCD=ST_STBPRP_B.STCD
+        LEFT JOIN ST_Canal_R1 ON ST_Canal_R1.STCD=ST_STBPRP_B.STCD
+        LEFT JOIN ST_STINFO_WRP ON ST_STINFO_WRP.STCD=ST_STBPRP_B.STCD
+        LEFT JOIN WRP_IrrBTCanalSystem ON WRP_IrrBTCanalSystem.Canal_Code=ST_STINFO_WRP.BaseID
+        where
+        ST_STBPRP_F.type = 4
+    </select>
+</mapper>

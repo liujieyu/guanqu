@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.WRP_AD_BMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.WRP_AD_B">
+        <result column="ID" jdbcType="INTEGER" property="ID" />
+        <result column="AD_CD" jdbcType="VARCHAR" property="AD_CD" />
+        <result column="AD_NM" jdbcType="VARCHAR" property="AD_NM" />
+        <result column="AD_LV" jdbcType="INTEGER" property="AD_LV" />
+        <result column="UP_ADCD" jdbcType="VARCHAR" property="UP_ADCD" />
+        <result column="AD_SHNM" jdbcType="VARCHAR" property="AD_SHNM" />
+        <result column="AD_A" jdbcType="NUMERIC" property="AD_A" />
+        <result column="TS" jdbcType="DATE" property="TS" />
+        <result column="MEMO" jdbcType="VARCHAR" property="TS" />
+    </resultMap>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select * from WRP_AD_B order by AD_CD
+    </select>
+    <select id="findByAD_CD" resultMap="BaseResultMap">
+        select * from WRP_AD_B
+        <where>
+            <if test="AD_CD!= null and AD_CD!= ''">
+                AD_CD = #{AD_CD}
+            </if>
+        </where>
+    </select>
+</mapper>

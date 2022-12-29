@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.QuDaoTreeMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.QuDaoTree">
+        <result column="canal_code" jdbcType="VARCHAR" property="canal_code" />
+        <result column="canal_name" jdbcType="VARCHAR" property="canal_name" />
+        <result column="Upper_Canal_code" jdbcType="VARCHAR" property="Upper_Canal_code" />
+        <result column="bj" jdbcType="VARCHAR" property="bj" />
+    </resultMap>
+    <select id="findByType" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        p_canalstcdview #{type}
+    </select>
+
+    <select id="findByYunXingGongKuang" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        p_canal_status_view
+    </select>
+</mapper>

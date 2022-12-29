@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vip.yingmen.mapper.ST_G_CQORDMapper">
+    <resultMap id="BaseResultMap" type="vip.yingmen.pojo.ST_G_CQORD">
+        <result column="ID" jdbcType="INTEGER" property="ID" />
+        <result column="STNM" jdbcType="VARCHAR" property="STNM" />
+        <result column="STCD" jdbcType="VARCHAR" property="STCD" />
+        <result column="YR" jdbcType="INTEGER" property="YR" />
+        <result column="TMMXQ" jdbcType="TIMESTAMP" property="TMMXQ" />
+        <result column="TMXQ" jdbcType="NUMERIC" property="TMXQ" />
+        <result column="YMXQZ" jdbcType="NUMERIC" property="YMXQZ" />
+    </resultMap>
+    <select id="findBySTCD" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from ST_G_CQORD
+        <where>
+            <if test="STCD!= null and STCD!= ''">
+                STCD = #{STCD}
+            </if>
+            <if test="Time_min!= null and Time_min!= ''and Time_max!= null and Time_max!= ''">
+                and YR &gt;= '${Time_min}' and YR &lt;='${Time_max}'
+            </if>
+        </where>
+    </select>
+</mapper>
