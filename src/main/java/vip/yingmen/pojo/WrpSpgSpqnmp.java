@@ -1,23 +1,45 @@
 package vip.yingmen.pojo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
 /**
  * 渗流量测点信息
  */
+@Data
+@TableName("WRP_SPG_SPQNMP")
 public class WrpSpgSpqnmp {
-
+  private static final long serialVersionUID = 1L;
+  @TableId(value = "ID", type = IdType.AUTO)
   private int id;           //主键ID
+  @TableField("STCD")
   private String stcd;      //站点编号
+  @TableField("DAMCD")
   private String damcd;     //断面编号
+  @TableField("MPCD")
   private String mpcd;      //测点编号
+  @TableField("CH")
   private String ch;        //桩号
+  @TableField("OFAX")
   private String ofax;      //轴距
+  @TableField("EL")
   private String el;        //高程
+  @TableField("INDT")
   private String indt;      //安装日期
+  @TableField("DVCD")
   private String dvcd;      //仪器编号
+  @TableField("ESLG")
   private String eslg;      //经度
+  @TableField("NRLT")
   private String nrlt;      //纬度
+  @TableField("RM")
   private String rm;        //备注
+  @TableField("DTUPTM")
   private String dtuptm;    //更新日期
+  private int sbid;      //渗流量设备ID
   private String ltype;     //测量方式
   private String dhname;    //设施名称
   private String setinfo;   //安装信息
@@ -197,5 +219,13 @@ public class WrpSpgSpqnmp {
 
   public void setStnm(String stnm) {
     this.stnm = stnm;
+  }
+
+  public int getSbid() {
+    return sbid;
+  }
+
+  public void setSbid(int sbid) {
+    this.sbid = sbid;
   }
 }

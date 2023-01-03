@@ -43,4 +43,6 @@ public interface WrpSpgSpqnmpMapper extends BaseMapper<WrpSpgSpqnmp> {
     public List<TreeData> findXzqhAndSiteTreeData(@Param("TABLENAME") String TABLENAME);
     //查询测点编号
     public List<Map> findCdbhByTable(@Param("TABLENAME") String TABLENAME,@Param("STCD") String STCD);
+    //根据ID获取渗流量测点信息
+    public WrpSpgSpqnmp selectSllcdInfoById(@Param("ID") Integer ID);
 }

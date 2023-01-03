@@ -1,17 +1,34 @@
 package vip.yingmen.pojo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
+import lombok.Data;
+
 /**
  * 断面特征信息
  */
-public class WrpDamsB {
-
+@Data
+@TableName("WRP_DAMS_B")
+public class WrpDamsB extends Model<WrpDamsB> {
+  private static final long serialVersionUID = 1L;
+  @TableId(value = "ID", type = IdType.AUTO)
   private int id;          //主键ID
+  @TableField("STCD")
   private String stcd;     //站点编码
+  @TableField("DAMCD")
   private String damcd;    //断面编号
+  @TableField("DAMSCD")
   private String damscd;   //特征点编号
+  @TableField("DAMSNM")
   private String damsnm;   //特征点名称
+  @TableField("REDI")
   private String redi;     //起点距
+  @TableField("POEL")
   private String poel;     //高程
+  @TableField("DTUPTM")
   private String dtuptm;   //更新时间
 
 

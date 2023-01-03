@@ -25,4 +25,10 @@ public interface StRsrBsinService extends IService<StRsrBsin> {
     PageInfo<StRsrBsin> selectRsrBsinInfoByPage(Integer _page, Integer _page_size, String _orderby, Map searchMap);
     //分页查询防洪基本信息
     PageInfo<StRsrHych> selectRsrHychInfoByPage(Integer _page, Integer _page_size, String _orderby, Map searchMap);
+    //获取监测站点列表
+    List<Map> selectStcdList();
+    //判断断面编号是否存在
+    Integer selectDamcdByCheck(String DAMCD);
+    //判断断面特征编号是否存在
+    Integer selectDamscdBycheck(String DAMSCD);
 }

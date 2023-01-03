@@ -1,17 +1,35 @@
 package vip.yingmen.pojo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
+import lombok.Data;
+
 /**
  * 断面信息
  */
-public class WrpSectionB {
+@Data
+@TableName("WRP_SECTION_B")
+public class WrpSectionB extends Model<WrpSectionB> {
+  private static final long serialVersionUID = 1L;
 
+  @TableId(value = "ID", type = IdType.AUTO)
   private int id;           //主键ID
+  @TableField("STCD")
   private String stcd;      //站点编号
+  @TableField("DAMCD")
   private String damcd;     //断面编号
+  @TableField("WALL_TYPE")
   private String wallType;  //防渗墙类型
+  @TableField("DAMLEN")
   private String damlen;    //断面长度
+  @TableField("DAMWD")
   private String damwd;     //断面宽度
+  @TableField("TEXT")
   private String text;      //预留字段
+  @TableField("DTUPTIM")
   private String dtuptim;   //更新时间
   private String adnm;      //所属行政区划
   private String stnm;      //站点名称

@@ -40,6 +40,7 @@
         <result column="NRLT" property="nrlt" />
         <result column="RM" property="rm" />
         <result column="DTUPTM" property="dtuptm" />
+        <result column="SBID" property="sbid" />
         <result column="DHNAME" property="dhname" />
         <result column="SETINFO" property="setinfo" />
         <result column="TDMIN" property="tdmin" />
@@ -145,11 +146,11 @@
     </select>
     <!--根据断面编号获取断面特征信息-->
     <select id="findSafeDmtzInfoByDmbh" parameterType="java.lang.String" resultMap="DmtzInfoMap">
-        select STCD,DAMCD,DAMSCD,DAMSNM,REDI,POEL,CONVERT(varchar(16),DTUPTM,120) as DTUPTM from WRP_DAMS_B where DAMCD=#{DAMCD}
+        select ID,STCD,DAMCD,DAMSCD,DAMSNM,REDI,POEL,CONVERT(varchar(16),DTUPTM,120) as DTUPTM from WRP_DAMS_B where DAMCD=#{DAMCD}
     </select>
     <!--根据测点编号获取渗流量测点信息-->
     <select id="findSafeSllInfoByCdbh" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select s.STCD,s.DAMCD,s.MPCD,s.CH,s.OFAX,s.EL,s.INDT,s.DVCD,s.ESLG,s.NRLT,CONVERT(varchar(16),s.DTUPTM,120) as DTUPTM,(select FieldName from WRP_FieldInfo where FormID='WRP_SPG_LSY' and FieldID='LTYPE' and Field=l.LTYPE)as LTYPE,l.DHNAME,l.TDMIN,l.SPPRWL from (select *from WRP_SPG_SPQNMP where MPCD=#{MPCD}) s
+        select s.ID,s.STCD,s.DAMCD,s.MPCD,s.CH,s.OFAX,s.EL,s.INDT,s.DVCD,s.ESLG,s.NRLT,CONVERT(varchar(16),s.DTUPTM,120) as DTUPTM,l.ID as SBID,(select FieldName from WRP_FieldInfo where FormID='WRP_SPG_LSY' and FieldID='LTYPE' and Field=l.LTYPE)as LTYPE,l.DHNAME,l.TDMIN,l.SPPRWL from (select *from WRP_SPG_SPQNMP where MPCD=#{MPCD}) s
         inner join (select * from WRP_SPG_LSY where MPCD=#{MPCD}) l on s.MPCD=l.MPCD
     </select>
     <!--根据测点编号获取渗压管信息-->
@@ -167,7 +168,7 @@
     </select>
     <!--获取断面信息表格数据-->
     <select id="findDuanmianInfoByPage" parameterType="java.util.Map" resultMap="DmInfoMap">
-    select b.STNM,(select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,w.STCD,DAMCD,DAMLEN,DAMWD,CONVERT(varchar(16),DTUPTIM,120) as DTUPTIM,(select FieldName from WRP_FieldInfo where FormANDFieldID='2801' and FieldID='WALL_TYPE' and Field=w.WALL_TYPE) as WALL_TYPE from WRP_SECTION_B w inner join ST_STBPRP_B b on w.STCD=b.STCD
+    select w.ID,b.STNM,(select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,w.STCD,DAMCD,DAMLEN,DAMWD,CONVERT(varchar(16),DTUPTIM,120) as DTUPTIM,(select FieldName from WRP_FieldInfo where FormANDFieldID='2801' and FieldID='WALL_TYPE' and Field=w.WALL_TYPE) as WALL_TYPE from WRP_SECTION_B w inner join ST_STBPRP_B b on w.STCD=b.STCD
         <where>
         <if test="STNM!= null and STNM!= ''">
             (b.stnm like '%'+#{STNM}+'%' or w.DAMCD like '%'+#{STNM}+'%')
@@ -259,5 +260,9 @@
     <!--查询测点编号-->
     <select id="findCdbhByTable" resultType="java.util.Map">
       select MPCD as value,MPCD as label from ${TABLENAME} where STCD=#{STCD}
+    </select>
+    <!--根据ID获取渗流量测点信息-->
+    <select id="selectSllcdInfoById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select * from WRP_SPG_SPQNMP where ID=#{ID}
     </select>
 </mapper>

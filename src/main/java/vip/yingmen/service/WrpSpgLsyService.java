@@ -2,6 +2,9 @@ package vip.yingmen.service;
 
 import vip.yingmen.pojo.WrpSpgLsy;
 import com.baomidou.mybatisplus.extension.service.IService;
+import vip.yingmen.pojo.WrpSpgSpqnmp;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -12,5 +15,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2022-09-09
  */
 public interface WrpSpgLsyService extends IService<WrpSpgLsy> {
-
+    //新增渗流量测站和设备信息
+    int addSpgLsyAndSpqnmp(WrpSpgSpqnmp pojo);
+    //修改渗流量测站和设备信息
+    int modifySpgLsyAndSpqnmp(WrpSpgSpqnmp pojo);
+    //删除渗流量测站和设备信息
+    int dropSpgLsyAndSpqnmp(String ids,String sbids);
+    //根据ID获取渗流量测站和设备信息
+    Map getSpgLsyAndSpqnmpById(int ID, int SBID);
 }

@@ -12,5 +12,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2022-09-09
  */
 public interface WrpDamsBService extends IService<WrpDamsB> {
-
+    //新增断面特征信息
+    int addWrpDamsB(WrpDamsB wrpDamsB);
+    //修改断面特征信息
+    int modifyWrpDamsB(WrpDamsB wrpDamsB);
+    //删除断面特征信息
+    int dropWrpDamsB(String ids);
+    //根据ID查询断面特征信息
+    WrpDamsB findWrpDamsBById(int id);
 }

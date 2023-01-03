@@ -84,4 +84,36 @@ public class StRsrBsinController {
         }
         return stRsrBsinService.selectRsrHychInfoByPage(_page,_page_size,_orderby,searchMap);
     }
+    //获取监测站点列表
+    @GetMapping(value = "/base/stcdlist")
+    public List<Map> findStcdList(){
+        return stRsrBsinService.selectStcdList();
+    }
+
+    //判断断面编号是否存在
+    @GetMapping(value = "/base/checkdamcd")
+    public Map checkDamcd(@RequestParam String DAMCD){
+        Map map=new HashMap();
+        Integer sign=stRsrBsinService.selectDamcdByCheck(DAMCD);
+        if(sign==0){
+            map.put("checksign","no");
+        }else{
+            map.put("checksign","yes");
+            map.put("warning","此断面编号已存在！");
+        }
+        return map;
+    }
+    //判断断面特征编号是否存在
+    @GetMapping(value = "/base/checkdamscd")
+    public Map checkDamscd(@RequestParam String DAMSCD){
+        Map map=new HashMap();
+        Integer sign=stRsrBsinService.selectDamscdBycheck(DAMSCD);
+        if(sign==0){
+            map.put("checksign","no");
+        }else{
+            map.put("checksign","yes");
+            map.put("warning","此断面特征编号已存在！");
+        }
+        return map;
+    }
 }

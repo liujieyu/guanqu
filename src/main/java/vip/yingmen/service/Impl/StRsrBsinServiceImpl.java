@@ -50,4 +50,16 @@ public class StRsrBsinServiceImpl extends ServiceImpl<StRsrBsinMapper, StRsrBsin
         PageInfo<StRsrHych> fhinfo=new PageInfo<>(list);
         return fhinfo;
     }
+    //获取监测站点列表
+    public List<Map> selectStcdList(){
+        return stRsrBsinMapper.selectStcdList();
+    }
+    //判断断面编号是否存在
+    public Integer selectDamcdByCheck(String DAMCD){
+        return stRsrBsinMapper.selectDamcdByCheck(DAMCD);
+    }
+    //判断断面特征编号是否存在
+    public Integer selectDamscdBycheck(String DAMSCD){
+        return stRsrBsinMapper.selectDamscdBycheck(DAMSCD);
+    }
 }
