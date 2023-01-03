@@ -90,4 +90,20 @@
           </if>
       </where>
     </select>
+    <!--获取监测站点列表-->
+    <select id="selectStcdList" resultType="java.util.Map">
+        select STCD as value,STNM as label from ST_STBPRP_B
+    </select>
+    <!--判断断面编号是否存在-->
+    <select id="selectDamcdByCheck" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from WRP_SECTION_B where DAMCD=#{DAMCD}
+    </select>
+    <!--根据断面编号查询断面信息-->
+    <select id="selectDminfoByDamcd" parameterType="java.lang.Integer" resultType="vip.yingmen.pojo.WrpSectionB">
+        select id,stcd,damcd,wall_type as wallType,damlen,damwd,text,dtuptim from WRP_SECTION_B where ID=#{id}
+    </select>
+    <!--判断特征点编号是否存在-->
+    <select id="selectDamscdBycheck" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from WRP_DAMS_B where DAMSCD=#{DAMSCD}
+    </select>
 </mapper>
