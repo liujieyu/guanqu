@@ -1,7 +1,10 @@
 package vip.yingmen.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import vip.yingmen.pojo.WrpSpgPztb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2022-09-09
  */
 public interface WrpSpgPztbMapper extends BaseMapper<WrpSpgPztb> {
-
+    //根据ID获取渗流压力测点信息
+    public WrpSpgPztb selectSlylInfoById(@Param("ID") Integer ID);
 }

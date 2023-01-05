@@ -23,7 +23,7 @@ public class SqlserverGenerator {
     //设置作者
     private static String authorName="sa";
     //这里是要生成的表名（如果全部要生成的话，这里注释掉）
-    private static String[] tablauthorNamees= {"WRP_SPG_SPQNMP","WRP_SPG_LSY"};
+    private static String[] tablauthorNamees= {"WRP_SPG_PZTB"};
     //可以设置table前缀
     private static String prefix="";
 
@@ -111,7 +111,7 @@ public class SqlserverGenerator {
         // 设置逻辑删除键（这个是逻辑删除的操作）
         strategy.setLogicDeleteFieldName("deleted");
         // TODO 根据数据库表名生成XML文件（如果全部生成，这里要注释掉）
-        strategy.setInclude("WRP_SPG_SPQNMP","WRP_SPG_LSY");
+        strategy.setInclude("WRP_SPG_PZTB");
         strategy.setSuperEntityColumns("id");
         // 驼峰转连字符
         strategy.setControllerMappingHyphenStyle(true);

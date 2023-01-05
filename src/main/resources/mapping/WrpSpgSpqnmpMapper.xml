@@ -150,7 +150,7 @@
     </select>
     <!--根据测点编号获取渗流量测点信息-->
     <select id="findSafeSllInfoByCdbh" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select s.ID,s.STCD,s.DAMCD,s.MPCD,s.CH,s.OFAX,s.EL,s.INDT,s.DVCD,s.ESLG,s.NRLT,CONVERT(varchar(16),s.DTUPTM,120) as DTUPTM,l.ID as SBID,(select FieldName from WRP_FieldInfo where FormID='WRP_SPG_LSY' and FieldID='LTYPE' and Field=l.LTYPE)as LTYPE,l.DHNAME,l.TDMIN,l.SPPRWL from (select *from WRP_SPG_SPQNMP where MPCD=#{MPCD}) s
+        select s.ID,s.STCD,s.DAMCD,s.MPCD,s.CH,s.OFAX,s.EL,s.INDT,s.DVCD,s.ESLG,s.NRLT,s.RM,l.SETINFO,CONVERT(varchar(16),s.DTUPTM,120) as DTUPTM,l.ID as SBID,(select FieldName from WRP_FieldInfo where FormID='WRP_SPG_LSY' and FieldID='LTYPE' and Field=l.LTYPE)as LTYPE,l.DHNAME,l.TDMIN,l.SPPRWL from (select *from WRP_SPG_SPQNMP where MPCD=#{MPCD}) s
         inner join (select * from WRP_SPG_LSY where MPCD=#{MPCD}) l on s.MPCD=l.MPCD
     </select>
     <!--根据测点编号获取渗压管信息-->
@@ -186,7 +186,7 @@
     </select>
     <!--渗流量信息表格数据-->
     <select id="findShenliuInfoByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
-        select b.STNM,(select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,s.STCD,s.DAMCD,s.MPCD,s.CH,s.OFAX,s.EL,l.TDMIN,l.SPPRWL from WRP_SPG_SPQNMP s
+        select s.ID,l.ID as SBID,b.STNM,(select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,s.STCD,s.DAMCD,s.MPCD,s.CH,s.OFAX,s.EL,l.TDMIN,l.SPPRWL from WRP_SPG_SPQNMP s
         inner join WRP_SPG_LSY l on s.MPCD=l.MPCD inner join ST_STBPRP_B b on s.STCD=b.STCD
         <where>
             <if test="STNM!= null and STNM!= ''">
@@ -202,7 +202,7 @@
     </select>
     <!--渗流压力信息表格数据-->
     <select id="fineSheyaInfoByPage" parameterType="java.util.Map" resultMap="SygInfoMap">
-        select b.STNM,(select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,w.STCD,DAMCD,MPCD,CH,OFAX,(select FieldName from WRP_FieldInfo where FormANDFieldID='3001' and FieldID='MSPS' and Field=w.MSPS)as MSPS,PZTBTEL,EL from WRP_SPG_PZTB w
+        select w.ID,b.STNM,(select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,w.STCD,DAMCD,MPCD,CH,OFAX,(select FieldName from WRP_FieldInfo where FormANDFieldID='3001' and FieldID='MSPS' and Field=w.MSPS)as MSPS,PZTBTEL,EL from WRP_SPG_PZTB w
         inner join ST_STBPRP_B b on w.STCD=b.STCD
         <where>
             <if test="STNM!= null and STNM!= ''">
@@ -264,5 +264,13 @@
     <!--根据ID获取渗流量测点信息-->
     <select id="selectSllcdInfoById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select * from WRP_SPG_SPQNMP where ID=#{ID}
+    </select>
+    <!--根据站点编号查询断面编号-->
+    <select id="selectDmcdByStcd" resultType="java.util.Map">
+        select DAMCD as value,DAMCD as label from WRP_SECTION_B where STCD=#{STCD}
+    </select>
+    <!--判断测点编号是否存在-->
+    <select id="findMpcdExist" resultType="java.lang.Integer">
+        select count(*) from ${TABLENAME} where MPCD=#{MPCD}
     </select>
 </mapper>

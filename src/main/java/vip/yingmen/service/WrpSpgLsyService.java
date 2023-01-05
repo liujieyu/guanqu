@@ -4,6 +4,7 @@ import vip.yingmen.pojo.WrpSpgLsy;
 import com.baomidou.mybatisplus.extension.service.IService;
 import vip.yingmen.pojo.WrpSpgSpqnmp;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,5 +23,9 @@ public interface WrpSpgLsyService extends IService<WrpSpgLsy> {
     //删除渗流量测站和设备信息
     int dropSpgLsyAndSpqnmp(String ids,String sbids);
     //根据ID获取渗流量测站和设备信息
-    Map getSpgLsyAndSpqnmpById(int ID, int SBID);
+    WrpSpgSpqnmp getSpgLsyAndSpqnmpById(int ID, int SBID);
+    //根据站点编号查询断面编号
+    List<Map> selectDmcdByStcd(String STCD);
+    //判断测点编号是否存在
+    Integer findMpcdExist(int TYPE,String MPCD);
 }

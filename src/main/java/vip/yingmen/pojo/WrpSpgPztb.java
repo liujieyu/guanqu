@@ -1,28 +1,58 @@
 package vip.yingmen.pojo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
+import java.math.BigDecimal;
+
 /**
  * 测压管信息
  */
+@Data
+@TableName("WRP_SPG_PZTB")
 public class WrpSpgPztb {
+  private static final long serialVersionUID = 1L;
 
+  @TableId(value = "ID", type = IdType.AUTO)
   private int id;         //主键ID
+  @TableField("STCD")
   private String stcd;    //站点名称
+  @TableField("DAMCD")
   private String damcd;   //断面编号
+  @TableField("MPCD")
   private String mpcd;    //测点编号
+  @TableField("CH")
   private String ch;      //桩号
-  private String ofax;    //坝轴距
+  @TableField("OFAX")
+  private BigDecimal ofax;    //坝轴距
+  @TableField("MSPS")
   private String msps;    //监测部位
-  private String ipbtel;  //进水段底高程
-  private String iptpel;  //进水段顶高程
-  private String tbtpel;  //管口高程
-  private String tbbtel;  //管底高程
-  private String pztbtel; //水位阈值高程
+  @TableField("IPBTEL")
+  private BigDecimal ipbtel;  //进水段底高程
+  @TableField("IPTPEL")
+  private BigDecimal iptpel;  //进水段顶高程
+  @TableField("TBTPEL")
+  private BigDecimal tbtpel;  //管口高程
+  @TableField("TBBTEL")
+  private BigDecimal tbbtel;  //管底高程
+  @TableField("PZTBTEL")
+  private BigDecimal pztbtel; //水位阈值高程
+  @TableField("DVCD")
   private String dvcd;    //仪器编号
-  private String eslg;    //经度
-  private String nrlt;    //纬度
+  @TableField("ESLG")
+  private BigDecimal eslg;    //经度
+  @TableField("NRLT")
+  private BigDecimal nrlt;    //纬度
+  @TableField("RM")
   private String rm;      //备注
-  private String el;      //安装高程
+  @TableField("EL")
+  private BigDecimal el;      //安装高程
+  @TableField("MSTP")
   private String mstp;    //监测类型
+  @TableField("DTUPTM")
   private String dtuptm;  //更新时间
   private String adnm;      //所属行政区划
   private String stnm;      //站点名称
@@ -73,11 +103,11 @@ public class WrpSpgPztb {
   }
 
 
-  public String getOfax() {
+  public BigDecimal getOfax() {
     return ofax;
   }
 
-  public void setOfax(String ofax) {
+  public void setOfax(BigDecimal ofax) {
     this.ofax = ofax;
   }
 
@@ -91,47 +121,47 @@ public class WrpSpgPztb {
   }
 
 
-  public String getIpbtel() {
+  public BigDecimal getIpbtel() {
     return ipbtel;
   }
 
-  public void setIpbtel(String ipbtel) {
+  public void setIpbtel(BigDecimal ipbtel) {
     this.ipbtel = ipbtel;
   }
 
 
-  public String getIptpel() {
+  public BigDecimal getIptpel() {
     return iptpel;
   }
 
-  public void setIptpel(String iptpel) {
+  public void setIptpel(BigDecimal iptpel) {
     this.iptpel = iptpel;
   }
 
 
-  public String getTbtpel() {
+  public BigDecimal getTbtpel() {
     return tbtpel;
   }
 
-  public void setTbtpel(String tbtpel) {
+  public void setTbtpel(BigDecimal tbtpel) {
     this.tbtpel = tbtpel;
   }
 
 
-  public String getTbbtel() {
+  public BigDecimal getTbbtel() {
     return tbbtel;
   }
 
-  public void setTbbtel(String tbbtel) {
+  public void setTbbtel(BigDecimal tbbtel) {
     this.tbbtel = tbbtel;
   }
 
 
-  public String getPztbtel() {
+  public BigDecimal getPztbtel() {
     return pztbtel;
   }
 
-  public void setPztbtel(String pztbtel) {
+  public void setPztbtel(BigDecimal pztbtel) {
     this.pztbtel = pztbtel;
   }
 
@@ -145,20 +175,20 @@ public class WrpSpgPztb {
   }
 
 
-  public String getEslg() {
+  public BigDecimal getEslg() {
     return eslg;
   }
 
-  public void setEslg(String eslg) {
+  public void setEslg(BigDecimal eslg) {
     this.eslg = eslg;
   }
 
 
-  public String getNrlt() {
+  public BigDecimal getNrlt() {
     return nrlt;
   }
 
-  public void setNrlt(String nrlt) {
+  public void setNrlt(BigDecimal nrlt) {
     this.nrlt = nrlt;
   }
 
@@ -172,11 +202,11 @@ public class WrpSpgPztb {
   }
 
 
-  public String getEl() {
+  public BigDecimal getEl() {
     return el;
   }
 
-  public void setEl(String el) {
+  public void setEl(BigDecimal el) {
     this.el = el;
   }
 

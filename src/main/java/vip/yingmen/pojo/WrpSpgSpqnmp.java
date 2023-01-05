@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * 渗流量测点信息
  */
@@ -24,9 +26,9 @@ public class WrpSpgSpqnmp {
   @TableField("CH")
   private String ch;        //桩号
   @TableField("OFAX")
-  private String ofax;      //轴距
+  private BigDecimal ofax;      //轴距
   @TableField("EL")
-  private String el;        //高程
+  private BigDecimal el;        //高程
   @TableField("INDT")
   private String indt;      //安装日期
   @TableField("DVCD")
@@ -39,7 +41,7 @@ public class WrpSpgSpqnmp {
   private String rm;        //备注
   @TableField("DTUPTM")
   private String dtuptm;    //更新日期
-  private int sbid;      //渗流量设备ID
+  private Integer sbid;      //渗流量设备ID
   private String ltype;     //测量方式
   private String dhname;    //设施名称
   private String setinfo;   //安装信息
@@ -94,20 +96,20 @@ public class WrpSpgSpqnmp {
   }
 
 
-  public String getOfax() {
+  public BigDecimal getOfax() {
     return ofax;
   }
 
-  public void setOfax(String ofax) {
+  public void setOfax(BigDecimal ofax) {
     this.ofax = ofax;
   }
 
 
-  public String getEl() {
+  public BigDecimal getEl() {
     return el;
   }
 
-  public void setEl(String el) {
+  public void setEl(BigDecimal el) {
     this.el = el;
   }
 
@@ -221,11 +223,11 @@ public class WrpSpgSpqnmp {
     this.stnm = stnm;
   }
 
-  public int getSbid() {
+  public Integer getSbid() {
     return sbid;
   }
 
-  public void setSbid(int sbid) {
+  public void setSbid(Integer sbid) {
     this.sbid = sbid;
   }
 }
