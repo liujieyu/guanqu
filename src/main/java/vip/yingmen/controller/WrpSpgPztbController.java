@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
+import vip.yingmen.pojo.WrpDfrSrhrdsmp;
 import vip.yingmen.pojo.WrpSpgPztb;
 import vip.yingmen.service.WrpSpgPztbService;
 
@@ -13,7 +14,7 @@ import java.util.Map;
 
 /**
  * <p>
- *  前端控制器
+ *  大坝安全测点信息维护
  * </p>
  *
  * @author liujieyu
@@ -53,5 +54,34 @@ public class WrpSpgPztbController {
     @GetMapping(value = "/manage/slyldetail")
     public WrpSpgPztb getSlylInfoById(@RequestParam int ID){
         return wrpSpgPztbService.findSpgPztbById(ID);
+    }
+    //新增水平位移测点信息
+    @PostMapping(value = "/manage/addspwyinfo")
+    public Map addSpwylInfo(@RequestBody WrpDfrSrhrdsmp pojo){
+        wrpSpgPztbService.addSrhrdsmp(pojo);
+        Map map=new HashMap();
+        map.put("sign","ok");
+        return map;
+    }
+    //修改水平位移测点信息
+    @PostMapping(value = "/manage/updatespwyinfo")
+    public Map updateSpwylInfo(@RequestBody WrpDfrSrhrdsmp pojo){
+        wrpSpgPztbService.modifySrhrdsmp(pojo);
+        Map map=new HashMap();
+        map.put("sign","ok");
+        return map;
+    }
+    //删除水平位移测点信息
+    @GetMapping(value = "/manage/delspwyinfo")
+    public Map delSpwyinfoByIds(@RequestParam String ids){
+        wrpSpgPztbService.dropWrhrdsmp(ids);
+        Map map=new HashMap();
+        map.put("sign","ok");
+        return map;
+    }
+    //根据ID查询水平位移测点信息
+    @GetMapping(value = "/manage/spwydetail")
+    public WrpDfrSrhrdsmp getSpwyInfoById(@RequestParam int ID){
+        return wrpSpgPztbService.findSrhrdsmpById(ID);
     }
 }

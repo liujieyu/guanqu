@@ -34,9 +34,9 @@ public class WrpSpgSpqnmp {
   @TableField("DVCD")
   private String dvcd;      //仪器编号
   @TableField("ESLG")
-  private String eslg;      //经度
+  private BigDecimal eslg;      //经度
   @TableField("NRLT")
-  private String nrlt;      //纬度
+  private BigDecimal nrlt;      //纬度
   @TableField("RM")
   private String rm;        //备注
   @TableField("DTUPTM")
@@ -45,8 +45,8 @@ public class WrpSpgSpqnmp {
   private String ltype;     //测量方式
   private String dhname;    //设施名称
   private String setinfo;   //安装信息
-  private String tdmin;     //测量最小值
-  private String spprwl;    //测流阈值
+  private BigDecimal tdmin;     //测量最小值
+  private BigDecimal spprwl;    //测流阈值
   private String adnm;      //所属行政区划
   private String stnm;      //站点名称
 
@@ -132,20 +132,20 @@ public class WrpSpgSpqnmp {
   }
 
 
-  public String getEslg() {
+  public BigDecimal getEslg() {
     return eslg;
   }
 
-  public void setEslg(String eslg) {
+  public void setEslg(BigDecimal eslg) {
     this.eslg = eslg;
   }
 
 
-  public String getNrlt() {
+  public BigDecimal getNrlt() {
     return nrlt;
   }
 
-  public void setNrlt(String nrlt) {
+  public void setNrlt(BigDecimal nrlt) {
     this.nrlt = nrlt;
   }
 
@@ -191,19 +191,19 @@ public class WrpSpgSpqnmp {
     this.setinfo = setinfo;
   }
 
-  public String getTdmin() {
+  public BigDecimal getTdmin() {
     return tdmin;
   }
 
-  public void setTdmin(String tdmin) {
+  public void setTdmin(BigDecimal tdmin) {
     this.tdmin = tdmin;
   }
 
-  public String getSpprwl() {
+  public BigDecimal getSpprwl() {
     return spprwl;
   }
 
-  public void setSpprwl(String spprwl) {
+  public void setSpprwl(BigDecimal spprwl) {
     this.spprwl = spprwl;
   }
 

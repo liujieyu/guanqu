@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * 断面特征信息
  */
@@ -25,9 +27,9 @@ public class WrpDamsB extends Model<WrpDamsB> {
   @TableField("DAMSNM")
   private String damsnm;   //特征点名称
   @TableField("REDI")
-  private String redi;     //起点距
+  private BigDecimal redi;     //起点距
   @TableField("POEL")
-  private String poel;     //高程
+  private BigDecimal poel;     //高程
   @TableField("DTUPTM")
   private String dtuptm;   //更新时间
 
@@ -77,20 +79,20 @@ public class WrpDamsB extends Model<WrpDamsB> {
   }
 
 
-  public String getRedi() {
+  public BigDecimal getRedi() {
     return redi;
   }
 
-  public void setRedi(String redi) {
+  public void setRedi(BigDecimal redi) {
     this.redi = redi;
   }
 
 
-  public String getPoel() {
+  public BigDecimal getPoel() {
     return poel;
   }
 
-  public void setPoel(String poel) {
+  public void setPoel(BigDecimal poel) {
     this.poel = poel;
   }
 

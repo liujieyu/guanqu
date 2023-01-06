@@ -1,28 +1,59 @@
 package vip.yingmen.pojo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
+import lombok.Data;
+
+import java.math.BigDecimal;
+
 /**
  * 表面水平位移信息
  */
-public class WrpDfrSrhrdsmp {
+@Data
+@TableName("WRP_DFR_SRHRDSMP")
+public class WrpDfrSrhrdsmp  extends Model<WrpDfrSrhrdsmp> {
+  private static final long serialVersionUID = 1L;
 
+  @TableId(value = "ID", type = IdType.AUTO)
   private int id;         //主键ID
+  @TableField("STCD")
   private String stcd;    //站点编号
+  @TableField("DAMCD")
   private String damcd;   //断面编号
+  @TableField("MPCD")
   private String mpcd;    //测点编号
+  @TableField("CH")
   private String ch;      //桩号
-  private String ofax;    //轴距
-  private String el;      //高程
-  private String stvlx;   //X基准值
-  private String stvly;   //Y基准值
-  private String xyhrds;  //位移阈值
+  @TableField("OFAX")
+  private BigDecimal ofax;    //轴距
+  @TableField("EL")
+  private BigDecimal el;      //高程
+  @TableField("STVLX")
+  private BigDecimal stvlx;   //X基准值
+  @TableField("STVLY")
+  private BigDecimal stvly;   //Y基准值
+  @TableField("XYHRDS")
+  private BigDecimal xyhrds;  //位移阈值
+  @TableField("TP")
   private String tp;      //型式
+  @TableField("BSIN")
   private String bsin;    //基础情况
+  @TableField("INDT")
   private String indt;    //安装日期
+  @TableField("DTDT")
   private String dtdt;    //测定日期
+  @TableField("DVCD")
   private String dvcd;    //设备编号
-  private String eslg;    //经度
-  private String nrlt;    //纬度
+  @TableField("ESLG")
+  private BigDecimal eslg;    //经度
+  @TableField("NRLT")
+  private BigDecimal nrlt;    //纬度
+  @TableField("RM")
   private String rm;      //备注
+  @TableField("DTUPTM")
   private String dtuptm;  //更新时间
   private String adnm;      //所属行政区划
   private String stnm;      //站点名称
@@ -73,47 +104,47 @@ public class WrpDfrSrhrdsmp {
   }
 
 
-  public String getOfax() {
+  public BigDecimal getOfax() {
     return ofax;
   }
 
-  public void setOfax(String ofax) {
+  public void setOfax(BigDecimal ofax) {
     this.ofax = ofax;
   }
 
 
-  public String getEl() {
+  public BigDecimal getEl() {
     return el;
   }
 
-  public void setEl(String el) {
+  public void setEl(BigDecimal el) {
     this.el = el;
   }
 
 
-  public String getStvlx() {
+  public BigDecimal getStvlx() {
     return stvlx;
   }
 
-  public void setStvlx(String stvlx) {
+  public void setStvlx(BigDecimal stvlx) {
     this.stvlx = stvlx;
   }
 
 
-  public String getStvly() {
+  public BigDecimal getStvly() {
     return stvly;
   }
 
-  public void setStvly(String stvly) {
+  public void setStvly(BigDecimal stvly) {
     this.stvly = stvly;
   }
 
 
-  public String getXyhrds() {
+  public BigDecimal getXyhrds() {
     return xyhrds;
   }
 
-  public void setXyhrds(String xyhrds) {
+  public void setXyhrds(BigDecimal xyhrds) {
     this.xyhrds = xyhrds;
   }
 
@@ -163,20 +194,20 @@ public class WrpDfrSrhrdsmp {
   }
 
 
-  public String getEslg() {
+  public BigDecimal getEslg() {
     return eslg;
   }
 
-  public void setEslg(String eslg) {
+  public void setEslg(BigDecimal eslg) {
     this.eslg = eslg;
   }
 
 
-  public String getNrlt() {
+  public BigDecimal getNrlt() {
     return nrlt;
   }
 
-  public void setNrlt(String nrlt) {
+  public void setNrlt(BigDecimal nrlt) {
     this.nrlt = nrlt;
   }
 

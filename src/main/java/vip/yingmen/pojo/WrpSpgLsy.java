@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 @TableName("WRP_SPG_LSY")
 public class WrpSpgLsy extends Model<WrpSpgLsy> {
@@ -25,9 +27,9 @@ public class WrpSpgLsy extends Model<WrpSpgLsy> {
   @TableField("SETINFO")
   private String setinfo;
   @TableField("TDMIN")
-  private String tdmin;
+  private BigDecimal tdmin;
   @TableField("SPPRWL")
-  private String spprwl;
+  private BigDecimal spprwl;
   @TableField("INDT")
   private String indt;
   @TableField("DVCD")
@@ -81,20 +83,20 @@ public class WrpSpgLsy extends Model<WrpSpgLsy> {
   }
 
 
-  public String getTdmin() {
+  public BigDecimal getTdmin() {
     return tdmin;
   }
 
-  public void setTdmin(String tdmin) {
+  public void setTdmin(BigDecimal tdmin) {
     this.tdmin = tdmin;
   }
 
 
-  public String getSpprwl() {
+  public BigDecimal getSpprwl() {
     return spprwl;
   }
 
-  public void setSpprwl(String spprwl) {
+  public void setSpprwl(BigDecimal spprwl) {
     this.spprwl = spprwl;
   }
 

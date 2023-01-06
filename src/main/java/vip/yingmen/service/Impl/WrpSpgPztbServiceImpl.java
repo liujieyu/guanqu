@@ -1,6 +1,8 @@
 package vip.yingmen.service.Impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import vip.yingmen.mapper.WrpDfrSrhrdsmpMapper;
+import vip.yingmen.pojo.WrpDfrSrhrdsmp;
 import vip.yingmen.pojo.WrpSpgPztb;
 import vip.yingmen.mapper.WrpSpgPztbMapper;
 import vip.yingmen.service.WrpSpgPztbService;
@@ -21,6 +23,8 @@ import java.util.Arrays;
 public class WrpSpgPztbServiceImpl extends ServiceImpl<WrpSpgPztbMapper, WrpSpgPztb> implements WrpSpgPztbService {
     @Autowired
     private WrpSpgPztbMapper wrpSpgPztbMapper;
+    @Autowired
+    private WrpDfrSrhrdsmpMapper wrpDfrSrhrdsmpMapper;
     //新增渗压管信息
     public int addSpgPztb(WrpSpgPztb pojo){
         return wrpSpgPztbMapper.insert(pojo);
@@ -36,5 +40,21 @@ public class WrpSpgPztbServiceImpl extends ServiceImpl<WrpSpgPztbMapper, WrpSpgP
     //根据ID查询渗压管信息
     public WrpSpgPztb findSpgPztbById(int ID){
         return wrpSpgPztbMapper.selectSlylInfoById(ID);
+    }
+    //新增水平位移测点信息
+    public int addSrhrdsmp(WrpDfrSrhrdsmp pojo){
+        return wrpDfrSrhrdsmpMapper.insert(pojo);
+    }
+    //修改水平位移测点信息
+    public int modifySrhrdsmp(WrpDfrSrhrdsmp pojo){
+        return wrpDfrSrhrdsmpMapper.updateById(pojo);
+    }
+    //删除水平位移测点信息
+    public int dropWrhrdsmp(String ids){
+        return wrpDfrSrhrdsmpMapper.deleteBatchIds(Arrays.asList(ids.split(",")));
+    }
+    //根据ID查询水平位移测点信息
+    public WrpDfrSrhrdsmp findSrhrdsmpById(int ID){
+        return wrpSpgPztbMapper.selectSpwyInfoById(ID);
     }
 }

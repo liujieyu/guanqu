@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * 断面信息
  */
@@ -24,9 +26,9 @@ public class WrpSectionB extends Model<WrpSectionB> {
   @TableField("WALL_TYPE")
   private String wallType;  //防渗墙类型
   @TableField("DAMLEN")
-  private String damlen;    //断面长度
+  private BigDecimal damlen;    //断面长度
   @TableField("DAMWD")
-  private String damwd;     //断面宽度
+  private BigDecimal damwd;     //断面宽度
   @TableField("TEXT")
   private String text;      //预留字段
   @TableField("DTUPTIM")
@@ -71,20 +73,20 @@ public class WrpSectionB extends Model<WrpSectionB> {
   }
 
 
-  public String getDamlen() {
+  public BigDecimal getDamlen() {
     return damlen;
   }
 
-  public void setDamlen(String damlen) {
+  public void setDamlen(BigDecimal damlen) {
     this.damlen = damlen;
   }
 
 
-  public String getDamwd() {
+  public BigDecimal getDamwd() {
     return damwd;
   }
 
-  public void setDamwd(String damwd) {
+  public void setDamwd(BigDecimal damwd) {
     this.damwd = damwd;
   }
 
