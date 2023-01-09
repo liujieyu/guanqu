@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 import vip.yingmen.pojo.WrpDfrSrhrdsmp;
+import vip.yingmen.pojo.WrpDfrSrvrdsmp;
 import vip.yingmen.pojo.WrpSpgPztb;
 import vip.yingmen.service.WrpSpgPztbService;
 
@@ -83,5 +84,34 @@ public class WrpSpgPztbController {
     @GetMapping(value = "/manage/spwydetail")
     public WrpDfrSrhrdsmp getSpwyInfoById(@RequestParam int ID){
         return wrpSpgPztbService.findSrhrdsmpById(ID);
+    }
+    //新增沉降位移测点信息
+    @PostMapping(value = "/manage/addcjwyinfo")
+    public Map addCjwylInfo(@RequestBody WrpDfrSrvrdsmp pojo){
+        wrpSpgPztbService.addSrvrdsmp(pojo);
+        Map map=new HashMap();
+        map.put("sign","ok");
+        return map;
+    }
+    //修改沉降位移测点信息
+    @PostMapping(value = "/manage/updatecjwyinfo")
+    public Map updateCjwylInfo(@RequestBody WrpDfrSrvrdsmp pojo){
+        wrpSpgPztbService.modifySrvrdsmp(pojo);
+        Map map=new HashMap();
+        map.put("sign","ok");
+        return map;
+    }
+    //删除沉降位移测点信息
+    @GetMapping(value = "/manage/delcjwyinfo")
+    public Map delCjwyinfoByIds(@RequestParam String ids){
+        wrpSpgPztbService.dropSrvrdsmp(ids);
+        Map map=new HashMap();
+        map.put("sign","ok");
+        return map;
+    }
+    //根据ID查询沉降位移测点信息
+    @GetMapping(value = "/manage/cjwydetail")
+    public WrpDfrSrvrdsmp getCjwyInfoById(@RequestParam int ID){
+        return wrpSpgPztbService.findSrvrdsmpById(ID);
     }
 }

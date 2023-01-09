@@ -155,20 +155,20 @@
     </select>
     <!--根据测点编号获取渗压管信息-->
     <select id="findSafeSYgInfoByCdbh" parameterType="java.lang.String" resultMap="SygInfoMap">
-        select STCD,DAMCD,MPCD,CH,case when OFAX>=0 then '下游'+convert(varchar(20),ABS(OFAX)) else '上游'+convert(varchar(20),ABS(OFAX)) end as OFAX,(select FieldName from WRP_FieldInfo where FormID='WRP_SPG_PZTB' and FieldID='MSPS' and Field=w.MSPS)as MSPS,IPBTEL,IPTPEL,TBTPEL,TBBTEL,PZTBTEL,DVCD,ESLG,NRLT,EL,(select FieldName from WRP_FieldInfo where FormANDFieldID='3002' and FieldID='MSTP' and Field=w.MSTP)as MSTP,CONVERT(varchar(16),DTUPTM,120) as DTUPTM,RM from WRP_SPG_PZTB w
+        select STCD,DAMCD,MPCD,CH,OFAX,(select FieldName from WRP_FieldInfo where FormID='WRP_SPG_PZTB' and FieldID='MSPS' and Field=w.MSPS)as MSPS,IPBTEL,IPTPEL,TBTPEL,TBBTEL,PZTBTEL,DVCD,ESLG,NRLT,EL,(select FieldName from WRP_FieldInfo where FormANDFieldID='3002' and FieldID='MSTP' and Field=w.MSTP)as MSTP,CONVERT(varchar(16),DTUPTM,120) as DTUPTM,RM from WRP_SPG_PZTB w
         where MPCD=#{MPCD}
     </select>
     <!--根据测点编号获取表面水平位移信息-->
     <select id="findSafeSpwyInfoByCdbh" parameterType="java.lang.String" resultMap="SpwyInfoMap">
-        select ID,STCD,DAMCD,MPCD,CH,OFAX,EL,STVLX,STVLY,XYHRDS,TP,BSIN,substring(CONVERT(varchar(100), INDT, 120),1,10) as INDT,substring(CONVERT(varchar(100), DTDT, 120),1,10) as DTDT,DVCD,ESLG,NRLT,substring(CONVERT(varchar(100), DTUPTM, 120),1,16) as DTUPTM from WRP_DFR_SRHRDSMP where MPCD=#{MPCD}
+        select ID,STCD,DAMCD,MPCD,CH,OFAX,EL,STVLX,STVLY,XYHRDS,TP,BSIN,substring(CONVERT(varchar(100), INDT, 120),1,10) as INDT,substring(CONVERT(varchar(100), DTDT, 120),1,10) as DTDT,DVCD,ESLG,NRLT,substring(CONVERT(varchar(100), DTUPTM, 120),1,16) as DTUPTM,RM from WRP_DFR_SRHRDSMP where MPCD=#{MPCD}
     </select>
     <!--根据测点编号获取表面垂直位移信息-->
     <select id="findSafeCzwyInfoByCdbh" parameterType="java.lang.String" resultMap="CjwyInfoMap">
-        select ID,STCD,DAMCD,MPCD,CH,OFAX,INEL,VRDS,TP,BSIN,substring(CONVERT(varchar(100), INDT, 120),1,10) as INDT,substring(CONVERT(varchar(100), DTDT, 120),1,10) as DTDT,DVCD,ESLG,NRLT,substring(CONVERT(varchar(100), DTUPTM, 120),1,16) as DTUPTM from WRP_DFR_SRVRDSMP where MPCD=#{MPCD}
+        select ID,STCD,DAMCD,MPCD,CH,OFAX,INEL,VRDS,TP,BSIN,substring(CONVERT(varchar(100), INDT, 120),1,10) as INDT,substring(CONVERT(varchar(100), DTDT, 120),1,10) as DTDT,DVCD,ESLG,NRLT,substring(CONVERT(varchar(100), DTUPTM, 120),1,16) as DTUPTM,RM from WRP_DFR_SRVRDSMP where MPCD=#{MPCD}
     </select>
     <!--获取断面信息表格数据-->
     <select id="findDuanmianInfoByPage" parameterType="java.util.Map" resultMap="DmInfoMap">
-    select w.ID,b.STNM,(select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,w.STCD,DAMCD,DAMLEN,DAMWD,CONVERT(varchar(16),DTUPTIM,120) as DTUPTIM,(select FieldName from WRP_FieldInfo where FormANDFieldID='2801' and FieldID='WALL_TYPE' and Field=w.WALL_TYPE) as WALL_TYPE from WRP_SECTION_B w inner join ST_STBPRP_B b on w.STCD=b.STCD
+    select w.ID,b.STNM,(select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,w.STCD,DAMCD,DAMLEN,DAMWD,CONVERT(varchar(16),DTUPTIM,120) as DTUPTIM,(select FieldName from WRP_FieldInfo where FormANDFieldID='2801' and FieldID='WALL_TYPE' and Field=w.WALL_TYPE) as WALL_TYPE,TEXT from WRP_SECTION_B w inner join ST_STBPRP_B b on w.STCD=b.STCD
         <where>
         <if test="STNM!= null and STNM!= ''">
             (b.stnm like '%'+#{STNM}+'%' or w.DAMCD like '%'+#{STNM}+'%')
@@ -237,7 +237,7 @@
     </select>
     <!--沉降位移信息表格数据-->
     <select id="fineChenjiangInfoByPage" parameterType="java.util.Map" resultMap="CjwyInfoMap">
-        select b.STNM,(select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,w.STCD,DAMCD,MPCD,CH,OFAX,INEL,VRDS from WRP_DFR_SRVRDSMP w
+        select w.ID,b.STNM,(select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,w.STCD,DAMCD,MPCD,CH,OFAX,INEL,VRDS from WRP_DFR_SRVRDSMP w
         inner join ST_STBPRP_B b on w.STCD=b.STCD
         <where>
             <if test="STNM!= null and STNM!= ''">

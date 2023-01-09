@@ -31,4 +31,6 @@ public interface StRsrBsinMapper extends BaseMapper<StRsrBsin> {
     WrpSectionB selectDminfoByDamcd(@Param("id") int id);
     //判断特征点编号是否存在
     Integer selectDamscdBycheck(@Param("DAMSCD") String DAMSCD);
+    //根据断面ID删除断面特征信息
+    void deleteDamsinfoByDmId(@Param("ids") String ids);
 }

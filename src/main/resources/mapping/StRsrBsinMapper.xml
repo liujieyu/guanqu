@@ -106,4 +106,8 @@
     <select id="selectDamscdBycheck" parameterType="java.lang.String" resultType="java.lang.Integer">
         select count(*) from WRP_DAMS_B where DAMSCD=#{DAMSCD}
     </select>
+    <!--根据断面ID删除断面特征信息-->
+    <delete id="deleteDamsinfoByDmId">
+        delete from WRP_DAMS_B where DAMCD in(select DAMCD from WRP_SECTION_B where id in(${ids}))
+    </delete>
 </mapper>

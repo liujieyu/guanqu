@@ -2,6 +2,7 @@ package vip.yingmen.mapper;
 
 import org.apache.ibatis.annotations.Param;
 import vip.yingmen.pojo.WrpDfrSrhrdsmp;
+import vip.yingmen.pojo.WrpDfrSrvrdsmp;
 import vip.yingmen.pojo.WrpSpgPztb;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -20,4 +21,6 @@ public interface WrpSpgPztbMapper extends BaseMapper<WrpSpgPztb> {
     public WrpSpgPztb selectSlylInfoById(@Param("ID") Integer ID);
     //根据ID获取表面位移测点信息
     public WrpDfrSrhrdsmp selectSpwyInfoById(@Param("ID") Integer ID);
+    //根据ID获取沉降位移测点信息
+    public WrpDfrSrvrdsmp selectCjwyInfoById(@Param("ID") Integer ID);
 }

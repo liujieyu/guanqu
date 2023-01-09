@@ -48,6 +48,28 @@
         <result column="STNM" property="stnm" />
         <result column="AD_NM" property="adnm" />
     </resultMap>
+    <!-- 表面垂直位移信息 -->
+    <resultMap id="CjwyResultMap" type="vip.yingmen.pojo.WrpDfrSrvrdsmp">
+        <id column="ID" property="id" />
+        <result column="STCD" property="stcd" />
+        <result column="DAMCD" property="damcd" />
+        <result column="MPCD" property="mpcd" />
+        <result column="CH" property="ch" />
+        <result column="OFAX" property="ofax" />
+        <result column="INEL" property="inel" />
+        <result column="VRDS" property="vrds" />
+        <result column="TP" property="tp" />
+        <result column="BSIN" property="bsin" />
+        <result column="INDT" property="indt" />
+        <result column="DTDT" property="dtdt" />
+        <result column="DVCD" property="dvcd" />
+        <result column="ESLG" property="eslg" />
+        <result column="NRLT" property="nrlt" />
+        <result column="RM" property="rm" />
+        <result column="DTUPTM" property="dtuptm" />
+        <result column="STNM" property="stnm" />
+        <result column="AD_NM" property="adnm" />
+    </resultMap>
     <!--根据ID获取渗流压力测点信息-->
     <select id="selectSlylInfoById" parameterType="java.lang.Integer" resultMap="SygResultMap">
         select * from WRP_SPG_PZTB where ID=#{ID}
@@ -55,5 +77,9 @@
     <!--根据ID获取表面位移测点信息-->
     <select id="selectSpwyInfoById" parameterType="java.lang.Integer" resultMap="SpwyResultMap">
         select * from WRP_DFR_SRHRDSMP where ID=#{ID}
+    </select>
+    <!--根据ID获取沉降位移测点信息-->
+    <select id="selectCjwyInfoById" parameterType="java.lang.Integer" resultMap="CjwyResultMap">
+        select * from WRP_DFR_SRVRDSMP where ID=#{ID}
     </select>
 </mapper>

@@ -1,6 +1,7 @@
 package vip.yingmen.service;
 
 import vip.yingmen.pojo.WrpDfrSrhrdsmp;
+import vip.yingmen.pojo.WrpDfrSrvrdsmp;
 import vip.yingmen.pojo.WrpSpgPztb;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -29,4 +30,12 @@ public interface WrpSpgPztbService extends IService<WrpSpgPztb> {
     int dropWrhrdsmp(String ids);
     //根据ID查询水平位移测点信息
     WrpDfrSrhrdsmp findSrhrdsmpById(int ID);
+    //新增沉降位移测点信息
+    int addSrvrdsmp(WrpDfrSrvrdsmp pojo);
+    //修改沉降位移测点信息
+    int modifySrvrdsmp(WrpDfrSrvrdsmp pojo);
+    //删除沉降位移测点信息
+    int dropSrvrdsmp(String ids);
+    //根据ID获取沉降位移测点信息
+    WrpDfrSrvrdsmp findSrvrdsmpById(int ID);
 }

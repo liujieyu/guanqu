@@ -35,6 +35,7 @@ public class WrpSectionBServiceImpl extends ServiceImpl<WrpSectionBMapper, WrpSe
     }
     //删除断面信息
     public int dropWrpSectionById(String ids){
+        stRsrBsinMapper.deleteDamsinfoByDmId(ids);
         return wrpSectionBMapper.deleteBatchIds(Arrays.asList(ids.split(",")));
     }
     //根据ID查询断面信息
