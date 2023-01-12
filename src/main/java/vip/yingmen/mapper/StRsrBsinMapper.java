@@ -1,5 +1,6 @@
 package vip.yingmen.mapper;
 
+import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.RequestParam;
 import vip.yingmen.pojo.StRsrBsin;
@@ -33,4 +34,24 @@ public interface StRsrBsinMapper extends BaseMapper<StRsrBsin> {
     Integer selectDamscdBycheck(@Param("DAMSCD") String DAMSCD);
     //根据断面ID删除断面特征信息
     void deleteDamsinfoByDmId(@Param("ids") String ids);
+    //新增监测站点信息
+    void insertStStbprpB(StRsrBsin pojo);
+    //修改监测站点信息
+    void updateStstbprpB(StRsrBsin pojo);
+    //删除监测站点信息
+    void deleteStstbprpB(@Param("stcds") String stcds);
+    //根据ID查询站点信息
+    StRsrBsin selectSiteInfoById(@Param("ID") int ID);
+    //新增监测要素
+    void insertStStbprpF(List<Map> list);
+    //根据编号删除监测要素
+    void deleteStStbprpF(@Param("stcds") String stcds);
+    //判断监测站点编码是否存在
+    Integer selectStcdExist(@Param("STCD") String STCD);
+    //查询监测站点基本信息（维护）
+    List<StRsrBsin> selectSiteInfoManageByPage(@RequestParam("searchMap") Map searchMap);
+    //获取监测站点ID
+    Integer selectIDFromSite();
+    //获取监测要素信息ID
+    Integer selectIDFromStbprpF();
 }

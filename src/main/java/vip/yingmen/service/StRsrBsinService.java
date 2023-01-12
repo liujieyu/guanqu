@@ -31,4 +31,16 @@ public interface StRsrBsinService extends IService<StRsrBsin> {
     Integer selectDamcdByCheck(String DAMCD);
     //判断断面特征编号是否存在
     Integer selectDamscdBycheck(String DAMSCD);
+    //新增监测站点信息
+    void addSiteInfo(StRsrBsin pojo);
+    //修改监测站点信息
+    void modifySiteInfo(StRsrBsin pojo);
+    //删除监测站点信息
+    void dropSiteInfo(String ids,String stcds);
+    //根据ID查询站点信息
+    StRsrBsin selectSiteInfoById(int id);
+    //判断监测站点编码是否存在
+    Integer selectStcdExist(String STCD);
+    //查询监测站点基本信息（维护）
+    PageInfo<StRsrBsin> selectSiteInfoManageByPage(Integer _page, Integer _page_size, String _orderby, Map searchMap);
 }

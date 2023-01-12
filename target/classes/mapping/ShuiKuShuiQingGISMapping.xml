@@ -56,7 +56,7 @@
         (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+'|'+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,
         CV,CONVERT(varchar(16), r.TM, 120) as tm,a.FWL AS YUJING_FWL,a.FWL79 AS YUJING_FWL79,r.RZ,r.RWPTN,r.W,case when MONTH(r.TM) >=7 and MONTH(r.TM) &lt;=9 then r.rz-a.FWL79 else r.RZ-a.FWL end as jxx,
         t.VOLMIN,t.VOLMAX,CONVERT(varchar(16), s.TM, 120) as gktm,vol ,case when vol &lt;t.VOLMIN or vol &gt;t.VOLMAX or cs=0 or cs is null then 0 else 1 end as _gkstatus ,case cs when 1 then '正常' else '异常' end as cs,
-        ROW_NUMBER() OVER(Order by p desc) AS RowId from (select * from ST_STBPRP_B where STTP='PQ') b
+        ROW_NUMBER() OVER(Order by p desc) AS RowId from (select * from ST_STBPRP_B) b
         left join (select stcd,sum(p) as p from ST_HP_C where DATEADD(hh,TM,CONVERT(varchar(100), DT, 111)) >='${Time_min}' and DATEADD(hh,TM,CONVERT(varchar(100), DT, 111))&lt;='${Time_max}' group by stcd ) c on b.STCD=c.STCD
         left join(select stcd,p as hourp from ST_HP_C where DT=Substring(CONVERT(varchar,GETDATE(),120),1,10) and TM=DATEPART(HH,GETDATE())) hc on b.STCD=hc.STCD
         left join (select stcd,sum(DRP) as RAIN1  from ST_PPTN_R where TM>=DATEADD(hh,-1,GETDATE()) and TM &lt;=GETDATE() group by stcd) c1 on b.STCD=c1.stcd

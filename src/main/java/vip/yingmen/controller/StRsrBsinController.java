@@ -116,4 +116,71 @@ public class StRsrBsinController {
         }
         return map;
     }
+    //分页查询监测站点基本信息（维护）
+    @GetMapping(value = "/manage/siteinfo")
+    public PageInfo<StRsrBsin> findSiteManageByPage(@RequestParam(value = "_page", required = false, defaultValue = "1") Integer _page,
+                                                              @RequestParam(value = "_page_size", required = false, defaultValue = "999999") Integer _page_size,
+                                                              @RequestParam(value = "_orderby", required = false) String _orderby,
+                                                              @RequestParam(value = "STNM", required = false) String STNM,
+                                                              @RequestParam(value = "ADDlist", required = false) String ADDlist,
+                                                              @RequestParam(value = "STTP", required = false) String STTP,
+                                                              @RequestParam(value = "STGR", required = false) String STGR){
+        Map searchMap=new HashMap();
+        if(STNM!=null){
+            searchMap.put("STNM",STNM);
+        }
+        if(STTP !=null){
+            searchMap.put("STTP",STTP);
+        }
+        if(STGR !=null){
+            searchMap.put("STGR",STGR);
+        }
+        if(ADDlist!=null){
+            ArrayList<String> paramlist=new ArrayList<String>(Arrays.asList(ADDlist.split(",")));
+            searchMap.put("ADDlist",paramlist);
+        }
+        return stRsrBsinService.selectSiteInfoManageByPage(_page,_page_size,_orderby,searchMap);
+    }
+    //新增监测站点信息
+    @PostMapping(value = "/manage/addsiteinfo")
+    public Map addSiteInfo(@RequestBody StRsrBsin pojo){
+        stRsrBsinService.addSiteInfo(pojo);
+        Map map=new HashMap();
+        map.put("sign","ok");
+        return map;
+    }
+    //修改监测站点信息
+    @PostMapping(value = "/manage/updatesiteinfo")
+    public Map updateSiteInfo(@RequestBody StRsrBsin pojo){
+        stRsrBsinService.modifySiteInfo(pojo);
+        Map map=new HashMap();
+        map.put("sign","ok");
+        return map;
+    }
+    //删除监测站点信息
+    @GetMapping(value = "/manage/delsiteinfo")
+    public Map delSiteInfo(@RequestParam String ids,@RequestParam String stcds){
+        stRsrBsinService.dropSiteInfo(ids,stcds);
+        Map map=new HashMap();
+        map.put("sign","ok");
+        return map;
+    }
+    //根据ID查询站点信息
+    @GetMapping(value = "/base/findsitebyid")
+    public StRsrBsin findSiteInfoById(@RequestParam int ID){
+        return stRsrBsinService.selectSiteInfoById(ID);
+    }
+    //判断监测站点编码是否存在
+    @GetMapping(value = "/base/checkstcd")
+    public Map checkStcd(@RequestParam String STCD){
+        Map map=new HashMap();
+        Integer sign=stRsrBsinService.selectStcdExist(STCD);
+        if(sign==0){
+            map.put("checksign","no");
+        }else{
+            map.put("checksign","yes");
+            map.put("warning","此监测站点编号已存在！");
+        }
+        return map;
+    }
 }

@@ -25,6 +25,10 @@
         <result column="COMMENTS" property="comments" />
         <result column="ADDTIME" property="addtime" />
         <result column="DTUPTM" property="dtuptm" />
+        <result column="STGR" property="stgr" />
+        <result column="THYPE" property="types" />
+        <result column="DLOG" property="dlog" />
+        <result column="ADMAUTH" property="admauth" />
     </resultMap>
     <!--防洪基本信息-->
     <resultMap id="StRsrHychMap" type="vip.yingmen.pojo.StRsrHych">
@@ -110,4 +114,66 @@
     <delete id="deleteDamsinfoByDmId">
         delete from WRP_DAMS_B where DAMCD in(select DAMCD from WRP_SECTION_B where id in(${ids}))
     </delete>
+    <!--查询监测站点基本信息（维护）-->
+    <select id="selectSiteInfoManageByPage" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select * from (select s.ID,s.STCD,s.RTUNM,s.STLC,s.LGTD1,s.LTTD1,s.DTMNM,s.DTMEL,s.DTPR,(select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=b.STGR) as STGR,(select stuff((select ',' + FieldName from WRP_FieldInfo where FormID='ST_STBPRP_F' and FieldID='TYPE' and Field in(select type from ST_STBPRP_F f where F.STCD=B.STCD) for xml path('')),1,1,'')) as THYPE,substring(CONVERT(varchar(100), s.ADDTIME, 120),1,16) as ADDTIME
+        from ST_STBPRP_B b inner join ST_RSR_BSIN s on b.STCD=s.STCD
+        <where>
+            <if test="STNM!= null and STNM!= ''">
+                s.RTUNM like '%'+#{STNM}+'%'
+            </if>
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" separator=" or ">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
+            </if>
+            <if test="STTP!= null and STTP!= ''">
+                and b.STTP=#{STTP}
+            </if>
+            <if test="STGR!= null and STGR!= ''">
+                and b.STGR=#{STGR}
+            </if>
+        </where>
+        ) b
+    </select>
+    <!--新增监测站点信息-->
+    <insert id="insertStStbprpB" parameterType="vip.yingmen.pojo.StRsrBsin">
+        insert into ST_STBPRP_B(ID,STCD,STNM,STTP,STGR,ADDVCD,LGTD,LTTD,STLC,ESSTDT,DLOG,ADMAUTH)values(#{id},#{stcd},#{rtunm},#{sttp},#{stgr},#{addvcd},#{lgtd1},#{lttd1},#{stlc},#{addtime},#{dlog},#{admauth})
+    </insert>
+    <!--修改监测站点信息-->
+    <update id="updateStstbprpB" parameterType="vip.yingmen.pojo.StRsrBsin">
+        update ST_STBPRP_B set STCD=#{stcd},STNM=#{rtunm},STTP=#{sttp},STGR=#{stgr},ADDVCD=#{addvcd},LGTD=#{lgtd1},LTTD=#{lttd1},STLC=#{stlc},ESSTDT=#{addtime},DLOG=#{dlog},ADMAUTH=#{admauth} where STCD=#{ystcd}
+    </update>
+    <!--删除监测站点信息-->
+    <delete id="deleteStstbprpB" parameterType="java.lang.String">
+        delete from ST_STBPRP_B where STCD in(${stcds})
+    </delete>
+    <!--根据ID查询站点信息-->
+    <select id="selectSiteInfoById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select s.*,b.STGR,b.DLOG,b.ADMAUTH,(select stuff((select ',' + type from ST_STBPRP_F f where f.STCD=b.STCD for xml path('')),1,1,'')) as THYPE from ST_RSR_BSIN s inner join ST_STBPRP_B b on s.STCD=b.STCD where s.ID=#{ID}
+    </select>
+    <!--新增监测要素-->
+    <insert id="insertStStbprpF" parameterType="java.util.List">
+        insert into ST_STBPRP_F(ID,STCD,type) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id},#{item.stcd},#{item.type})
+        </foreach>
+    </insert>
+    <!--根据编号删除监测要素-->
+    <delete id="deleteStStbprpF" parameterType="java.lang.String">
+        delete from ST_STBPRP_F where STCD in(${stcds})
+    </delete>
+    <!--判断监测站点编码是否存在-->
+    <select id="selectStcdExist" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from ST_STBPRP_B where STCD=#{STCD}
+    </select>
+    <!--获取监测站点ID-->
+    <select id="selectIDFromSite" resultType="java.lang.Integer">
+        select max(ID)+1 from ST_STBPRP_B
+    </select>
+    <!--获取监测要素信息ID-->
+    <select id="selectIDFromStbprpF" resultType="java.lang.Integer">
+        select max(ID)+1 from ST_STBPRP_F
+    </select>
 </mapper>

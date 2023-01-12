@@ -31,7 +31,7 @@
     </select>
     <!--故障站点饼状图数据-->
     <select id="selectTroubleData" resultType="java.util.Map">
-        select b.STNM as TITLE,1 as TOTAL,1 as GZSIGN,case when cs=0 then '通讯异常' else '电压异常' end as GZTYPE from (select * from ST_STBPRP_B where STTP='PQ') as b
+        select b.STNM as TITLE,1 as TOTAL,1 as GZSIGN,case when cs=0 then '通讯异常' else '电压异常' end as GZTYPE from (select * from ST_STBPRP_B) as b
         inner join ST_StationStatus_R r on b.STCD=r.STCD
         where cs=0 or VOL>16 or VOL&lt;12
         union
