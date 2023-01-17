@@ -183,4 +183,46 @@ public class StRsrBsinController {
         }
         return map;
     }
+    //根据ID查询测站防洪信息
+    @GetMapping(value = "/rsvalarm/detail")
+    public StRsrHych rsralarmdetail(@RequestParam int ID){
+        return stRsrBsinService.selectRsrAlarmById(ID);
+    }
+    //新增水库水位预警信息
+    @PostMapping(value = "/rsvalarm/addinfo")
+    public Map addAlarminfo(@RequestBody StRsrHych pojo){
+        stRsrBsinService.addStRsvAlarmInfo(pojo);
+        Map map=new HashMap();
+        map.put("sign","ok");
+        return map;
+    }
+    //修改水库水位预警信息
+    @PostMapping(value = "/rsvalarm/updateinfo")
+    public Map updateAlarminfo(@RequestBody StRsrHych pojo){
+        stRsrBsinService.modifyStRsvAlarmInfo(pojo);
+        Map map=new HashMap();
+        map.put("sign","ok");
+        return map;
+    }
+    //根据ID删除水库预警信息
+    @GetMapping(value = "/rsvalarm/delinfo")
+    public Map delAlarminfo(@RequestParam String ids,@RequestParam String alarmids){
+        stRsrBsinService.dropStRsvAlarmInfo(ids,alarmids);
+        Map map=new HashMap();
+        map.put("sign","ok");
+        return map;
+    }
+    //判断防洪预警中监测站点是否存在
+    @GetMapping(value = "/rsvalarm/checkstcd")
+    public Map checkAlarmstcd(@RequestParam String stcd){
+        Map map=new HashMap();
+        Integer sign=stRsrBsinService.checkStcdInAlarm(stcd);
+        if(sign==0){
+            map.put("checksign","no");
+        }else{
+            map.put("checksign","yes");
+            map.put("warning","此站点防洪信息已存在！");
+        }
+        return map;
+    }
 }

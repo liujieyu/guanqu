@@ -23,7 +23,7 @@ public class SqlserverGenerator {
     //设置作者
     private static String authorName="sa";
     //这里是要生成的表名（如果全部要生成的话，这里注释掉）
-    private static String[] tablauthorNamees= {"WRP_DFR_SRVRDSMP"};
+    private static String[] tablauthorNamees= {"ST_RSR_HYCH"};
     //可以设置table前缀
     private static String prefix="";
 

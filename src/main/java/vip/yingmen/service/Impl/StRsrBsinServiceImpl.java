@@ -1,8 +1,10 @@
 package vip.yingmen.service.Impl;
 
+import com.baomidou.mybatisplus.extension.service.additional.update.impl.UpdateChainWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import vip.yingmen.mapper.StRsrHychMapper;
 import vip.yingmen.pojo.StRsrBsin;
 import vip.yingmen.mapper.StRsrBsinMapper;
 import vip.yingmen.pojo.StRsrHych;
@@ -24,6 +26,8 @@ import java.util.*;
 public class StRsrBsinServiceImpl extends ServiceImpl<StRsrBsinMapper, StRsrBsin> implements StRsrBsinService {
     @Autowired
     private StRsrBsinMapper stRsrBsinMapper;
+    @Autowired
+    private StRsrHychMapper stRsrHychMapper;
 
     //根据站点编码查询水库站基本信息查询
     @Override
@@ -130,5 +134,35 @@ public class StRsrBsinServiceImpl extends ServiceImpl<StRsrBsinMapper, StRsrBsin
         List<StRsrBsin> list=stRsrBsinMapper.selectSiteInfoManageByPage(searchMap);
         PageInfo<StRsrBsin> siteinfo=new PageInfo<>(list);
         return siteinfo;
+    }
+    //根据ID查询测站防洪信息
+    public StRsrHych selectRsrAlarmById(int ID){
+        return stRsrBsinMapper.selectRsrAlarmById(ID);
+    }
+    //新增水库水位预警信息
+    public void addStRsvAlarmInfo(StRsrHych pojo){
+        pojo.setAlarmid(stRsrBsinMapper.selectIDFromRsrAlarm());
+        stRsrBsinMapper.insertStRsvAlarm(pojo);
+        pojo.setAlarmid(null);
+        pojo.setFWL(null);
+        pojo.setFWL79(null);
+        stRsrHychMapper.insert(pojo);
+    }
+    //修改水库水位预警信息
+    public void modifyStRsvAlarmInfo(StRsrHych pojo){
+        stRsrBsinMapper.updateStRsvAlarm(pojo);
+        pojo.setAlarmid(null);
+        pojo.setFWL(null);
+        pojo.setFWL79(null);
+        stRsrHychMapper.updateById(pojo);
+    }
+    //根据ID删除水库预警信息
+    public void dropStRsvAlarmInfo(String ids,String alarmids){
+        stRsrBsinMapper.deleteStRsvAlarmById(alarmids);
+        stRsrHychMapper.deleteBatchIds(Arrays.asList(ids.split(",")));
+    }
+    //判断防洪预警中监测站点是否存在
+    public Integer checkStcdInAlarm(String stcd){
+       return stRsrBsinMapper.selectStcdInStRsvAlarm(stcd);
     }
 }

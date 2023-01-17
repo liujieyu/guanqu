@@ -54,4 +54,16 @@ public interface StRsrBsinMapper extends BaseMapper<StRsrBsin> {
     Integer selectIDFromSite();
     //获取监测要素信息ID
     Integer selectIDFromStbprpF();
+    //根据ID查询测站防洪信息
+    StRsrHych selectRsrAlarmById(@Param("ID") int ID);
+    //获取水库水位预警ID
+    Integer selectIDFromRsrAlarm();
+    //新增水库水位预警信息
+    void insertStRsvAlarm(StRsrHych pojo);
+    //修改水库水位预警信息
+    void updateStRsvAlarm(StRsrHych pojo);
+    //根据ID删除水库预警信息
+    void deleteStRsvAlarmById(@Param("alarmids") String alarmids);
+    //判断防洪预警中监测站点是否存在
+    Integer selectStcdInStRsvAlarm(@Param("stcd") String stcd);
 }

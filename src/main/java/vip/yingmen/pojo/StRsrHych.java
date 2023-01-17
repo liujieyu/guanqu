@@ -21,46 +21,49 @@ import lombok.experimental.Accessors;
  * @author liujieyu
  * @since 2022-12-26
  */
+@Data
+@TableName("ST_RSR_HYCH")
 public class StRsrHych implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @TableId(value = "ID", type = IdType.AUTO)
     private Integer id;            //主键ID
-
+    @TableField("STCD")
     private String stcd;           //测站编码
-
+    @TableField("RSVRTP")
     private String rsvrtp;         //水库类型
-
+    @TableField("DAMEL")
     private String damel;          //坝顶高程
-
+    @TableField("CHFL")
     private BigDecimal chfl;           //校核洪水位
-
+    @TableField("DSFL")
     private BigDecimal dsfl;           //设计洪水位
-
+    @TableField("NORMZ")
     private BigDecimal normz;          //正常高水位
-
+    @TableField("DDWZ")
     private BigDecimal ddwz;           //死水位
-
+    @TableField("ACTZ")
     private BigDecimal actz;           //兴利水位
-
+    @TableField("TTCP")
     private BigDecimal ttcp;           //总库容
-
+    @TableField("FLDCP")
     private BigDecimal fldcp;          //防洪库容
-
+    @TableField("ACTCP")
     private BigDecimal actcp;          //兴利库容
-
+    @TableField("DDCP")
     private BigDecimal ddcp;           //死库容
-
+    @TableField("HHRZ")
     private BigDecimal hhrz;           //历史最高库水位
-
+    @TableField("HMXW")
     private BigDecimal hmxw;           //历史最大蓄水量
-
+    @TableField("LAZ")
     private BigDecimal laz;            //低水位告警值
-
+    @TableField("SFQ")
     private BigDecimal sfq;            //启动预报流量标准
-
+    @TableField("MODITIME")
     private String moditime;       //时间戳
-
+    @TableField("DTUPTM")
     private String dtuptm;         //更新时间
 
     private String stnm;              //站名
@@ -73,6 +76,7 @@ public class StRsrHych implements Serializable {
     private BigDecimal ZCWL;
     private BigDecimal SJWL;
     private BigDecimal XHWL;
+    private Integer alarmid;
 
     public Integer getId() {
         return id;
@@ -290,5 +294,13 @@ public class StRsrHych implements Serializable {
 
     public void setXHWL(BigDecimal XHWL) {
         this.XHWL = XHWL;
+    }
+
+    public Integer getAlarmid() {
+        return alarmid;
+    }
+
+    public void setAlarmid(Integer alarmid) {
+        this.alarmid = alarmid;
     }
 }

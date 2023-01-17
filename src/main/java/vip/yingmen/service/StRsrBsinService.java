@@ -43,4 +43,14 @@ public interface StRsrBsinService extends IService<StRsrBsin> {
     Integer selectStcdExist(String STCD);
     //查询监测站点基本信息（维护）
     PageInfo<StRsrBsin> selectSiteInfoManageByPage(Integer _page, Integer _page_size, String _orderby, Map searchMap);
+    //根据ID查询测站防洪信息
+    StRsrHych selectRsrAlarmById(int ID);
+    //新增水库水位预警信息
+    void addStRsvAlarmInfo(StRsrHych pojo);
+    //修改水库水位预警信息
+    void modifyStRsvAlarmInfo(StRsrHych pojo);
+    //根据ID删除水库预警信息
+    void dropStRsvAlarmInfo(String ids,String alarmids);
+    //判断防洪预警中监测站点是否存在
+    Integer checkStcdInAlarm(String stcd);
 }

@@ -57,6 +57,7 @@
         <result column="ZCWL" jdbcType="NUMERIC" property="ZCWL" />
         <result column="SJWL" jdbcType="NUMERIC" property="SJWL" />
         <result column="XHWL" jdbcType="NUMERIC" property="XHWL" />
+        <result column="ALARMID" property="alarmid" />
     </resultMap>
     <!--水库站基本信息查询-->
     <select id="selectRsrBsinInfoByCon" resultMap="BaseResultMap" parameterType="java.util.Map">
@@ -78,7 +79,7 @@
     </select>
     <!--测站防洪基本信息查询-->
     <select id="selectRsrHychByCon" resultMap="StRsrHychMap" parameterType="java.util.Map">
-      select s.STCD,b.STNM,b.STLC,b.ADDVCD,a.FWL,a.FWL79,a.SWL,a.ZCWL,a.SJWL,a.XHWL,(select FieldName from WRP_FieldInfo where FormID='ST_RSVR_R1' and FieldID='LEVEL' and Field=s.RSVRTP) as RSVRTP,s.DAMEL,s.CHFL,s.DSFL,s.NORMZ,s.DDWZ,s.ACTZ,s.TTCP,s.FLDCP,s.ACTCP,s.DDCP,s.HHRZ,s.HMXW,s.LAZ,s.SFQ from ST_RSR_HYCH s inner join ST_STBPRP_B b on s.STCD=b.STCD inner join ST_RSV_Alarm a on s.STCD=a.STCD
+      select s.ID,s.STCD,b.STNM,b.STLC,b.ADDVCD,a.id as ALARMID,a.FWL,a.FWL79,a.SWL,a.ZCWL,a.SJWL,a.XHWL,(select FieldName from WRP_FieldInfo where FormID='ST_RSVR_R1' and FieldID='LEVEL' and Field=s.RSVRTP) as RSVRTP,s.DAMEL,s.CHFL,s.DSFL,s.NORMZ,s.DDWZ,s.ACTZ,s.TTCP,s.FLDCP,s.ACTCP,s.DDCP,s.HHRZ,s.HMXW,s.LAZ,s.SFQ from ST_RSR_HYCH s inner join ST_STBPRP_B b on s.STCD=b.STCD inner join ST_RSV_Alarm a on s.STCD=a.STCD
       <where>
           <if test="STCD !=null and STCD != ''">
               s.STCD=#{STCD}
@@ -175,5 +176,29 @@
     <!--获取监测要素信息ID-->
     <select id="selectIDFromStbprpF" resultType="java.lang.Integer">
         select max(ID)+1 from ST_STBPRP_F
+    </select>
+    <!--根据ID查询测站防洪信息-->
+    <select id="selectRsrAlarmById" resultMap="StRsrHychMap" parameterType="java.lang.Integer">
+        select h.*,a.ID as ALARMID,A.FWL,A.FWL79 from ST_RSR_HYCH h inner join ST_RSV_Alarm a on h.STCD=a.STCD where h.ID=#{ID}
+    </select>
+    <!--获取水库水位预警ID-->
+    <select id="selectIDFromRsrAlarm" resultType="java.lang.Integer">
+        select MAX(ID)+1 from ST_RSV_Alarm
+    </select>
+    <!--新增水库水位预警信息-->
+    <insert id="insertStRsvAlarm" parameterType="vip.yingmen.pojo.StRsrHych">
+        insert into ST_RSV_Alarm(ID,STCD,SWL,FWL,FWL79,ZCWL,SJWL,XHWL) values(#{alarmid},#{stcd},#{ddwz},#{FWL},#{FWL79},#{normz},#{dsfl},#{chfl})
+    </insert>
+    <!--修改水库水位预警信息-->
+    <update id="updateStRsvAlarm" parameterType="vip.yingmen.pojo.StRsrHych">
+        update ST_RSV_Alarm set STCD=#{stcd},SWL=#{ddwz},FWL=#{FWL},FWL79=#{FWL79},ZCWL=#{normz},SJWL=#{dsfl},XHWL=#{chfl} where ID=#{alarmid}
+    </update>
+    <!--根据ID删除水库预警信息-->
+    <delete id="deleteStRsvAlarmById" parameterType="java.lang.String">
+        delete from ST_RSV_Alarm where ID in (${alarmids})
+    </delete>
+    <!--判断防洪预警中监测站点是否存在-->
+    <select id="selectStcdInStRsvAlarm" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select COUNT(*) from ST_RSV_Alarm where STCD=#{stcd}
     </select>
 </mapper>
