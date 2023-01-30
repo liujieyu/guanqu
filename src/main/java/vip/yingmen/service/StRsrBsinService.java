@@ -1,6 +1,7 @@
 package vip.yingmen.service;
 
 import com.github.pagehelper.PageInfo;
+import vip.yingmen.entity.StPpAlarm;
 import vip.yingmen.pojo.StRsrBsin;
 import com.baomidou.mybatisplus.extension.service.IService;
 import vip.yingmen.pojo.StRsrHych;
@@ -53,4 +54,14 @@ public interface StRsrBsinService extends IService<StRsrBsin> {
     void dropStRsvAlarmInfo(String ids,String alarmids);
     //判断防洪预警中监测站点是否存在
     Integer checkStcdInAlarm(String stcd);
+    //新增降雨预警信息
+    void addPpAlarm(StPpAlarm pojo);
+    //修改降雨预警信息
+    void modifyPpAlarm(StPpAlarm pojo);
+    //删除降雨预警信息
+    void dropPpAlarm(String ids);
+    //根据ID查询降雨预警信息
+    StPpAlarm selectPpAlarmById(int ID);
+    //判断雨量预警中监测站点是否存在
+    Integer selectStcdInPpAlarm(String stcd,int ewl);
 }

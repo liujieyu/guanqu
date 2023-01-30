@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import vip.yingmen.entity.StPpAlarm;
 import vip.yingmen.pojo.StRsrBsin;
 import vip.yingmen.pojo.StRsrHych;
 import vip.yingmen.service.StRsrBsinService;
@@ -222,6 +223,57 @@ public class StRsrBsinController {
         }else{
             map.put("checksign","yes");
             map.put("warning","此站点防洪信息已存在！");
+        }
+        return map;
+    }
+    //新增降雨预警信息
+    @PostMapping(value = "/rain/addalarm")
+    public Map addRainAlarm(@RequestBody StPpAlarm pojo){
+        stRsrBsinService.addPpAlarm(pojo);
+        Map map=new HashMap();
+        map.put("sign","ok");
+        return map;
+    }
+    //修改降雨预警信息
+    @PostMapping(value = "/rain/updatealarm")
+    public Map updateRainAlarm(@RequestBody StPpAlarm pojo){
+        stRsrBsinService.modifyPpAlarm(pojo);
+        Map map=new HashMap();
+        map.put("sign","ok");
+        return map;
+    }
+    //删除降雨预警信息
+    @GetMapping(value = "/rain/delalarm")
+    public Map delRainAlarm(@RequestParam String ids){
+        stRsrBsinService.dropPpAlarm(ids);
+        Map map=new HashMap();
+        map.put("sign","ok");
+        return map;
+    }
+    //根据ID查询降雨预警信息
+    @GetMapping(value = "/rain/alarmdetail")
+    public StPpAlarm rainalarmdetail(@RequestParam int ID){
+        return stRsrBsinService.selectPpAlarmById(ID);
+    }
+    //判断雨量预警中监测站点是否存在
+    @GetMapping(value = "/rain/checkstcd")
+    public Map checkRainAlarmStcd(@RequestParam String STCD,@RequestParam int EWL){
+        String yjtext="";
+        switch (EWL){
+            case 1:yjtext="红色预警";
+            break;
+            case 2:yjtext="橙色预警";
+            break;
+            case 3:yjtext="黄色预警";
+            break;
+        }
+        Integer sign=stRsrBsinService.selectStcdInPpAlarm(STCD,EWL);
+        Map map=new HashMap();
+        if(sign==0){
+            map.put("checksign","no");
+        }else{
+            map.put("checksign","yes");
+            map.put("warning","此站点"+yjtext+"信息已存在！");
         }
         return map;
     }

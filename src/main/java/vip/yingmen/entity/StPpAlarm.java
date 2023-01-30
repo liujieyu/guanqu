@@ -1,8 +1,10 @@
 package vip.yingmen.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.alibaba.fastjson.annotation.JSONField;
+import lombok.Data;
 
 /**
  * <p>
@@ -12,48 +14,60 @@ import com.alibaba.fastjson.annotation.JSONField;
  * @author liujieyu
  * @since 2020-06-29
  */
+@Data
 @TableName("ST_PP_Alarm")
 public class StPpAlarm extends Model<StPpAlarm> {
 
     private static final long serialVersionUID = 1L;
 
     @JSONField(name = "ID")
+    @TableField("ID")
     private Integer id;
 
     @JSONField(name = "ROWID")
     private Integer rowid;
 
     @JSONField(name = "STNM")
+    @TableField("STNM")
     private String stnm;
 
     @JSONField(name = "STCD")
+    @TableField("STCD")
     private String stcd;
 
     @JSONField(name = "EWL")
+    @TableField("EWL")
     private Integer ewl;
 
     @JSONField(name = "EWLNAME")
     private String ewlname;
 
     @JSONField(name = "PTD_P")
+    @TableField("PTD_P")
     private Double ptdP;
 
     @JSONField(name = "OH_P")
+    @TableField("OH_P")
     private Double ohP;
 
     @JSONField(name = "TH_P")
+    @TableField("TH_P")
     private Double thP;
 
     @JSONField(name = "SH_P")
+    @TableField("SH_P")
     private Double shP;
 
     @JSONField(name = "TWH_P")
+    @TableField("TWH_P")
     private Double twhP;
 
     @JSONField(name = "OD_P")
+    @TableField("OD_P")
     private Double odP;
 
     @JSONField(name = "MEMO")
+    @TableField("MEMO")
     private String memo;
     @JSONField(name = "STLC")
     private String stlc;

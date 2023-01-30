@@ -142,7 +142,7 @@
     <!--降雨预警指标分页查询-->
     <select id="selectStPpAlarmByPage" resultMap="StPpAlarmResultMap" parameterType="vip.yingmen.entity.LvDingParam">
     select * from
-    (select b.STNM,STLC,a.STCD,a.EWL,(select FieldName from WRP_FieldInfo where FormID='ST_PP_Alarm' and FieldID='EWL' and Field=a.EWL) as EWLNAME,a.PTD_P,a.OH_P,a.TH_P,a.SH_P,a.TWH_P,a.OD_P, ROW_NUMBER() OVER(Order by ${orderBy} ${sequence}) AS RowId
+    (select a.id,b.STNM,STLC,a.STCD,a.EWL,(select FieldName from WRP_FieldInfo where FormID='ST_PP_Alarm' and FieldID='EWL' and Field=a.EWL) as EWLNAME,a.PTD_P,a.OH_P,a.TH_P,a.SH_P,a.TWH_P,a.OD_P, ROW_NUMBER() OVER(Order by ${orderBy} ${sequence}) AS RowId
     from ST_PP_Alarm a inner join st_stbprp_b b on a.STCD=b.STCD where 1=1
         <if test="types != null &amp;&amp; types > 0 ">
             and a.EWL=#{types}

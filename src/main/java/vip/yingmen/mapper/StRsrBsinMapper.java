@@ -3,6 +3,7 @@ package vip.yingmen.mapper;
 import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.RequestParam;
+import vip.yingmen.entity.StPpAlarm;
 import vip.yingmen.pojo.StRsrBsin;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import vip.yingmen.pojo.StRsrHych;
@@ -66,4 +67,10 @@ public interface StRsrBsinMapper extends BaseMapper<StRsrBsin> {
     void deleteStRsvAlarmById(@Param("alarmids") String alarmids);
     //判断防洪预警中监测站点是否存在
     Integer selectStcdInStRsvAlarm(@Param("stcd") String stcd);
+    //判断雨量预警中监测站点是否存在
+    Integer selectStcdInPpAlarm(@Param("stcd") String stcd,@Param("ewl") int ewl);
+    //获取雨量预警ID
+    Integer selectIDFromPpAlarm();
+    //根据ID查询雨量预警信息
+    StPpAlarm selectRainAlarmById(@Param("ID") int ID);
 }

@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.extension.service.additional.update.impl.UpdateC
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import vip.yingmen.mapper.StPpAlarmMapper;
 import vip.yingmen.mapper.StRsrHychMapper;
+import vip.yingmen.entity.StPpAlarm;
 import vip.yingmen.pojo.StRsrBsin;
 import vip.yingmen.mapper.StRsrBsinMapper;
 import vip.yingmen.pojo.StRsrHych;
@@ -16,7 +18,7 @@ import java.util.*;
 
 /**
  * <p>
- *  服务实现类
+ *  水库测站信息、防洪信息和雨量预警信息维护
  * </p>
  *
  * @author liujieyu
@@ -28,6 +30,8 @@ public class StRsrBsinServiceImpl extends ServiceImpl<StRsrBsinMapper, StRsrBsin
     private StRsrBsinMapper stRsrBsinMapper;
     @Autowired
     private StRsrHychMapper stRsrHychMapper;
+    @Autowired
+    private StPpAlarmMapper stPpAlarmMapper;
 
     //根据站点编码查询水库站基本信息查询
     @Override
@@ -164,5 +168,26 @@ public class StRsrBsinServiceImpl extends ServiceImpl<StRsrBsinMapper, StRsrBsin
     //判断防洪预警中监测站点是否存在
     public Integer checkStcdInAlarm(String stcd){
        return stRsrBsinMapper.selectStcdInStRsvAlarm(stcd);
+    }
+    //新增降雨预警信息
+    public void addPpAlarm(StPpAlarm pojo){
+        pojo.setId(stRsrBsinMapper.selectIDFromPpAlarm());
+        stPpAlarmMapper.insert(pojo);
+    }
+    //修改降雨预警信息
+    public void modifyPpAlarm(StPpAlarm pojo){
+        stPpAlarmMapper.updateById(pojo);
+    }
+    //删除降雨预警信息
+    public void dropPpAlarm(String ids){
+        stPpAlarmMapper.deleteBatchIds(Arrays.asList(ids.split(",")));
+    }
+    //根据ID查询降雨预警信息
+    public StPpAlarm selectPpAlarmById(int ID){
+        return stRsrBsinMapper.selectRainAlarmById(ID);
+    }
+    //判断雨量预警中监测站点是否存在
+    public Integer selectStcdInPpAlarm(String stcd,int ewl){
+        return stRsrBsinMapper.selectStcdInPpAlarm(stcd,ewl);
     }
 }

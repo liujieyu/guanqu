@@ -59,6 +59,23 @@
         <result column="XHWL" jdbcType="NUMERIC" property="XHWL" />
         <result column="ALARMID" property="alarmid" />
     </resultMap>
+    <!-- 降雨预警指标查询映射结果 -->
+    <resultMap id="StPpAlarmMap" type="vip.yingmen.entity.StPpAlarm">
+        <id column="ID" property="id" />
+        <result column="RowId" property="rowid" />
+        <result column="STNM" property="stnm" />
+        <result column="STCD" property="stcd" />
+        <result column="EWL" property="ewl" />
+        <result column="EWLNAME" property="ewlname"/>
+        <result column="PTD_P" property="ptdP" />
+        <result column="OH_P" property="ohP" />
+        <result column="TH_P" property="thP" />
+        <result column="SH_P" property="shP" />
+        <result column="TWH_P" property="twhP" />
+        <result column="OD_P" property="odP" />
+        <result column="MEMO" property="memo" />
+        <result column="STLC" property="stlc" />
+    </resultMap>
     <!--水库站基本信息查询-->
     <select id="selectRsrBsinInfoByCon" resultMap="BaseResultMap" parameterType="java.util.Map">
         select * from ST_RSR_BSIN
@@ -200,5 +217,17 @@
     <!--判断防洪预警中监测站点是否存在-->
     <select id="selectStcdInStRsvAlarm" parameterType="java.lang.String" resultType="java.lang.Integer">
         select COUNT(*) from ST_RSV_Alarm where STCD=#{stcd}
+    </select>
+    <!--判断雨量预警中监测站点是否存在-->
+    <select id="selectStcdInPpAlarm" resultType="java.lang.Integer">
+        select count(*) from ST_PP_Alarm where STCD=#{stcd}  and ewl=#{ewl}
+    </select>
+    <!--获取雨量预警ID-->
+    <select id="selectIDFromPpAlarm" resultType="java.lang.Integer">
+        select max(id)+1 from ST_PP_Alarm
+    </select>
+    <!--根据ID查询雨量预警信息-->
+    <select id="selectRainAlarmById" parameterType="java.lang.Integer" resultMap="StPpAlarmMap">
+        select * from ST_PP_Alarm where ID=#{ID}
     </select>
 </mapper>
