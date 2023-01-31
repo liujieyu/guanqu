@@ -7,5 +7,5 @@ import vip.yingmen.pojo.JiChuQuShuiSheShiShuiZha;
 public interface JiChuJianCeZhanDianService {
 
     //查询基础数据的监测站点的信息
-    public PageInfo<JiChuJianCeZhanDian> findByJianCeZhanDian(Integer _page, Integer _page_size, String _orderby, String STNM, String ADDVCD, String Canal_Code, String STTP, String STGR, String TYPE);
+    public PageInfo<JiChuJianCeZhanDian> findByJianCeZhanDian(Integer _page, Integer _page_size, String _orderby, String STNM, String ADDlist, String STTP, String STGR, String TYPE);
 }

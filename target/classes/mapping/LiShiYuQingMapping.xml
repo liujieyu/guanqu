@@ -50,8 +50,11 @@
             <if test="STNM!= null and STNM!= ''">
                 b.stnm like '%'+#{STNM}+'%'
             </if>
-            <if test="ADDVCD!= null and ADDVCD!= ''">
-                and b.addvcd like #{ADDVCD}+'%'
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" separator=" or ">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
             </if>
             <if test="Canal_Code!= null and Canal_Code!= ''">
                 and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
@@ -77,8 +80,11 @@
             <if test="STNM!= null and STNM!= ''">
                 b.stnm like '%'+#{STNM}+'%'
             </if>
-            <if test="ADDVCD!= null and ADDVCD!= ''">
-                and b.addvcd like #{ADDVCD}+'%'
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
             </if>
             <if test="Canal_Code!= null and Canal_Code!= ''">
                 and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
@@ -109,8 +115,11 @@
             <if test="STNM!= null and STNM!= ''">
                 b.stnm like '%'+#{STNM}+'%'
             </if>
-            <if test="ADDVCD!= null and ADDVCD!= ''">
-                and b.addvcd like #{ADDVCD}+'%'
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
             </if>
             <if test="Canal_Code!= null and Canal_Code!= ''">
                 and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
@@ -129,8 +138,11 @@
     <select id="findByZhanDian" parameterType="java.lang.String" resultType="java.util.HashMap">
         select b.STNM,b.STCD from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.stcd left join ST_Canal_R1 r on r.stcd=b.stcd
         <where>
-            <if test="ADDVCD!= null and ADDVCD!= ''">
-                b.addvcd like #{ADDVCD}+'%'
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
             </if>
             <if test="Canal_Code!= null and Canal_Code!= ''">
                 and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
@@ -169,8 +181,11 @@
             <if test="STNM!= null and STNM!= ''">
                 b.stnm like '%'+#{STNM}+'%'
             </if>
-            <if test="ADDVCD!= null and ADDVCD!= ''">
-                and b.addvcd like #{ADDVCD}+'%'
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
             </if>
             <if test="Canal_Code!= null and Canal_Code!= ''">
                 and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
@@ -195,8 +210,11 @@
             <if test="STNM!= null and STNM!= ''">
                 b.stnm like '%'+#{STNM}+'%'
             </if>
-            <if test="ADDVCD!= null and ADDVCD!= ''">
-                and b.addvcd like #{ADDVCD}+'%'
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
             </if>
             <if test="Canal_Code!= null and Canal_Code!= ''">
                 and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
@@ -232,8 +250,11 @@
             <if test="STNM!= null and STNM!= ''">
                 b.stnm like '%'+#{STNM}+'%'
             </if>
-            <if test="ADDVCD!= null and ADDVCD!= ''">
-                and b.addvcd like #{ADDVCD}+'%'
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
             </if>
             <if test="Canal_Code!= null and Canal_Code!= ''">
                 and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
@@ -352,8 +373,11 @@
             <if test="STNM!= null and STNM!= ''">
                 b.stnm like '%'+#{STNM}+'%'
             </if>
-            <if test="ADDVCD!= null and ADDVCD!= ''">
-                and b.addvcd like #{ADDVCD}+'%'
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
             </if>
             <if test="Canal_Code!= null and Canal_Code!= ''">
                 and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
@@ -379,8 +403,11 @@
             <if test="STNM!= null and STNM!= ''">
                 b.stnm like '%'+#{STNM}+'%'
             </if>
-            <if test="ADDVCD!= null and ADDVCD!= ''">
-                and b.addvcd like #{ADDVCD}+'%'
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
             </if>
             <if test="Canal_Code!= null and Canal_Code!= ''">
                 and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
@@ -456,8 +483,11 @@
             <if test="STNM!= null and STNM!= ''">
                 b.stnm like '%'+#{STNM}+'%'
             </if>
-            <if test="ADDVCD!= null and ADDVCD!= ''">
-                and b.addvcd like #{ADDVCD}+'%'
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
             </if>
             <if test="Canal_Code!= null and Canal_Code!= ''">
                 and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
@@ -482,8 +512,11 @@
             <if test="STNM!= null and STNM!= ''">
                 b.stnm like '%'+#{STNM}+'%'
             </if>
-            <if test="ADDVCD!= null and ADDVCD!= ''">
-                and b.addvcd like #{ADDVCD}+'%'
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
             </if>
             <if test="Canal_Code!= null and Canal_Code!= ''">
                 and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
@@ -507,8 +540,11 @@
             <if test="STNM!= null and STNM!= ''">
                 b.stnm like '%'+#{STNM}+'%'
             </if>
-            <if test="ADDVCD!= null and ADDVCD!= ''">
-                and b.addvcd like #{ADDVCD}+'%'
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
             </if>
             <if test="Canal_Code!= null and Canal_Code!= ''">
                 and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
@@ -564,8 +600,11 @@
             <if test="STNM!= null and STNM!= ''">
                 b.stnm like '%'+#{STNM}+'%'
             </if>
-            <if test="ADDVCD!= null and ADDVCD!= ''">
-                and b.addvcd like #{ADDVCD}+'%'
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
             </if>
             <if test="Canal_Code!= null and Canal_Code!= ''">
                 and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'

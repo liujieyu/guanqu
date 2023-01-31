@@ -175,7 +175,7 @@
         </if>
         <if test="ADDlist != null and ADDlist.size > 0">
             and
-            <foreach collection="ADDlist" item="ADDVCD" separator=" or ">
+            <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
                 (b.addvcd like #{ADDVCD}+'%')
             </foreach>
         </if>
@@ -194,7 +194,7 @@
             </if>
             <if test="ADDlist != null and ADDlist.size > 0">
                 and
-                <foreach collection="ADDlist" item="ADDVCD" separator=" or ">
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
                     (b.addvcd like #{ADDVCD}+'%')
                 </foreach>
             </if>
@@ -210,7 +210,7 @@
             </if>
             <if test="ADDlist != null and ADDlist.size > 0">
                 and
-                <foreach collection="ADDlist" item="ADDVCD" separator=" or ">
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
                     (b.addvcd like #{ADDVCD}+'%')
                 </foreach>
             </if>
@@ -229,7 +229,7 @@
             </if>
             <if test="ADDlist != null and ADDlist.size > 0">
                 and
-                <foreach collection="ADDlist" item="ADDVCD" separator=" or ">
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
                     (b.addvcd like #{ADDVCD}+'%')
                 </foreach>
             </if>
@@ -245,7 +245,7 @@
             </if>
             <if test="ADDlist != null and ADDlist.size > 0">
                 and
-                <foreach collection="ADDlist" item="ADDVCD" separator=" or ">
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
                     (b.addvcd like #{ADDVCD}+'%')
                 </foreach>
             </if>

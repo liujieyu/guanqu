@@ -37,8 +37,8 @@ public class SystemInfoServiceImpl implements SystemInfoService {
         gisCenter.setYmax(gisCenter1.getYmax());
         gisCenter.setYmin(gisCenter1.getYmin());
         map.put("GIS_CENTER", gisCenter);
-        BaseInfo baseInfo = new BaseInfo();
-        baseInfo.setTitle("智慧量测水系统");
+        //BaseInfo baseInfo = new BaseInfo();
+        //baseInfo.setTitle("智慧量测水系统");
         FeatureLayers featureLayers7 = new FeatureLayers();
         featureLayers7.setItype("shuikushuiqing");
         featureLayers7.setTitle("水库水情");
@@ -121,13 +121,13 @@ public class SystemInfoServiceImpl implements SystemInfoService {
 
 
         List<WRP_AD_B> wrpAdBList = wrpAdBService.findAll();
-        List<WRP_IRA_BSIN> wrpIraBsinList = wrpIraBsinService.findAll();
+       // List<WRP_IRA_BSIN> wrpIraBsinList = wrpIraBsinService.findAll();
 
 
-        map.put("BaseInfo", baseInfo);
+        //map.put("BaseInfo", baseInfo);
         map.put("FeatureLayers", featureLayersList);
         map.put("WRP_AD_B", wrpAdBList);
-        map.put("WRP_IRA_BSIN", wrpIraBsinList);
+        //map.put("WRP_IRA_BSIN", wrpIraBsinList);
 
         return map;
     }

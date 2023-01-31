@@ -18,18 +18,17 @@
         (select stuff((select ',' + FieldName from WRP_FieldInfo where FormID='ST_STBPRP_F' and FieldID='TYPE' and Field in(select type from ST_STBPRP_F f where F.STCD=B.STCD) for xml path('')),1,1,'')) as THYPE,
         ESSTDT,DLOG,ADMAUTH,
         (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM,
-        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as CANAL_NAME
-        ,ROW_NUMBER()OVER(ORDER BY ID) as RowId
+        ROW_NUMBER()OVER(ORDER BY ID) as RowId
         from ST_STBPRP_B b
         <where>
             <if test="STNM!= null and STNM!= ''">
                 STNM like '%'+#{STNM}+'%'
             </if>
-            <if test="ADDVCD!= null and ADDVCD!= ''">
-                and ADDVCD like #{ADDVCD}+'%'
-            </if>
-            <if test="Canal_Code!= null and Canal_Code!= ''">
-                and b.stcd in(select stcd from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and (w.BaseID = #{Canal_Code} or w.BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    (b.addvcd like #{ADDVCD}+'%')
+                </foreach>
             </if>
             <if test="STTP!= null and STTP!= ''">
                 and b.STTP=#{STTP}
