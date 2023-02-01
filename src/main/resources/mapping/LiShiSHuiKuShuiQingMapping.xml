@@ -51,32 +51,32 @@
     <select id="fandByRiBiao" parameterType="java.lang.String" resultMap="RiBiaoResultMap">
         select * from (select b.STNM,b.STCD,c.TM,c.RZ,c.CV,c.INQ,c.OTQ,c.DW,a.FWL,a.FWL79,c.Max_RZ,CONVERT(varchar(16),
         c.Max_TM, 120) as Max_TM,c.Min_RZ,CONVERT(varchar(16), c.Min_TM, 120) as Min_TM,
-        (select FieldName from WRP_FieldInfo where FormID='ST_RSVR_R1' and FieldID='LEVEL' and Field=r.LEVEL) as LEVEL,
+        (select FieldName from WRP_FieldInfo where FormID='ST_RSR_HYCH' and FieldID='RSVRTP' and Field=r.RSVRTP) as LEVEL,
         (select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=b.STGR) as STGR,
-        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from
-        ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as Canal_Name,
         (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where
         sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM
-        , ROW_NUMBER() OVER(Order by (select stuff((select ',' + baseid from ST_STINFO_WRP w where
-        FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd order by baseid for xml path('')),1,1,''))) AS RowId
+        , ROW_NUMBER() OVER(Order by (b.STCD)) AS RowId
         from ST_STBPRP_B b
         inner join ST_STBPRP_F f on f.type=2 and b.stcd=f.stcd
         left join (select * from ST_RSVR_D
         where
         tm=cast(#{TM} as datetime)
         ) c on b.stcd=c.stcd
-        left join ST_RSVR_R1 r on r.stcd=b.stcd
+        left join ST_RSR_HYCH r on r.stcd=b.stcd
         left join ST_RSV_Alarm a on b.STCD=a.STCD
         <where>
-            <if test="ADDVCD!= null and ADDVCD!= ''">
-                b.addvcd like #{ADDVCD}+'%'
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    b.addvcd like #{ADDVCD}+'%'
+                </foreach>
             </if>
             <if test="Canal_Code!= null and Canal_Code!= ''">
                 and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
                 and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
             </if>
             <if test="LEVEL!= null and LEVEL!= ''">
-                and r.level=#{LEVEL}
+                and r.RSVRTP=#{LEVEL}
             </if>
             <if test="STGR!= null and STGR!= ''">
                 and b.stgr=#{STGR}
@@ -93,32 +93,32 @@
         convert(varchar,c.mon) else (select CONVERT(varchar,c.yr)+'-'+convert(varchar,c.mon)) end as
         DT,c.RZ,c.INQ,c.OTQ,c.MW,a.FWL,a.FWL79,c.Max_RZ,CONVERT(varchar(16), c.Max_TM, 120) as
         Max_TM,c.Min_RZ,CONVERT(varchar(16), c.Min_TM, 120) as Min_TM,
-        (select FieldName from WRP_FieldInfo where FormID='ST_RSVR_R1' and FieldID='LEVEL' and Field=r.LEVEL) as LEVEL,
+        (select FieldName from WRP_FieldInfo where FormID='ST_RSR_HYCH' and FieldID='RSVRTP' and Field=r.RSVRTP) as LEVEL,
         (select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=b.STGR) as STGR,
-        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from
-        ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as Canal_Name,
         (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where
         sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM
-        , ROW_NUMBER() OVER(Order by (select stuff((select ',' + baseid from ST_STINFO_WRP w where
-        FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd order by baseid for xml path('')),1,1,''))) AS RowId
+        , ROW_NUMBER() OVER(Order by (b.STCD)) AS RowId
         from ST_STBPRP_B b
         inner join ST_STBPRP_F f on f.type=2 and b.stcd=f.stcd
         left join (select * from ST_RSVR_M
         where
         yr=#{YR} and mon=#{MON}
         ) c on b.stcd=c.stcd
-        left join ST_RSVR_R1 r on r.stcd=b.stcd
+        left join ST_RSR_HYCH r on r.stcd=b.stcd
         left join ST_RSV_Alarm a on b.STCD=a.STCD
         <where>
-            <if test="ADDVCD!= null and ADDVCD!= ''">
-                b.addvcd like #{ADDVCD}+'%'
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    b.addvcd like #{ADDVCD}+'%'
+                </foreach>
             </if>
             <if test="Canal_Code!= null and Canal_Code!= ''">
                 and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
                 and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
             </if>
             <if test="LEVEL!= null and LEVEL!= ''">
-                and r.level=#{LEVEL}
+                and r.RSVRTP=#{LEVEL}
             </if>
             <if test="STGR!= null and STGR!= ''">
                 and b.stgr=#{STGR}

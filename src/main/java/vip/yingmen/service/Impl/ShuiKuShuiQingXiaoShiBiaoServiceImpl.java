@@ -16,7 +16,11 @@ public class ShuiKuShuiQingXiaoShiBiaoServiceImpl implements ShuiKuShuiQingXiaoS
     @Override
     public  List<Map<String,ArrayList<Map<Object, String>>>> findByXiaoShi(String Time_min, String Time_max, String ADDVCD, String Canal_Code, String LEVEL,String STGR, String STNM) {
         List<Map<String,ArrayList<Map<Object, String>>>> mapArrayList = new ArrayList<>();      //接收mapMap全部过来的数据
-        ArrayList<Map<Object, String>> byZhanDian = xiaoShiBiaoMapper.findByZhanDian(ADDVCD, Canal_Code, LEVEL,STGR, STNM);  //接收mapper过来的站点数据
+        ArrayList<String> paramlist=null;
+        if(ADDVCD!=null && !ADDVCD.equals("")){
+            paramlist=new ArrayList<String>(Arrays.asList(ADDVCD.split(",")));
+        }
+        ArrayList<Map<Object, String>> byZhanDian = xiaoShiBiaoMapper.findByZhanDian(paramlist, Canal_Code, LEVEL,STGR, STNM);  //接收mapper过来的站点数据
         Map<String,ArrayList<Map<Object, String>>> mapMap = new HashMap<>();            //这个map接收的是dao层传过来的数据
         mapMap.put("zhandian",byZhanDian);
 

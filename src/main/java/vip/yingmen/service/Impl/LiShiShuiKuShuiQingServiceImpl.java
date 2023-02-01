@@ -10,6 +10,8 @@ import vip.yingmen.pojo.ShuiKuShuiQingRiBiao;
 import vip.yingmen.pojo.ShuiKuShuiQingYueBiao;
 import vip.yingmen.service.LiShiShuiKuShuiQingService;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -21,7 +23,11 @@ public class LiShiShuiKuShuiQingServiceImpl implements LiShiShuiKuShuiQingServic
     @Override
     public PageInfo<ShuiKuShuiQingRiBiao> findByShuiKuShuiQingRiBiao(Integer _page_size, Integer _page, String TM, String ADDVCD, String Canal_Code, String LEVEL, String STGR, String STNM, String _orderby) {
         PageHelper.startPage(_page,_page_size,_orderby);
-        List<ShuiKuShuiQingRiBiao> RiBiaoList = lsSksqMapper.fandByRiBiao(TM,ADDVCD,Canal_Code,LEVEL,STGR,STNM);
+        ArrayList<String> paramlist=null;
+        if(ADDVCD!=null && !ADDVCD.equals("")){
+            paramlist=new ArrayList<String>(Arrays.asList(ADDVCD.split(",")));
+        }
+        List<ShuiKuShuiQingRiBiao> RiBiaoList = lsSksqMapper.fandByRiBiao(TM,paramlist,Canal_Code,LEVEL,STGR,STNM);
         PageInfo<ShuiKuShuiQingRiBiao> pageInfo = new PageInfo<>(RiBiaoList);
         return pageInfo;
     }
@@ -30,7 +36,11 @@ public class LiShiShuiKuShuiQingServiceImpl implements LiShiShuiKuShuiQingServic
     @Override
     public PageInfo<ShuiKuShuiQingYueBiao> findByShuiKuShuiQingYueBiao(Integer _page_size, Integer _page, String YR,String MON, String ADDVCD, String Canal_Code, String LEVEL, String STGR, String STNM, String _orderby) {
         PageHelper.startPage(_page,_page_size,_orderby);
-        List<ShuiKuShuiQingYueBiao> YueBiaoList = lsSksqMapper.fandByYueBiao(YR,MON,ADDVCD,Canal_Code,LEVEL,STGR,STNM);
+        ArrayList<String> paramlist=null;
+        if(ADDVCD!=null && !ADDVCD.equals("")){
+            paramlist=new ArrayList<String>(Arrays.asList(ADDVCD.split(",")));
+        }
+        List<ShuiKuShuiQingYueBiao> YueBiaoList = lsSksqMapper.fandByYueBiao(YR,MON,paramlist,Canal_Code,LEVEL,STGR,STNM);
         PageInfo<ShuiKuShuiQingYueBiao> pageInfo = new PageInfo<>(YueBiaoList);
         return pageInfo;
     }

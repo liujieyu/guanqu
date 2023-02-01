@@ -232,7 +232,6 @@
     <select id="findByRiLieBiao" resultType="java.util.HashMap" parameterType="java.lang.String">
         select * from (select b.STCD,b.stnm,c.p,h.*,
         (select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=STGR) as STGR,
-        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as canal_name,
         (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM
         ,ROW_NUMBER() OVER (ORDER BY b.wzpx) as RowId
         from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.stcd
@@ -326,7 +325,6 @@
     <select id="findByXunLieBiao" resultMap="XunLieBiaoResultMap" parameterType="java.lang.String">
         select * from (select b.STCD,b.STNM,e.P,d.ShangXunYuLiang,d.ZhongXunYuLiang,d.XiaXunYuLiang,
         (select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=STGR) as STGR,
-        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as canal_name,
         (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM
         ,ROW_NUMBER() OVER (ORDER BY b.wzpx) as RowId
         from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.stcd
@@ -463,7 +461,6 @@
     <select id="findByYueLieBiao" resultMap="YlbResultMap" parameterType="java.lang.String">
         select * from (select b.STCD,b.STNM,e.p,d.*,
         (select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=STGR) as STGR,
-        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as canal_name,
         (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM
         ,ROW_NUMBER() OVER (ORDER BY b.wzpx) as RowId
         from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.stcd
@@ -582,7 +579,6 @@
     <select id="findByNianLieBiao" resultMap="NlbResultMap" parameterType="java.lang.String">
         select * from (select b.STCD,b.STNM,y.p,d.*,
         (select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=STGR) as STGR,
-        (select stuff((select ',' + canal_name from WRP_IrrBTCanalSystem where Canal_Code in(select baseid from ST_STINFO_WRP w where FormID='WRP_IrrBTCanalSystem' and w.stcd=b.stcd) for xml path('')),1,1,'')) as canal_name,
         (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM
         ,ROW_NUMBER() OVER (ORDER BY b.wzpx) as RowId
         from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=1 and b.stcd=f.stcd

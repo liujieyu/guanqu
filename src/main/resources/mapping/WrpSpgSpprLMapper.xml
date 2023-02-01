@@ -68,7 +68,7 @@
         (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where sub.ad_cd=m.UP_ADCD)+'|'+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM ,
         ROW_NUMBER() OVER(Order by p desc) AS RowId from (select * from ST_STBPRP_B) b
         left join (select stcd,sum(p) as p from ST_HP_C where DATEADD(hh,TM,CONVERT(varchar(100), DT, 111)) >='${Time_min}' and DATEADD(hh,TM,CONVERT(varchar(100), DT, 111))&lt;='${Time_max}' group by stcd ) c on b.STCD=c.STCD
-        left join ST_RSVR_R1 r on b.STCD=r.STCD left join ST_RSV_Alarm a on r.STCD=a.STCD
+        left join ST_RSR_HYCH r on b.STCD=r.STCD left join ST_RSV_Alarm a on r.STCD=a.STCD
         inner join ST_StationStatus_R s on b.STCD=s.STCD left join ST_StationStatusType t on s.VOLTYPE=t.VOLTYPE
         <where>
             <if test="STNM!= null and STNM!= ''">
@@ -87,7 +87,7 @@
                 and p &gt;= #{P}
             </if>
             <if test="LEVEL!= null and LEVEL != ''">
-                and r.level in (${LEVEL})
+                and r.RSVRTP = #{LEVEL}
             </if>
             <if test="_stat!= null and _stat!= '' and _stat == 1">
                 and cs=1  and vol &gt;=t.VOLMIN and vol &lt;=t.VOLMAX

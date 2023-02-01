@@ -160,12 +160,13 @@
     </select>
     <!--降雨预警信息查询-->
     <select id="selectStPpAlarmByStcd" resultMap="StPpAlarmResultMap" parameterType="vip.yingmen.entity.LvDingParam">
-        select STCD,OH_P,TH_P,SH_P,TWH_P,OD_P from ST_PP_Alarm
+        select STCD,OH_P,TH_P,SH_P,TWH_P,OD_P,EWL from ST_PP_Alarm
         <where>
             <if test="stcd !=null &amp;&amp; stcd !=''">
                 STCD=#{stcd}
             </if>
         </where>
+        order by ewl desc
     </select>
     <!--水库水位预警指标统计-->
     <select id="selectStRsvAlarmByCount" parameterType="vip.yingmen.entity.LvDingParam" resultType="java.lang.Integer">

@@ -64,7 +64,7 @@
         left join (select stcd,sum(DRP) as RAIN6  from ST_PPTN_R where TM>=DATEADD(hh,-6,GETDATE()) and TM &lt;=GETDATE() group by stcd) c3 on b.STCD=c3.stcd
         left join (select stcd,sum(DRP) as RAIN12  from ST_PPTN_R where TM>=DATEADD(hh,-12,GETDATE()) and TM &lt;=GETDATE() group by stcd) c4 on b.STCD=c4.stcd
         left join (select stcd,sum(DRP) as RAIN24  from ST_PPTN_R where TM>=DATEADD(hh,-24,GETDATE()) and TM &lt;=GETDATE() group by stcd) c5 on b.STCD=c5.stcd
-        left join ST_RSVR_R1 r on b.STCD=r.STCD left join ST_RSV_Alarm a on r.STCD=a.STCD
+        left join ST_RSVR_R1 r on b.STCD=r.STCD left join ST_RSV_Alarm a on r.STCD=a.STCD left join ST_RSR_HYCH y on r.STCD=y.STCD
         inner join ST_StationStatus_R s on b.STCD=s.STCD left join ST_StationStatusType t on s.VOLTYPE=t.VOLTYPE
         <where>
             <if test="STNM!= null and STNM!= ''">
@@ -83,7 +83,7 @@
                 and p &gt;= #{P}
             </if>
             <if test="LEVEL!= null and LEVEL != ''">
-                and r.level in (${LEVEL})
+                and y.RSVRTP in (${LEVEL})
             </if>
             <if test="_stat!= null and _stat!= '' and _stat == 1">
                 and cs=1  and vol &gt;=t.VOLMIN and vol &lt;=t.VOLMAX
@@ -107,7 +107,7 @@
         select * from (select CV,b.ID,b.STCD,b.STTP,b.LTTD,b.LGTD,b.stnm ,CONVERT(varchar(16), TM, 120) as tm,a.FWL AS YUJING_FWL,a.FWL79 AS YUJING_FWL79,r.RZ,r.RWPTN,r.W,case when MONTH(TM) &gt;=7 and MONTH(TM) &lt;=9 then r.rz-a.FWL79 else r.RZ-a.FWL end as jxx
         , ROW_NUMBER() OVER(Order by tm desc) AS RowId
         from ST_STBPRP_B b
-        inner join  ST_STBPRP_F f on f.type=2 and b.stcd=f.stcd left join ST_RSVR_R1 r on b.STCD=r.STCD left join ST_RSV_Alarm a on r.STCD=a.STCD
+        inner join  ST_STBPRP_F f on f.type=2 and b.stcd=f.stcd left join ST_RSVR_R1 r on b.STCD=r.STCD left join ST_RSV_Alarm a on r.STCD=a.STCD left join ST_RSR_HYCH y on r.STCD=y.STCD
         <where>
             <if test="STNM!= null and STNM!= ''">
                 b.stnm like '%'+#{STNM}+'%'
@@ -123,7 +123,7 @@
                 and b.STGR in (${STGR})
             </if>
             <if test="LEVEL!= null and LEVEL != ''">
-                and r.level in (${LEVEL})
+                and r.RSVRTP = #{LEVEL}
             </if>
         </where>
         ) as b

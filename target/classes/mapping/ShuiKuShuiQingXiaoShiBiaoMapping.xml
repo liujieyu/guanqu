@@ -3,14 +3,17 @@
 <mapper namespace="vip.yingmen.mapper.ShuiKuShuiQingXiaoShiBiaoMapper">
     <select id="findByZhanDian" parameterType="java.lang.String" resultType="java.util.HashMap">
         select b.STCD,b.STNM,a.FWL,a.FWL79,a.ZCWL from ST_STBPRP_B b inner join ST_STBPRP_F f on f.type=2 and b.stcd=f.stcd
-        left join ST_RSVR_R1 r on r.stcd=b.stcd
+        left join ST_RSR_HYCH r on r.stcd=b.stcd
         left join ST_RSV_Alarm a on b.STCD=a.STCD
         <where>
             <if test="STNM!= null and STNM!= ''">
                 b.stnm like '%'+#{STNM}+'%'
             </if>
-            <if test="ADDVCD!= null and ADDVCD!= ''">
-                and b.addvcd like #{ADDVCD}+'%'
+            <if test="ADDlist != null and ADDlist.size > 0">
+                and
+                <foreach collection="ADDlist" item="ADDVCD" open="(" separator=" or " close=")">
+                    b.addvcd like #{ADDVCD}+'%'
+                </foreach>
             </if>
             <if test="Canal_Code!= null and Canal_Code!= ''">
                 and b.stcd in(select stcd from ST_STINFO_WRP where FormID='WRP_IrrBTCanalSystem'
@@ -21,7 +24,7 @@
                 and b.STGR in (${STGR})
             </if>
             <if test="LEVEL!= null and LEVEL != ''">
-                and r.level in (${LEVEL})
+                and r.RSVRTP in (${LEVEL})
             </if>
         </where>
     </select>
