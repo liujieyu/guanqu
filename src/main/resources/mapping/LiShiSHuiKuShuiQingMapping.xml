@@ -76,7 +76,7 @@
                 and (BaseID = #{Canal_Code} or BaseID in(select Canal_Code from dbo.fn_getCanalChild(#{Canal_Code}))))
             </if>
             <if test="LEVEL!= null and LEVEL!= ''">
-                and r.RSVRTP= #{LEVEL}
+                and r.RSVRTP=#{LEVEL}
             </if>
             <if test="STGR!= null and STGR!= ''">
                 and b.stgr=#{STGR}
