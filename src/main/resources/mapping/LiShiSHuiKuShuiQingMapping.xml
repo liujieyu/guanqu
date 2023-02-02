@@ -55,7 +55,6 @@
         (select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=b.STGR) as STGR,
         (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where
         sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM
-        , ROW_NUMBER() OVER(Order by (b.STCD)) AS RowId
         from ST_STBPRP_B b
         inner join ST_STBPRP_F f on f.type=2 and b.stcd=f.stcd
         left join (select * from ST_RSVR_D
@@ -97,7 +96,6 @@
         (select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=b.STGR) as STGR,
         (select case ad_lv when 5 then AD_NM when 6 then (select AD_NM from WRP_AD_B sub where
         sub.ad_cd=m.UP_ADCD)+AD_NM end from WRP_AD_B m where AD_CD=ADDVCD) as AD_NM
-        , ROW_NUMBER() OVER(Order by (b.STCD)) AS RowId
         from ST_STBPRP_B b
         inner join ST_STBPRP_F f on f.type=2 and b.stcd=f.stcd
         left join (select * from ST_RSVR_M

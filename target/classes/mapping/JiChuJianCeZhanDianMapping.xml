@@ -11,9 +11,11 @@
         <result column="ADMAUTH" jdbcType="VARCHAR" property="ADMAUTH" />
         <result column="AD_NM" jdbcType="VARCHAR" property="AD_NM" />
         <result column="CANAL_NAME" jdbcType="VARCHAR" property="CANAL_NAME" />
+        <result column="LGTD" jdbcType="NUMERIC" property="LGTD" />
+        <result column="LTTD" jdbcType="NUMERIC" property="LTTD" />
     </resultMap>
     <select id="findByJianCeZhanDian" resultMap="JianCeZhanDianResultMap" parameterType="java.lang.String">
-        select * from (select STNM,(select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STTP' and Field=STTP) as STTP,
+        select * from (select STNM,LGTD,LTTD,(select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STTP' and Field=STTP) as STTP,
         (select FieldName from WRP_FieldInfo where FormID='ST_STBPRP_B' and FieldID='STGR' and Field=STGR) as STGR,
         (select stuff((select ',' + FieldName from WRP_FieldInfo where FormID='ST_STBPRP_F' and FieldID='TYPE' and Field in(select type from ST_STBPRP_F f where F.STCD=B.STCD) for xml path('')),1,1,'')) as THYPE,
         ESSTDT,DLOG,ADMAUTH,

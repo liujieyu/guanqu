@@ -12,6 +12,8 @@ public class JiChuJianCeZhanDian {
     private String ADMAUTH;
     private String AD_NM;
     private String CANAL_NAME;
+    private String LGTD;
+    private String LTTD;
 
     public String getSTNM() {
         return STNM;
@@ -84,5 +86,21 @@ public class JiChuJianCeZhanDian {
 
     public void setCANAL_NAME(String CANAL_NAME) {
         this.CANAL_NAME = CANAL_NAME;
+    }
+
+    public String getLGTD() {
+        return LGTD;
+    }
+
+    public void setLGTD(String LGTD) {
+        this.LGTD = LGTD;
+    }
+
+    public String getLTTD() {
+        return LTTD;
+    }
+
+    public void setLTTD(String LTTD) {
+        this.LTTD = LTTD;
     }
 }

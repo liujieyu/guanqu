@@ -96,7 +96,7 @@
     </select>
     <!--测站防洪基本信息查询-->
     <select id="selectRsrHychByCon" resultMap="StRsrHychMap" parameterType="java.util.Map">
-      select s.ID,s.STCD,b.STNM,b.STLC,b.ADDVCD,a.id as ALARMID,a.FWL,a.FWL79,a.SWL,a.ZCWL,a.SJWL,a.XHWL,(select FieldName from WRP_FieldInfo where FormID='ST_RSVR_R1' and FieldID='LEVEL' and Field=s.RSVRTP) as RSVRTP,s.DAMEL,s.CHFL,s.DSFL,s.NORMZ,s.DDWZ,s.ACTZ,s.TTCP,s.FLDCP,s.ACTCP,s.DDCP,s.HHRZ,s.HMXW,s.LAZ,s.SFQ from ST_RSR_HYCH s inner join ST_STBPRP_B b on s.STCD=b.STCD inner join ST_RSV_Alarm a on s.STCD=a.STCD
+      select s.ID,s.STCD,b.STNM,b.STLC,b.ADDVCD,a.id as ALARMID,a.FWL,a.FWL79,a.SWL,a.ZCWL,a.SJWL,a.XHWL,(select FieldName from WRP_FieldInfo where FormID='ST_RSR_HYCH' and FieldID='RSVRTP' and Field=s.RSVRTP) as RSVRTP,s.DAMEL,s.CHFL,s.DSFL,s.NORMZ,s.DDWZ,s.ACTZ,s.TTCP,s.FLDCP,s.ACTCP,s.DDCP,s.HHRZ,s.HMXW,s.LAZ,s.SFQ from ST_RSR_HYCH s inner join ST_STBPRP_B b on s.STCD=b.STCD inner join ST_RSV_Alarm a on s.STCD=a.STCD
       <where>
           <if test="STCD !=null and STCD != ''">
               s.STCD=#{STCD}
