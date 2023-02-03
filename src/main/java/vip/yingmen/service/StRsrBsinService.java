@@ -64,4 +64,6 @@ public interface StRsrBsinService extends IService<StRsrBsin> {
     StPpAlarm selectPpAlarmById(int ID);
     //判断雨量预警中监测站点是否存在
     Integer selectStcdInPpAlarm(String stcd,int ewl);
+    //根据STCD获取站点基本信息和库容信息
+    Map selectSiteBaseByStcd(String stcd);
 }

@@ -277,4 +277,9 @@ public class StRsrBsinController {
         }
         return map;
     }
+    //根据STCD获取站点基本信息和库容信息
+    @GetMapping(value = "/base/sitekrinfo")
+    public Map getsitekrInfo(@RequestParam String STCD){
+        return stRsrBsinService.selectSiteBaseByStcd(STCD);
+    }
 }

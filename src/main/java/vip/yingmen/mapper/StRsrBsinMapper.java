@@ -73,4 +73,8 @@ public interface StRsrBsinMapper extends BaseMapper<StRsrBsin> {
     Integer selectIDFromPpAlarm();
     //根据ID查询雨量预警信息
     StPpAlarm selectRainAlarmById(@Param("ID") int ID);
+    //根据站点编号获取监测站点基本信息
+    StRsrBsin selectRsrBsinInfoBySTcd(@Param("stcd") String stcd);
+    //根据站点编号获取防洪基本信息
+    StRsrHych selectRsrHychInfoBySTcd(@Param("stcd") String stcd);
 }

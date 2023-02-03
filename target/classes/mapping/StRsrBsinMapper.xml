@@ -94,6 +94,19 @@
             </if>
         </where>
     </select>
+    <!--根据站点编号获取监测站点基本信息-->
+    <select id="selectRsrBsinInfoBySTcd" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select s.RTUNM,s.STCD,s.RVCD,s.HNNM,s.CTCD,s.LGTD1,s.LTTD1,s.STLC,s.DTMNM,s.DTMEL,s.DTPR,s.FRGRD,s.DRNA,b.ESSTDT as ADDTIME,
+        (SELECT FieldName FROM WRP_FieldInfo WHERE FormID = 'ST_STBPRP_B' AND FieldID = 'STTP' AND Field = s.STTP) AS STTP,
+        (SELECT FieldName FROM WRP_FieldInfo WHERE FormID = 'ST_STBPRP_B' AND FieldID = 'STGR' AND Field = b.STGR) AS STGR,
+        (SELECT stuff((SELECT ',' + FieldName FROM WRP_FieldInfo WHERE FormID = 'ST_STBPRP_F' AND FieldID = 'TYPE' AND Field IN (SELECT type FROM ST_STBPRP_F f WHERE F.STCD = B.STCD) FOR XML PATH('')), 1, 1, '')) AS THYPE,
+        b.DLOG,b.ADMAUTH
+        from ST_RSR_BSIN s inner join ST_STBPRP_B b on s.STCD=b.STCD where b.STCD=#{stcd}
+    </select>
+    <!--根据站点编号获取防洪基本信息-->
+    <select id="selectRsrHychInfoBySTcd" resultMap="StRsrHychMap" parameterType="java.lang.String">
+        select s.TTCP,s.FLDCP,s.DDCP,(select FieldName from WRP_FieldInfo where FormID='ST_RSR_HYCH' and FieldID='RSVRTP' and Field=s.RSVRTP) as RSVRTP from ST_RSR_HYCH s where s.STCD=#{stcd}
+    </select>
     <!--测站防洪基本信息查询-->
     <select id="selectRsrHychByCon" resultMap="StRsrHychMap" parameterType="java.util.Map">
       select s.ID,s.STCD,b.STNM,b.STLC,b.ADDVCD,a.id as ALARMID,a.FWL,a.FWL79,a.SWL,a.ZCWL,a.SJWL,a.XHWL,(select FieldName from WRP_FieldInfo where FormID='ST_RSR_HYCH' and FieldID='RSVRTP' and Field=s.RSVRTP) as RSVRTP,s.DAMEL,s.CHFL,s.DSFL,s.NORMZ,s.DDWZ,s.ACTZ,s.TTCP,s.FLDCP,s.ACTCP,s.DDCP,s.HHRZ,s.HMXW,s.LAZ,s.SFQ from ST_RSR_HYCH s inner join ST_STBPRP_B b on s.STCD=b.STCD inner join ST_RSV_Alarm a on s.STCD=a.STCD
@@ -157,7 +170,7 @@
     </select>
     <!--新增监测站点信息-->
     <insert id="insertStStbprpB" parameterType="vip.yingmen.pojo.StRsrBsin">
-        insert into ST_STBPRP_B(ID,STCD,STNM,STTP,STGR,ADDVCD,LGTD,LTTD,STLC,ESSTDT,DLOG,ADMAUTH)values(#{id},#{stcd},#{rtunm},#{sttp},#{stgr},#{addvcd},#{lgtd1},#{lttd1},#{stlc},#{addtime},#{dlog},#{admauth})
+        insert into ST_STBPRP_B(STCD,STNM,STTP,STGR,ADDVCD,LGTD,LTTD,STLC,ESSTDT,DLOG,ADMAUTH)values(#{stcd},#{rtunm},#{sttp},#{stgr},#{addvcd},#{lgtd1},#{lttd1},#{stlc},#{addtime},#{dlog},#{admauth})
     </insert>
     <!--修改监测站点信息-->
     <update id="updateStstbprpB" parameterType="vip.yingmen.pojo.StRsrBsin">
@@ -173,9 +186,9 @@
     </select>
     <!--新增监测要素-->
     <insert id="insertStStbprpF" parameterType="java.util.List">
-        insert into ST_STBPRP_F(ID,STCD,type) VALUES
+        insert into ST_STBPRP_F(STCD,type) VALUES
         <foreach collection="list" item="item" separator=",">
-            (#{item.id},#{item.stcd},#{item.type})
+            (#{item.stcd},#{item.type})
         </foreach>
     </insert>
     <!--根据编号删除监测要素-->
@@ -204,7 +217,7 @@
     </select>
     <!--新增水库水位预警信息-->
     <insert id="insertStRsvAlarm" parameterType="vip.yingmen.pojo.StRsrHych">
-        insert into ST_RSV_Alarm(ID,STCD,SWL,FWL,FWL79,ZCWL,SJWL,XHWL) values(#{alarmid},#{stcd},#{ddwz},#{FWL},#{FWL79},#{normz},#{dsfl},#{chfl})
+        insert into ST_RSV_Alarm(STCD,SWL,FWL,FWL79,ZCWL,SJWL,XHWL) values(#{stcd},#{ddwz},#{FWL},#{FWL79},#{normz},#{dsfl},#{chfl})
     </insert>
     <!--修改水库水位预警信息-->
     <update id="updateStRsvAlarm" parameterType="vip.yingmen.pojo.StRsrHych">

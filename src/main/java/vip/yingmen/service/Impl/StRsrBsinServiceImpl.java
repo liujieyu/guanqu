@@ -71,15 +71,15 @@ public class StRsrBsinServiceImpl extends ServiceImpl<StRsrBsinMapper, StRsrBsin
     }
     //新增监测站点信息
     public void addSiteInfo(StRsrBsin pojo){
-        pojo.setId(stRsrBsinMapper.selectIDFromSite());
+        //pojo.setId(stRsrBsinMapper.selectIDFromSite());
         stRsrBsinMapper.insertStStbprpB(pojo);
         String[] typearray=pojo.getTypes().split(",");
         List<Map> list=new ArrayList<Map>();
-        int ysid=stRsrBsinMapper.selectIDFromStbprpF();
+        //int ysid=stRsrBsinMapper.selectIDFromStbprpF();
         for(int i=0;i<typearray.length;i++){
-            ysid=ysid+i;
+            //ysid=ysid+i;
             Map map=new HashMap();
-            map.put("id",ysid);
+            //map.put("id",ysid);
             map.put("stcd",pojo.getStcd());
             map.put("type",Integer.parseInt(typearray[i]));
             list.add(map);
@@ -100,11 +100,11 @@ public class StRsrBsinServiceImpl extends ServiceImpl<StRsrBsinMapper, StRsrBsin
         stRsrBsinMapper.deleteStStbprpF(stcds);
         String[] typearray=pojo.getTypes().split(",");
         List<Map> list=new ArrayList<Map>();
-        int ysid=stRsrBsinMapper.selectIDFromStbprpF();
+        //int ysid=stRsrBsinMapper.selectIDFromStbprpF();
         for(int i=0;i<typearray.length;i++){
-            ysid=ysid+i;
+            //ysid=ysid+i;
             Map map=new HashMap();
-            map.put("id",ysid);
+            //map.put("id",ysid);
             map.put("stcd",pojo.getStcd());
             map.put("type",typearray[i]);
             list.add(map);
@@ -145,7 +145,7 @@ public class StRsrBsinServiceImpl extends ServiceImpl<StRsrBsinMapper, StRsrBsin
     }
     //新增水库水位预警信息
     public void addStRsvAlarmInfo(StRsrHych pojo){
-        pojo.setAlarmid(stRsrBsinMapper.selectIDFromRsrAlarm());
+        //pojo.setAlarmid(stRsrBsinMapper.selectIDFromRsrAlarm());
         stRsrBsinMapper.insertStRsvAlarm(pojo);
         pojo.setAlarmid(null);
         pojo.setFWL(null);
@@ -171,7 +171,7 @@ public class StRsrBsinServiceImpl extends ServiceImpl<StRsrBsinMapper, StRsrBsin
     }
     //新增降雨预警信息
     public void addPpAlarm(StPpAlarm pojo){
-        pojo.setId(stRsrBsinMapper.selectIDFromPpAlarm());
+        //pojo.setId(stRsrBsinMapper.selectIDFromPpAlarm());
         stPpAlarmMapper.insert(pojo);
     }
     //修改降雨预警信息
@@ -189,5 +189,14 @@ public class StRsrBsinServiceImpl extends ServiceImpl<StRsrBsinMapper, StRsrBsin
     //判断雨量预警中监测站点是否存在
     public Integer selectStcdInPpAlarm(String stcd,int ewl){
         return stRsrBsinMapper.selectStcdInPpAlarm(stcd,ewl);
+    }
+    //根据STCD获取站点基本信息和库容信息
+    public Map selectSiteBaseByStcd(String stcd){
+        Map map=new HashMap<String,Object>();
+        StRsrBsin jczd=stRsrBsinMapper.selectRsrBsinInfoBySTcd(stcd);
+        StRsrHych tzkr=stRsrBsinMapper.selectRsrHychInfoBySTcd(stcd);
+        map.put("basesite",jczd);
+        map.put("krinfo",tzkr);
+        return map;
     }
 }

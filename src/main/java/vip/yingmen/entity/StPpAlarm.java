@@ -1,6 +1,8 @@
 package vip.yingmen.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.alibaba.fastjson.annotation.JSONField;
@@ -21,7 +23,7 @@ public class StPpAlarm extends Model<StPpAlarm> {
     private static final long serialVersionUID = 1L;
 
     @JSONField(name = "ID")
-    @TableField("ID")
+    @TableId(value = "ID", type = IdType.AUTO)
     private Integer id;
 
     @JSONField(name = "ROWID")
