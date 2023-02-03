@@ -77,7 +77,7 @@ public class StRsrBsinServiceImpl extends ServiceImpl<StRsrBsinMapper, StRsrBsin
         List<Map> list=new ArrayList<Map>();
         //int ysid=stRsrBsinMapper.selectIDFromStbprpF();
         for(int i=0;i<typearray.length;i++){
-            // ysid=ysid+i;
+            //ysid=ysid+i;
             Map map=new HashMap();
             //map.put("id",ysid);
             map.put("stcd",pojo.getStcd());
