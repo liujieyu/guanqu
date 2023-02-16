@@ -282,4 +282,7 @@ public class StRsrBsinController {
     public Map getsitekrInfo(@RequestParam String STCD){
         return stRsrBsinService.selectSiteBaseByStcd(STCD);
     }
+    //根据STCD获取特征库容信息
+    @GetMapping(value = "/alarm/tzkrinfo")
+    public StRsrHych getTzkrByStcd(@RequestParam String STCD){return stRsrBsinService.selectTzKrByStcd(STCD);}
 }

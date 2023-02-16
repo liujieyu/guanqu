@@ -11,6 +11,7 @@ import vip.yingmen.mapper.StAlarminfoMapper;
 import vip.yingmen.pojo.*;
 import vip.yingmen.service.ShuiKuShuiQingGISService;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -846,5 +847,17 @@ public class ShuiKuShuiQingGISServiceImpl implements ShuiKuShuiQingGISService {
         map.put("spatialReference", spatialReference);
         map.put("fields", fields);
         return map;
+    }
+    //水位-库容-水面面积关系曲线数据
+    public List<Map> selectRZKrArData(String STCD){
+        return shuiKuShuiQingGISMapper.selectRZKrArData(STCD);
+    }
+    //根据水位获取库容
+    public BigDecimal selectKrByRz(Double RZ,String STCD){
+        return shuiKuShuiQingGISMapper.selectKrByRz(RZ,STCD);
+    }
+    //根据水位获取水面面积
+    public BigDecimal selectArByRz(Double RZ,String STCD){
+        return shuiKuShuiQingGISMapper.selectArByRz(RZ,STCD);
     }
 }

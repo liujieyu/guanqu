@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import vip.yingmen.service.QuDaoShuiQingGISService;
 import vip.yingmen.service.ShuiKuShuiQingGISService;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -43,4 +45,23 @@ public class ShuiKuShuiQingGISController {
     //仪表图数据
     @GetMapping(value = "/system/chartdata")
     public Map findSiteTongjiInfo(){return shuiKuShuiQingGISService.findSiteTongjiInfo();}
+
+    //水位-库容-水面面积关系曲线数据
+    @GetMapping(value = "/detail/rzkrdata")
+    public List<Map> findRzKrData(@RequestParam String STCD){
+        return shuiKuShuiQingGISService.selectRZKrArData(STCD);
+    }
+    //根据水位获取库容
+    @GetMapping(value = "/detail/getkrval")
+    public String getKrByRz(@RequestParam Double RZ,@RequestParam String STCD){
+        BigDecimal value=shuiKuShuiQingGISService.selectKrByRz(RZ,STCD);
+        return value.toString();
+    }
+    //根据水位获取水面面积
+    @GetMapping(value = "/detail/getarval")
+    public String getArByRz(@RequestParam Double RZ,@RequestParam String STCD){
+        BigDecimal value=shuiKuShuiQingGISService.selectArByRz(RZ,STCD);
+        return value.toString();
+    }
+
 }

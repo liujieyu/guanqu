@@ -66,4 +66,6 @@ public interface StRsrBsinService extends IService<StRsrBsin> {
     Integer selectStcdInPpAlarm(String stcd,int ewl);
     //根据STCD获取站点基本信息和库容信息
     Map selectSiteBaseByStcd(String stcd);
+    //获取特征库容基本信息
+    StRsrHych selectTzKrByStcd(String stcd);
 }

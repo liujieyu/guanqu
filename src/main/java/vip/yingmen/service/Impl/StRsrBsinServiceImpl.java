@@ -199,4 +199,9 @@ public class StRsrBsinServiceImpl extends ServiceImpl<StRsrBsinMapper, StRsrBsin
         map.put("krinfo",tzkr);
         return map;
     }
+    //获取特征库容基本信息
+    public StRsrHych selectTzKrByStcd(String stcd){
+        StRsrHych tzkr=stRsrBsinMapper.selectRsrHychInfoBySTcd(stcd);
+        return tzkr;
+    }
 }

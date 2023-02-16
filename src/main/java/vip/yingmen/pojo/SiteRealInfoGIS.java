@@ -39,6 +39,7 @@ public class SiteRealInfoGIS {
     private int SIGN6;
     private int SIGN12;
     private int SIGN24;
+    private String AR;
     public String getID() {
         return ID;
     }
@@ -340,5 +341,13 @@ public class SiteRealInfoGIS {
 
     public void setSIGN24(int SIGN24) {
         this.SIGN24 = SIGN24;
+    }
+
+    public String getAR() {
+        return AR;
+    }
+
+    public void setAR(String AR) {
+        this.AR = AR;
     }
 }
