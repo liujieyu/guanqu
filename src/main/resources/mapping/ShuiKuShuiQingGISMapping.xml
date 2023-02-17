@@ -135,10 +135,10 @@
     </select>
     <!--根据水位获取库容-->
     <select id="selectKrByRz" resultType="java.math.BigDecimal">
-        select dbo.FUNC_GETKR(${RZ},''+${STCD}+'')
+        select dbo.FUNC_GETKR(${RZ},'${STCD}')
     </select>
     <!--根据水位获取水面面积-->
     <select id="selectArByRz" resultType="java.math.BigDecimal">
-        select dbo.FUNC_GETAR(${RZ},''+${STCD}+'')
+        select dbo.FUNC_GETAR(${RZ},'${STCD}')
     </select>
 </mapper>
